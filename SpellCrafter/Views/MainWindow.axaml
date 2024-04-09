@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
+		xmlns:tabs="clr-namespace:SpellCrafter.Views.MainWindowTabs"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SpellCrafter.Views.MainWindow"
+		WindowStartupLocation="CenterScreen"
+        Title="Spell Crafter" MinWidth="550" MinHeight="200">
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+	
+	<Grid>
+		<TabControl AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}"
+					Margin="28">
+			<TabControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</TabControl.ItemsPanel>
+			<TabItem TabIndex="0" Header="My Mods">
+				<tabs:MyMods/>
+			</TabItem>
+			
+			<TabItem TabIndex="1" Header="Browse">
+				
+			</TabItem>
+
+			<TabItem TabIndex="2" Header="Profiles">
+
+			</TabItem>
+		</TabControl>
+	</Grid>
+</Window>

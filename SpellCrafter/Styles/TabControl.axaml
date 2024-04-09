@@ -1,0 +1,29 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+			<TabControl Classes="MaterialDesignTabControl">
+				<TabItem Header="Item">
+					<TextBlock Text="Test1"/>
+				</TabItem>
+				<TabItem Header="Item">
+					<TextBlock Text="Test2"/>
+				</TabItem>
+			</TabControl>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+	<Style Selector="TabControl /template/ Rectangle#PART_Separator">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+
+	<Style Selector="TabItem">
+		<Setter Property="Padding" Value="7 0"/>
+		<Setter Property="Margin" Value="0 0 0 5"/>
+		<Setter Property="MaxWidth" Value="Infinity"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+	</Style>
+</Styles>

@@ -1,0 +1,156 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:local="clr-namespace:SpellCrafter.Controls"
+        xmlns:cvs="clr-namespace:SpellCrafter.Converters"
+		xmlns:controls="clr-namespace:SpellCrafter.Controls"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Style Selector="local|MetroWindow">
+		<Setter Property="Background" Value="{DynamicResource MaterialPaperBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AvalonBorderBrush}" />
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<VisualLayerManager>
+					<Grid ColumnDefinitions="14 * 14" RowDefinitions="14 * 14" Background="Transparent">
+						<Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
+								Margin="14" Padding="3" BoxShadow="0 2 30 -6 Black" Grid.RowSpan="3" Grid.ColumnSpan="3" ClipToBounds="True">
+							<Grid Background="{TemplateBinding Background}" RowDefinitions="36 *">
+								<Grid ColumnDefinitions="Auto * Auto" Name="titlebar" Margin="0" Background="Transparent">
+									<Image Grid.Column="0" Source="{TemplateBinding Icon, Converter={x:Static cvs:IconImageConverter.Converter}}"
+										   Name="icon" Height="30" Width="30" Margin="7 0 0 0" Stretch="UniformToFill" IsVisible="{TemplateBinding ClientDecorations}" />
+
+									<TextBlock Grid.Column="1" Text="{TemplateBinding Title}" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Padding="7 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+									<Grid Grid.Column="2" Margin="7 0 0 0" IsVisible="{TemplateBinding ClientDecorations}"
+										  ColumnDefinitions="* Auto Auto Auto">
+										<Grid.Styles>
+											<Styles>
+												<StyleInclude Source="/Controls/MetroWindowControlsTheme.paml" />
+											</Styles>
+										</Grid.Styles>
+										<Button Classes="Flat" Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="10" Margin="0 -2 0 0" Height="40" Width="40" CornerRadius="0" Name="minimiseButton" />
+										<Button Classes="Flat" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="10" Margin="0 -2 0 0" Height="40" Width="40" CornerRadius="0" Name="restoreButton" />
+										<Button Classes="Flat" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="10" Margin="0 -2 -3 0" Height="40" Width="40" CornerRadius="0" Name="closeButton" />
+									</Grid>
+								</Grid>
+								
+								<ContentPresenter Name="PART_ContentPresenter" Grid.Row="1" Content="{TemplateBinding Content}" Margin="-3 0 -3 -3" />
+							</Grid>
+						</Border>
+							
+						<Grid Background="Transparent" Grid.Row="0" Grid.Column="1" Name="topHorizontalGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeNorthSouth}" />
+
+						<Grid Background="Transparent" Grid.Row="2" Grid.Column="1" Name="bottomHorizontalGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeNorthSouth}" />
+
+						<Grid Background="Transparent" Grid.Row="0" Grid.Column="0" Name="topLeftGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=TopLeftCorner}" />
+					
+						<Grid Background="Transparent" Grid.Row="1" Grid.Column="0" Name="leftVerticalGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeWestEast}" />
+						
+						<Grid Background="Transparent" Grid.Row="2" Grid.Column="0" Name="bottomLeftGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=BottomLeftCorner}" />
+
+						<Grid Background="Transparent" Grid.Row="0" Grid.Column="2" Name="topRightGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=TopRightCorner}" />
+						
+						<Grid Background="Transparent" Grid.Row="1" Grid.Column="2" Name="rightVerticalGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeWestEast}" />
+						
+						<Grid Background="Transparent" Grid.Row="2" Grid.Column="2" Name="bottomRightGrip"
+							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
+							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=BottomRightCorner}" />
+					</Grid>
+				</VisualLayerManager>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="local|MetroWindow /template/ Button#minimiseButton">
+		<Setter Property="Content">
+			<Template>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-minimize.svg"
+									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
+									 SvgClass="Primary"/>
+			</Template>
+		</Setter>
+	</Style>
+
+	<Style Selector="local|MetroWindow /template/ Button#restoreButton">
+		<Setter Property="Content">
+			<Template>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-maximize.svg"
+									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
+									 SvgClass="Primary"/>
+			</Template>
+		</Setter>
+	</Style>
+
+	<Style Selector="local|MetroWindow:maximised /template/ Button#restoreButton">
+		<Setter Property="Content">
+			<Template>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-restore.svg"
+									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
+									 SvgClass="Primary"/>
+			</Template>
+		</Setter>
+	</Style>
+
+	<Style Selector="local|MetroWindow /template/ Button#closeButton">
+		<Setter Property="Content">
+			<Template>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-close.svg"
+									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
+									 SvgClass="Primary"/>
+			</Template>
+		</Setter>
+	</Style>
+
+	<Style Selector="Button#closeButton:pointerover /template/ ContentPresenter">
+		<Setter Property="Content">
+			<Template>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-close.svg"
+									 SvgColor="{DynamicResource MaterialPrimaryMidForegroundBrush}"
+									 SvgClass="Primary"/>
+			</Template>
+		</Setter>
+	</Style>
+
+	<Style Selector="local|MetroWindow:maximised">
+		<Setter Property="BorderThickness" Value="0" />
+	</Style>
+	<Style Selector="local|MetroWindow">
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Focusable" Value="True" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+	</Style>
+
+	<Style Selector="local|MetroWindow:maximised /template/ Border">
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="CornerRadius" Value="0" />
+	</Style>
+	<Style Selector="local|MetroWindow /template/ Border">
+		<Setter Property="Margin" Value="7" />
+		<Setter Property="CornerRadius" Value="5" />
+	</Style>
+
+	<Style Selector="local|MetroWindow:maximised /template/ Grid.grip">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+
+	<Style Selector="local|MetroWindow:focus">
+		<Setter Property="BorderBrush" Value="{DynamicResource MaterialPrimaryMidBrush}" />
+	</Style>
+
+	<Style Selector="local|MetroWindow:focus-within">
+		<Setter Property="BorderBrush" Value="{DynamicResource MaterialPrimaryMidBrush}" />
+	</Style>	
+</Styles>

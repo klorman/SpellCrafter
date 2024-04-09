@@ -1,0 +1,35 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+			<DataGrid Width="100" Height="30"/>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+	<Style Selector="DataGrid">
+		<Setter	Property="BorderThickness" Value="0"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="Background" Value="{DynamicResource MaterialCardBackgroundBrush}"/>
+	</Style>
+	
+	<Style Selector="DataGrid DataGridColumnHeadersPresenter#PART_ColumnHeadersPresenter DataGridColumnHeader Grid Grid ContentPresenter TextBlock">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Foreground" Value="{DynamicResource MaterialBodyBrush}"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+	</Style>
+
+	<Style Selector="DataGrid DataGridColumnHeadersPresenter#PART_ColumnHeadersPresenter DataGridColumnHeader">
+		<Setter Property="MinHeight" Value="40"/>
+	</Style>
+
+	<Style Selector="DataGrid DataGridFrozenGrid#PART_Root">
+		<Setter Property="MinHeight" Value="40"/>
+	</Style>
+
+	<Style Selector="DataGrid DataGridFrozenGrid#PART_Root DataGridCellsPresenter#PART_CellsPresenter DataGridCell">
+		<Setter Property="Height" Value="NaN"/>
+		<Setter Property="MaxHeight" Value="100"/>
+	</Style>
+</Styles>

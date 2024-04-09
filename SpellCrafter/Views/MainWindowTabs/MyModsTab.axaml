@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
+			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SpellCrafter.Views.MainWindowTabs.MyMods">
+	<Grid RowDefinitions="40 *">
+		<Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto *">
+			<Button Classes="Flat" Grid.Column="0">
+				<StackPanel Orientation="Horizontal">
+					<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download-multiple.svg"
+										 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
+										 SvgClass="Primary"
+										 Margin="0 4 7 4"/>
+					<TextBlock Text="Update all" VerticalAlignment="Center"/>
+				</StackPanel>
+			</Button>
+
+			<Button Classes="Flat" Grid.Column="1">
+				<StackPanel Orientation="Horizontal">
+					<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"
+										 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
+										 SvgClass="Primary"
+										 Margin="0 4 7 4"/>
+					<TextBlock Text="Update" VerticalAlignment="Center"/>
+				</StackPanel>
+			</Button>
+
+			<Button Classes="Flat" Grid.Column="2">
+				<StackPanel Orientation="Horizontal">
+					<controls:ColoredSvg Path="avares://SpellCrafter/Assets/delete.svg"
+										 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
+										 SvgClass="Primary"
+										 Margin="0 4 7 4"/>
+					<TextBlock Text="Delete" VerticalAlignment="Center"/>
+				</StackPanel>
+			</Button>
+
+			<materialcontrols:Card Padding="0" Grid.Column="3" 
+								   HorizontalAlignment="Right" Width="250">
+				<TextBox Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Filter by text"
+						 Foreground="{DynamicResource MaterialPrimaryForegroundBrush}">
+					<TextBox.InnerLeftContent>
+						<Grid Margin="7 0 0 0"/>
+					</TextBox.InnerLeftContent>
+					<TextBox.InnerRightContent>
+						<Button Classes="Flat" Padding="7" Width="{Binding $self.Bounds.Height}" ToolTip.Tip="Search">
+							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/search.svg"
+												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
+												 SvgClass="Primary"/>
+						</Button>
+					</TextBox.InnerRightContent>
+				</TextBox>
+			</materialcontrols:Card>
+		</Grid>
+
+		<DataGrid CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True"
+				  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				  AutoGenerateColumns="False" SelectionMode="Extended" Grid.Row="1"
+				  Margin="0 14 0 0">
+			<DataGrid.Columns>
+				<DataGridTextColumn Width="4*" Header="Addon" Binding="{Binding Path=Addon}"/>
+				<DataGridTextColumn Width="1.2*" Header="Actions" Binding="{Binding Path=Action}"/>
+				<DataGridTextColumn Width="2.4*" Header="Latest Version" Binding="{Binding Path=LatestVersion}"/>
+				<DataGridTextColumn Width="1.2*" Header="Game Version" Binding="{Binding Path=GameVersion}"/>
+				<DataGridTextColumn Width="1.2*" Header="Author" Binding="{Binding Path=Author}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>
