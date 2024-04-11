@@ -13,7 +13,7 @@
 	</Design.DataContext>
 	
 	<Grid>
-		<TabControl AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}" Margin="28 0 28 28">
+		<TabControl SelectedIndex="3" AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}" Margin="28 0 28 28">
 			<TabControl.ItemsPanel>
 				<ItemsPanelTemplate>
 					<StackPanel Orientation="Horizontal"/>
@@ -27,8 +27,12 @@
 				<tabs:Browse/>
 			</TabItem>
 
-			<TabItem TabIndex="2" Header="Profiles">
+			<TabItem TabIndex="2" Header="Packs" IsEnabled="False">
 
+			</TabItem>
+
+			<TabItem TabIndex="3" Header="Addon Details" IsVisible="False">
+				<tabs:AddonDetails DataContext="{Binding Path=SelectedAddon}"/>
 			</TabItem>
 		</TabControl>
 	</Grid>

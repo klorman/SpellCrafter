@@ -130,7 +130,7 @@
 	<Style Selector="local|MetroWindow">
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Focusable" Value="True" />
-		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="{DynamicResource MaterialDividerBrush}" />
 	</Style>
 
 	<Style Selector="local|MetroWindow:maximised /template/ Border">
