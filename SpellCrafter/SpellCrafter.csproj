@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
@@ -10,7 +10,17 @@
     <None Remove="Assets\delete.svg" />
     <None Remove="Assets\download-multiple.svg" />
     <None Remove="Assets\download.svg" />
+    <None Remove="Assets\extension.svg" />
+    <None Remove="Assets\filter.svg" />
+    <None Remove="Assets\folder.svg" />
+    <None Remove="Assets\grid_view.svg" />
+    <None Remove="Assets\language.svg" />
+    <None Remove="Assets\link.svg" />
     <None Remove="Assets\search.svg" />
+    <None Remove="Assets\sync.svg" />
+    <None Remove="Assets\table_chart.svg" />
+    <None Remove="Assets\view.svg" />
+    <None Remove="Assets\view_list.svg" />
     <None Remove="Assets\window-close.svg" />
     <None Remove="Assets\window-maximize.svg" />
     <None Remove="Assets\window-minimize.svg" />
@@ -20,7 +30,14 @@
     <AvaloniaResource Include="Assets\delete.svg" />
     <AvaloniaResource Include="Assets\download-multiple.svg" />
     <AvaloniaResource Include="Assets\download.svg" />
+    <AvaloniaResource Include="Assets\filter.svg" />
+    <AvaloniaResource Include="Assets\folder.svg" />
+    <AvaloniaResource Include="Assets\grid_view.svg" />
+    <AvaloniaResource Include="Assets\link.svg" />
+    <AvaloniaResource Include="Assets\extension.svg" />
     <AvaloniaResource Include="Assets\search.svg" />
+    <AvaloniaResource Include="Assets\table_chart.svg" />
+    <AvaloniaResource Include="Assets\view_list.svg" />
     <AvaloniaResource Include="Assets\window-close.svg" />
     <AvaloniaResource Include="Assets\window-maximize.svg" />
     <AvaloniaResource Include="Assets\window-minimize.svg" />
@@ -42,13 +59,18 @@
     </PackageReference>
     <PackageReference Include="Material.Avalonia" Version="3.5.0" />
     <PackageReference Include="Material.Avalonia.DataGrid" Version="3.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\MainWindowTabs\MyModsTab.axaml.cs">
-      <DependentUpon>MyModsTab.axaml</DependentUpon>
-    </Compile>
+    <AvaloniaResource Include="Assets\sync.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\language.svg" />
+    <AvaloniaResource Include="Assets\view.svg" />
   </ItemGroup>
 </Project>

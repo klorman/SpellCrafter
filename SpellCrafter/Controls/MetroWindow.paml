@@ -4,7 +4,7 @@
 		xmlns:controls="clr-namespace:SpellCrafter.Controls"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style Selector="local|MetroWindow">
-		<Setter Property="Background" Value="{DynamicResource MaterialPaperBrush}" />
+		<Setter Property="Background" Value="{DynamicResource MaterialToolBarBackgroundBrush }" />
 		<Setter Property="BorderBrush" Value="{DynamicResource AvalonBorderBrush}" />
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}" />
 		<Setter Property="Template">
@@ -14,11 +14,11 @@
 						<Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
 								Margin="14" Padding="3" BoxShadow="0 2 30 -6 Black" Grid.RowSpan="3" Grid.ColumnSpan="3" ClipToBounds="True">
 							<Grid Background="{TemplateBinding Background}" RowDefinitions="36 *">
-								<Grid ColumnDefinitions="Auto * Auto" Name="titlebar" Margin="0" Background="Transparent">
-									<Image Grid.Column="0" Source="{TemplateBinding Icon, Converter={x:Static cvs:IconImageConverter.Converter}}"
+								<Grid ColumnDefinitions="* Auto *" Name="titlebar" Margin="0" Background="Transparent">
+									<Image Grid.Column="0" Source="{TemplateBinding Icon, Converter={x:Static cvs:IconImageConverter.Converter}}" HorizontalAlignment="Right"
 										   Name="icon" Height="30" Width="30" Margin="7 0 0 0" Stretch="UniformToFill" IsVisible="{TemplateBinding ClientDecorations}" />
 
-									<TextBlock Grid.Column="1" Text="{TemplateBinding Title}" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Padding="7 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+									<TextBlock Grid.Column="1" Text="{TemplateBinding Title}" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Padding="7 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
 									<Grid Grid.Column="2" Margin="7 0 0 0" IsVisible="{TemplateBinding ClientDecorations}"
 										  ColumnDefinitions="* Auto Auto Auto">

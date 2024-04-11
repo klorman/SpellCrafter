@@ -13,8 +13,7 @@
 	</Design.DataContext>
 	
 	<Grid>
-		<TabControl AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}"
-					Margin="28">
+		<TabControl AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}" Margin="28 0 28 28">
 			<TabControl.ItemsPanel>
 				<ItemsPanelTemplate>
 					<StackPanel Orientation="Horizontal"/>
@@ -25,7 +24,7 @@
 			</TabItem>
 			
 			<TabItem TabIndex="1" Header="Browse">
-				
+				<tabs:Browse/>
 			</TabItem>
 
 			<TabItem TabIndex="2" Header="Profiles">
