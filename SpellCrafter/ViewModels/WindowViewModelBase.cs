@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SpellCrafter.ViewModels
 {
-    public class ViewModelBase : ReactiveObject
+    public class WindowViewModelBase : ReactiveObject
     {
         public Interaction<FilePickerOpenOptions, IReadOnlyList<IStorageFile>?> OpenFilePickerAsync { get; } = new();
         public Interaction<FilePickerSaveOptions, IStorageFile?> SaveFilePickerAsync { get; } = new();
@@ -32,7 +32,7 @@ namespace SpellCrafter.ViewModels
         }
 
         public async Task<TViewModel?> ShowDialog<TViewModel>(TViewModel vm)
-            where TViewModel : ViewModelBase
+            where TViewModel : WindowViewModelBase
         {
             return await DialogFactory.RaiseEvent(vm);
         }

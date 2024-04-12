@@ -16,5 +16,7 @@ namespace SpellCrafter.Models.DbClasses
         [Reactive] public string Author { get; set; } = "";
         [Reactive] public string Link { get; set; } = "";
         [Reactive] public string Description { get; set; } = "";
+        [Reactive] public string FileSize { get; set; } = "";
+        [Reactive] public string Overview { get; set; } = "";
     }
 }

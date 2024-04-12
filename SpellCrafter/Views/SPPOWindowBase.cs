@@ -12,7 +12,7 @@ using System.Reflection;
 namespace SpellCrafter.Views
 {
     public class SPPOWindowBase<TViewModel> : ReactiveMetroWindow<TViewModel>
-        where TViewModel : ViewModelBase
+        where TViewModel : WindowViewModelBase
     {
         public SPPOWindowBase()
         {
@@ -20,8 +20,8 @@ namespace SpellCrafter.Views
             {
                 if (e.Property == ViewModelProperty)
                 {
-                    var oldValue = e.OldValue as ViewModelBase;
-                    var newValue = e.NewValue as ViewModelBase;
+                    var oldValue = e.OldValue as WindowViewModelBase;
+                    var newValue = e.NewValue as WindowViewModelBase;
 
                     if (oldValue != null)
                     {
@@ -38,7 +38,7 @@ namespace SpellCrafter.Views
             };
         }
 
-        private void OnViewModelChanged(ViewModelBase viewModel)
+        private void OnViewModelChanged(WindowViewModelBase viewModel)
         {
             this.WhenActivated(
                 disposables =>
@@ -92,7 +92,7 @@ namespace SpellCrafter.Views
         }
 
         public async Task<TDialogViewModel?> DoShowDialog<TDialogViewModel>(TDialogViewModel vm)
-            where TDialogViewModel : ViewModelBase
+            where TDialogViewModel : WindowViewModelBase
         {
             var windowType = GetWindowType<TDialogViewModel>();
             if (windowType == null)
@@ -121,7 +121,7 @@ namespace SpellCrafter.Views
         }
 
         public async Task<TDialogViewModel> DoShowDialog<TDialogViewModel, TDialogWindow>(TDialogViewModel vm)
-            where TDialogViewModel : ViewModelBase
+            where TDialogViewModel : WindowViewModelBase
             where TDialogWindow : SPPOWindowBase<TDialogViewModel>, new()
         {
             var dialog = new TDialogWindow
@@ -134,7 +134,7 @@ namespace SpellCrafter.Views
             return dialog.ViewModel;
         }
 
-        private Type? GetWindowType<TDialogViewModel>() where TDialogViewModel : ViewModelBase
+        private Type? GetWindowType<TDialogViewModel>() where TDialogViewModel : WindowViewModelBase
         {
             var windowBaseType = typeof(SPPOWindowBase<>);
             var genericType = windowBaseType.MakeGenericType(typeof(TDialogViewModel));
@@ -146,7 +146,7 @@ namespace SpellCrafter.Views
             return windowTypes.FirstOrDefault();
         }
 
-        protected void BindShowDialogEvent<T>() where T : ViewModelBase
+        protected void BindShowDialogEvent<T>() where T : WindowViewModelBase
         {
             if (ViewModel == null)
                 return;

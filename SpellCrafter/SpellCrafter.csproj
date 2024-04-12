@@ -7,8 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove=".gitignore" />
+    <None Remove="Assets\alert.svg" />
     <None Remove="Assets\archive.svg" />
     <None Remove="Assets\clock.svg" />
+    <None Remove="Assets\default-addon-icon.jpg" />
     <None Remove="Assets\delete.svg" />
     <None Remove="Assets\dots-vertical.svg" />
     <None Remove="Assets\download-multiple.svg" />
@@ -30,8 +32,10 @@
     <None Remove="Assets\window-restore.svg" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Include="Assets\alert.svg" />
     <AvaloniaResource Include="Assets\archive.svg" />
     <AvaloniaResource Include="Assets\clock.svg" />
+    <AvaloniaResource Include="Assets\default-addon-icon.jpg" />
     <AvaloniaResource Include="Assets\delete.svg" />
     <AvaloniaResource Include="Assets\dots-vertical.svg" />
     <AvaloniaResource Include="Assets\download-multiple.svg" />

@@ -10,7 +10,7 @@ namespace SpellCrafter
     {
         private readonly Dictionary<Type, Delegate> events = new();
 
-        public Func<T, Task<T?>>? GetEvent<T>() where T : ViewModelBase
+        public Func<T, Task<T?>>? GetEvent<T>() where T : WindowViewModelBase
         {
             var eventType = typeof(T);
 
@@ -23,14 +23,14 @@ namespace SpellCrafter
             return null;
         }
 
-        public void SetEvent<T>(Func<T, Task<T?>> func) where T : ViewModelBase
+        public void SetEvent<T>(Func<T, Task<T?>> func) where T : WindowViewModelBase
         {
             var eventType = typeof(T);
 
             events[eventType] = func;
         }
 
-        public async Task<T?> RaiseEvent<T>(T viewModel) where T : ViewModelBase
+        public async Task<T?> RaiseEvent<T>(T viewModel) where T : WindowViewModelBase
         {
             var targetType = typeof(T);
 

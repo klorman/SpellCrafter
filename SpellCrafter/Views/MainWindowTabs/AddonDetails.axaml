@@ -7,26 +7,42 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SpellCrafter.Views.MainWindowTabs.AddonDetails">
     <Grid RowDefinitions="Auto *">
-		<materialcontrols:Card Padding="7" Grid.Row="0">
-			<Grid RowDefinitions="32 50 24 Auto" ColumnDefinitions="Auto * Auto">
-				<Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Width="{Binding $self.Bounds.Height}"
-					   Source="resm:Avalonia.Skia.Assets.NoiseAsset_256X256_PNG.png?assembly=Avalonia.Skia"/>
+		<materialcontrols:Card Padding="14" Grid.Row="0">
+			<Grid ColumnDefinitions="134 * Auto">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="32"/>
+					<RowDefinition Height="Auto" MinHeight="64"/>
+					<RowDefinition Height="24"/>
+				</Grid.RowDefinitions>
+				<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDividerBrush}"
+						Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Margin="0 0 14 0"
+						HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{Binding $self.Bounds.Width}">
+					<Image Source="avares://SpellCrafter/Assets/default-addon-icon.jpg"/>
+				</Border>
 				<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-					<TextBlock Classes="Headline6" Text="{Binding Path=Name}"/>
-					<Rectangle Width="2" Height="14"
-							   VerticalAlignment="Stretch"
+					<TextBlock Text="{Binding Path=Name}"
+							   Foreground="{DynamicResource MaterialBodyBrush}"
+							   FontSize="24" FontWeight="Bold"
+							   VerticalAlignment="Center"/>
+					<Rectangle Width="2" Height="14" Margin="7 0"
+							   VerticalAlignment="Center"
 							   Fill="{DynamicResource MaterialDividerBrush}"/>
-					<TextBlock Classes="Body1" Text="{Binding Path=Author, StringFormat='by {0}'}"/>
+					<TextBlock Classes="Body2" Text="{Binding Path=Author, StringFormat='by {0}'}"
+							   Foreground="{DynamicResource MaterialBodyLightBrush}"
+							   VerticalAlignment="Center"/>
 				</StackPanel>
-				<TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=Description}"/>
-				<StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+				<TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=Description}"
+						   Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Light" Margin="4"/>
+				<StackPanel Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
 					<TextBlock>
 						<Grid ColumnDefinitions="Auto Auto">
 							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"
 												 SvgColor="{DynamicResource MaterialBodyBrush}"
 												 SvgClass="Primary" Grid.Column="0"/>
-							<TextBlock Grid.Column="1" Text="{Binding Path=Downloads}" 
-									   VerticalAlignment="Center" Margin="4 0 14 0"/>
+							<TextBlock Grid.Column="1" Text="{Binding Path=Downloads}"
+									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   Foreground="{DynamicResource MaterialBodyBrush}"
+									   ToolTip.Tip="Downloads"/>
 						</Grid>
 					</TextBlock>
 					<TextBlock>
@@ -35,27 +51,59 @@
 												 SvgColor="{DynamicResource MaterialBodyBrush}"
 												 SvgClass="Primary" Grid.Column="0"/>
 							<TextBlock Grid.Column="1" Text="{Binding Path=Latest}"
-									   VerticalAlignment="Center" Margin="4 0 14 0"/>
+									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   Foreground="{DynamicResource MaterialBodyBrush}"
+									   ToolTip.Tip="File release date"/>
 						</Grid>
 					</TextBlock>
 					<TextBlock>
 						<Grid ColumnDefinitions="Auto Auto">
 							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/archive.svg"
 												 SvgColor="{DynamicResource MaterialBodyBrush}"
-												 SvgClass="Primary" Grid.Column="0" Margin="0 0 7 0"/>
-							<TextBlock Grid.Column="1" Text="{Binding Path=FileSize}"/>
+												 SvgClass="Primary" Grid.Column="0"/>
+							<TextBlock Grid.Column="1" Text="{Binding Path=FileSize}"
+									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   Foreground="{DynamicResource MaterialBodyBrush}"
+									   ToolTip.Tip="File size"/>
 						</Grid>
 					</TextBlock>
 				</StackPanel>
-				<Grid Grid.Column="2" Grid.Row="0" ColumnDefinitions="Auto Auto">
-					<Button Grid.Column="0" Classes="Flat" Padding="4">
+				<Grid Grid.Column="2" Grid.Row="0" ColumnDefinitions="Auto Auto"
+					  HorizontalAlignment="Right">
+					<Button Grid.Column="0" Classes="Flat" Padding="4" Margin="7 0">
 						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/dots-vertical.svg"
 											 SvgColor="{DynamicResource MaterialBodyBrush}"
 											 SvgClass="Primary"/>
 					</Button>
-					<Button Grid.Column="1" Content="Install" Padding="14 7"/>
+					<controls:AddonActionControl Grid.Column="1"/>
 				</Grid>
 			</Grid>
 		</materialcontrols:Card>
+
+		<TabControl AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}" 
+					Margin="0 14 0 0" Grid.Row="1">
+			<TabControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</TabControl.ItemsPanel>
+
+			<TabItem TabIndex="0" Header="Overview">
+				<TextBlock Text="{Binding Path=Overview}" TextWrapping="Wrap" 
+						   Foreground="{DynamicResource MaterialBodyBrush}" Margin="0 14 0 0"/>
+			</TabItem>
+
+			<TabItem TabIndex="1" Header="Changelog" IsEnabled="False">
+				
+			</TabItem>
+
+			<TabItem TabIndex="1" Header="Screenshots" IsEnabled="False">
+
+			</TabItem>
+
+			<TabItem TabIndex="1" Header="Versions" IsEnabled="False">
+
+			</TabItem>
+		</TabControl>
     </Grid>
 </UserControl>

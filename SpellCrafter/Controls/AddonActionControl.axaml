@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:enums="clr-namespace:SpellCrafter.Enums"
+			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
+             xmlns:converters="clr-namespace:SpellCrafter.Converters"
+             x:Class="SpellCrafter.Controls.AddonActionControl">
+	<UserControl.Resources>
+		<converters:AddonStateToVisibilityConverter x:Key="StateToVisibility"/>
+	</UserControl.Resources>
+	<StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+		<Button Content="Install" FontWeight="Bold" Padding="14 7"
+				Command="{Binding Path=InstallModCommand}"
+                IsVisible="{Binding Path=AddonState,
+				Converter={StaticResource StateToVisibility}, 
+				ConverterParameter={x:Static enums:AddonState.NotInstalled}}"/>
+
+		<Button Content="Update" FontWeight="Bold" Padding="14 7"
+				Command="{Binding Path=UpdateCommand}"
+                IsVisible="{Binding Path=AddonState, 
+				Converter={StaticResource StateToVisibility}, 
+				ConverterParameter={x:Static enums:AddonState.Outdated}}"/>
+
+		<TextBlock Text="Up to date" Margin="7 0" FontWeight="Bold"
+                   IsVisible="{Binding Path=AddonState, 
+				   Converter={StaticResource StateToVisibility}, 
+				   ConverterParameter={x:Static enums:AddonState.LatestVersion}}"/>
+
+		<TextBlock Text="Updating..." Margin="7 0" FontWeight="Bold"
+                   IsVisible="{Binding Path=AddonState, 
+				   Converter={StaticResource StateToVisibility}, 
+				   ConverterParameter={x:Static enums:AddonState.Updating}}"/>
+
+		<StackPanel Orientation="Horizontal"
+					IsVisible="{Binding Path=AddonState, 
+					Converter={StaticResource StateToVisibility}, 
+					ConverterParameter={x:Static enums:AddonState.UpdateError}}">
+			<Button Content="Update" FontWeight="Bold" Padding="14 7" 
+					Command="{Binding Path=UpdateCommand}"/>
+			<controls:ColoredSvg Path="avares://SpellCrafter/Assets/alert.svg"
+								 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
+								 SvgClass="Primary"
+								 Margin="7 0 0 0"
+								 VerticalAlignment="Center"
+								 ToolTip.Tip="An error occurred during the update!"/>
+		</StackPanel>
+	</StackPanel>
+</UserControl>

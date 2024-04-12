@@ -58,16 +58,13 @@
 				</StackPanel>
 			</Button>
 
-			<materialcontrols:Card Padding="0" Grid.Column="4"
+			<materialcontrols:Card Padding="7 0 0 0" Grid.Column="4"
 								   HorizontalAlignment="Right" Width="250">
 				<TextBox Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Filter by text"
 						 Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Text="{Binding Path=ModsFilter}">
 					<TextBox.KeyBindings>
 						<KeyBinding Command="{Binding Path=FilterModsCommand}" Gesture="Enter"/>
 					</TextBox.KeyBindings>
-					<TextBox.InnerLeftContent>
-						<Grid Margin="7 0 0 0"/>
-					</TextBox.InnerLeftContent>
 					<TextBox.InnerRightContent>
 						<Button Classes="Flat" Padding="7" Width="{Binding $self.Bounds.Height}" ToolTip.Tip="Search"
 								Command="{Binding Path=FilterModsCommand}">
@@ -110,9 +107,10 @@
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<Grid ColumnDefinitions="Auto *">
-								<controls:ColoredSvg Path="avares://SpellCrafter/Assets/extension.svg"
-													 SvgColor="{DynamicResource MaterialBodyBrush}"
-													 SvgClass="Primary" Grid.Column="0" Height="40" Width="40" Margin="0 0 14 0"/>
+								<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDividerBrush}"
+										Grid.Column="0" Width="40" Height="40" Margin="0 12 16 12">
+									<Image Source="avares://SpellCrafter/Assets/default-addon-icon.jpg"/>
+								</Border>
 								<Grid Grid.Column="1" RowDefinitions="Auto Auto" VerticalAlignment="Center">
 									<Button Classes="Flat" Grid.Row="0" Content="{Binding Path=Name}" ToolTip.Tip="{Binding Path=$self.Content}"
 											HorizontalAlignment="Left" Padding="0" Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Bold"
@@ -123,7 +121,13 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTextColumn Width="1*" MinWidth="100" Header="Action" Binding="{Binding Path=AddonState}"/>
+				<DataGridTemplateColumn Width="1*" MinWidth="110" Header="Action">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<controls:AddonActionControl/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 				<DataGridTextColumn Width="1*" MinWidth="100" Header="Downloads" Binding="{Binding Path=Downloads}" IsVisible="{Binding Path=BrowseMode}"/>
 				<DataGridTextColumn Width="1*" MinWidth="110" Header="Latest Version" Binding="{Binding Path=Latest}"/>
 				<DataGridTextColumn Width="1*" MinWidth="110" Header="Category" Binding="{Binding Path=Category}" IsVisible="{Binding Path=BrowseMode}"/>
