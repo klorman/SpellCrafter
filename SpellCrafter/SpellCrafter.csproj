@@ -10,6 +10,7 @@
     <None Remove="Assets\alert.svg" />
     <None Remove="Assets\archive.svg" />
     <None Remove="Assets\clock.svg" />
+    <None Remove="Assets\cog.svg" />
     <None Remove="Assets\default-addon-icon.jpg" />
     <None Remove="Assets\delete.svg" />
     <None Remove="Assets\dots-vertical.svg" />
@@ -17,10 +18,12 @@
     <None Remove="Assets\download.svg" />
     <None Remove="Assets\extension.svg" />
     <None Remove="Assets\filter.svg" />
+    <None Remove="Assets\folder-settings.svg" />
     <None Remove="Assets\folder.svg" />
     <None Remove="Assets\grid_view.svg" />
     <None Remove="Assets\language.svg" />
     <None Remove="Assets\link.svg" />
+    <None Remove="Assets\palette-swatch.svg" />
     <None Remove="Assets\search.svg" />
     <None Remove="Assets\sync.svg" />
     <None Remove="Assets\table_chart.svg" />
@@ -35,16 +38,19 @@
     <AvaloniaResource Include="Assets\alert.svg" />
     <AvaloniaResource Include="Assets\archive.svg" />
     <AvaloniaResource Include="Assets\clock.svg" />
+    <AvaloniaResource Include="Assets\cog.svg" />
     <AvaloniaResource Include="Assets\default-addon-icon.jpg" />
     <AvaloniaResource Include="Assets\delete.svg" />
     <AvaloniaResource Include="Assets\dots-vertical.svg" />
     <AvaloniaResource Include="Assets\download-multiple.svg" />
     <AvaloniaResource Include="Assets\download.svg" />
     <AvaloniaResource Include="Assets\filter.svg" />
+    <AvaloniaResource Include="Assets\folder-settings.svg" />
     <AvaloniaResource Include="Assets\folder.svg" />
     <AvaloniaResource Include="Assets\grid_view.svg" />
     <AvaloniaResource Include="Assets\link.svg" />
     <AvaloniaResource Include="Assets\extension.svg" />
+    <AvaloniaResource Include="Assets\palette-swatch.svg" />
     <AvaloniaResource Include="Assets\search.svg" />
     <AvaloniaResource Include="Assets\table_chart.svg" />
     <AvaloniaResource Include="Assets\view_list.svg" />
@@ -69,7 +75,6 @@
     </PackageReference>
     <PackageReference Include="Material.Avalonia" Version="3.5.0" />
     <PackageReference Include="Material.Avalonia.DataGrid" Version="3.5.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
   </ItemGroup>
@@ -87,5 +92,9 @@
     <Compile Update="Views\MainWindowTabs\AddonDetails.axaml.cs">
       <DependentUpon>AddonDetails.axaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

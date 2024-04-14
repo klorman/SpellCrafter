@@ -38,7 +38,7 @@
 						<Grid ColumnDefinitions="Auto Auto">
 							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"
 												 SvgColor="{DynamicResource MaterialBodyBrush}"
-												 SvgClass="Primary" Grid.Column="0"/>
+												 Grid.Column="0"/>
 							<TextBlock Grid.Column="1" Text="{Binding Path=Downloads}"
 									   VerticalAlignment="Center" Margin="4 0 14 0"
 									   Foreground="{DynamicResource MaterialBodyBrush}"
@@ -49,7 +49,7 @@
 						<Grid ColumnDefinitions="Auto Auto">
 							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/clock.svg"
 												 SvgColor="{DynamicResource MaterialBodyBrush}"
-												 SvgClass="Primary" Grid.Column="0"/>
+												 Grid.Column="0"/>
 							<TextBlock Grid.Column="1" Text="{Binding Path=Latest}"
 									   VerticalAlignment="Center" Margin="4 0 14 0"
 									   Foreground="{DynamicResource MaterialBodyBrush}"
@@ -60,7 +60,7 @@
 						<Grid ColumnDefinitions="Auto Auto">
 							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/archive.svg"
 												 SvgColor="{DynamicResource MaterialBodyBrush}"
-												 SvgClass="Primary" Grid.Column="0"/>
+												 Grid.Column="0"/>
 							<TextBlock Grid.Column="1" Text="{Binding Path=FileSize}"
 									   VerticalAlignment="Center" Margin="4 0 14 0"
 									   Foreground="{DynamicResource MaterialBodyBrush}"
@@ -70,10 +70,10 @@
 				</StackPanel>
 				<Grid Grid.Column="2" Grid.Row="0" ColumnDefinitions="Auto Auto"
 					  HorizontalAlignment="Right">
-					<Button Grid.Column="0" Classes="Flat" Padding="4" Margin="7 0">
+					<Button Grid.Column="0" Classes="Flat" Padding="4" Margin="7 0" 
+							ContextMenu="{DynamicResource AddonContextMenu}" Click="OpenContextMenu_Click">
 						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/dots-vertical.svg"
-											 SvgColor="{DynamicResource MaterialBodyBrush}"
-											 SvgClass="Primary"/>
+											 SvgColor="{DynamicResource MaterialBodyBrush}"/>
 					</Button>
 					<controls:AddonActionControl Grid.Column="1"/>
 				</Grid>

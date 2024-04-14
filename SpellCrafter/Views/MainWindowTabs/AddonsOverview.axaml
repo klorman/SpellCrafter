@@ -11,12 +11,10 @@
 	<Grid RowDefinitions="40 *">
 		<Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto Auto * Auto Auto">
 			<Button Classes="Flat" Grid.Column="0"
-					Command="{Binding Path=UpdateCommand}"
+					Command="{Binding Path=DataGridModsSelectedItem.UpdateCommand}"
 					IsVisible="{Binding Path=!BrowseMode}">
 				<StackPanel Orientation="Horizontal">
 					<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"
-										 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-										 SvgClass="Primary"
 										 Margin="0 4 7 4"/>
 					<TextBlock Text="Update" VerticalAlignment="Center"/>
 				</StackPanel>
@@ -27,32 +25,26 @@
 					IsVisible="{Binding Path=!BrowseMode}">
 				<StackPanel Orientation="Horizontal">
 					<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download-multiple.svg"
-										 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-										 SvgClass="Primary"
 										 Margin="0 4 7 4"/>
 					<TextBlock Text="Update all" VerticalAlignment="Center"/>
 				</StackPanel>
 			</Button>
 
 			<Button Classes="Flat" Grid.Column="2"
-					Command="{Binding Path=DeleteCommand}"
+					Command="{Binding Path=DataGridModsSelectedItem.DeleteCommand}"
 					IsVisible="{Binding Path=!BrowseMode}">
 				<StackPanel Orientation="Horizontal">
 					<controls:ColoredSvg Path="avares://SpellCrafter/Assets/delete.svg"
-										 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-										 SvgClass="Primary"
 										 Margin="0 4 7 4"/>
 					<TextBlock Text="Delete" VerticalAlignment="Center"/>
 				</StackPanel>
 			</Button>
 
 			<Button Classes="Flat" Grid.Column="3"
-					Command="{Binding Path=InstallModsCommand}"
+					Command="{Binding Path=DataGridModsSelectedItem.InstallCommand}"
 					IsVisible="{Binding Path=BrowseMode}">
 				<StackPanel Orientation="Horizontal">
 					<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"
-										 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-										 SvgClass="Primary"
 										 Margin="0 4 7 4"/>
 					<TextBlock Text="Install" VerticalAlignment="Center"/>
 				</StackPanel>
@@ -68,9 +60,7 @@
 					<TextBox.InnerRightContent>
 						<Button Classes="Flat" Padding="7" Width="{Binding $self.Bounds.Height}" ToolTip.Tip="Search"
 								Command="{Binding Path=FilterModsCommand}">
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/search.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
+							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/search.svg"/>
 						</Button>
 					</TextBox.InnerRightContent>
 				</TextBox>
@@ -78,30 +68,27 @@
 
 			<Button Classes="Flat" Grid.Column="5" Margin="10 0 0 0" Padding="5" Width="{Binding $self.Bounds.Height}"
 					Command="{Binding Path=FilterModsCommand}">
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/filter.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-									 SvgClass="Primary"/>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/filter.svg"/>
 			</Button>
 
 			<Button Classes="Flat" Grid.Column="6" Margin="10 0 0 0" Padding="6" Width="{Binding $self.Bounds.Height}"
 					Command="{Binding Path=RefreshModsCommand}">
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/sync.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-									 SvgClass="Primary"/>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/sync.svg"/>
 			</Button>
 		</Grid>
 
 		<DataGrid CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True"
 				  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-				  AutoGenerateColumns="False" SelectionMode="Single" Grid.Row="1"
+				  AutoGenerateColumns="False" SelectionMode="Single" Grid.Row="1" 
 				  Margin="0 14 0 0" ItemsSource="{Binding Path=DisplayedMods}" SelectedItem="{Binding Path=DataGridModsSelectedItem}">
 			<DataGrid.KeyBindings>
 				<KeyBinding Command="{Binding Path=RefreshModsCommand}" Gesture="F5"/>
 			</DataGrid.KeyBindings>
-			<DataGrid.Resources>
-				<converters:NotInstalledAddonStateToVisability x:Key="NotInstalledAddonStateToVisability"/>
-				<converters:InvertedNotInstalledAddonStateToVisability x:Key="InvertedNotInstalledAddonStateToVisability"/>
-			</DataGrid.Resources>
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow">
+					<Setter Property="ContextMenu" Value="{DynamicResource AddonContextMenu}"/>
+				</Style>
+			</DataGrid.Styles>
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Width="2*" MinWidth="250" Header="Addon">
 					<DataGridTemplateColumn.CellTemplate>
@@ -134,67 +121,6 @@
 				<DataGridTextColumn Width="1*" MinWidth="80" Header="Game Version" Binding="{Binding Path=GameVersion}"/>
 				<DataGridTextColumn Width="1.5*" MinWidth="120" Header="Author" Binding="{Binding Path=Author}"/>
 			</DataGrid.Columns>
-			<DataGrid.ContextMenu>
-				<ContextMenu>
-					<MenuItem Header="Install" Command="{Binding Path=InstallModCommand}"
-							  IsVisible="{Binding Path=DataGridModsSelectedItem.AddonState, 
-										  Converter={StaticResource NotInstalledAddonStateToVisability}}">
-						<MenuItem.Icon>
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
-						</MenuItem.Icon>
-					</MenuItem>
-					<MenuItem Header="Reinstall" Command="{Binding Path=ReinstallCommand}"
-							  IsVisible="{Binding Path=DataGridModsSelectedItem.AddonState, 
-										  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
-						<MenuItem.Icon>
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
-						</MenuItem.Icon>
-					</MenuItem>
-					<MenuItem Header="View Mod" Command="{Binding Path=ViewModCommand}">
-						<MenuItem.Icon>
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/view.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
-						</MenuItem.Icon>
-					</MenuItem>
-					<MenuItem Header="View Mod Website" Command="{Binding Path=ViewModWebsiteCommand}">
-						<MenuItem.Icon>
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/language.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
-						</MenuItem.Icon>
-					</MenuItem>
-					<MenuItem Header="Copy Mod Link" Command="{Binding Path=CopyModLinkCommand}">
-						<MenuItem.Icon>
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/link.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
-						</MenuItem.Icon>
-					</MenuItem>
-					<MenuItem Header="Browse Folder" Command="{Binding Path=BrowseFolderCommand}"
-							  IsVisible="{Binding Path=DataGridModsSelectedItem.AddonState, 
-										  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
-						<MenuItem.Icon>
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/folder.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
-						</MenuItem.Icon>
-					</MenuItem>
-					<MenuItem Header="Delete Mod" Command="{Binding Path=DeleteCommand}"
-							  IsVisible="{Binding Path=DataGridModsSelectedItem.AddonState, 
-										  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
-						<MenuItem.Icon>
-							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/delete.svg"
-												 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-												 SvgClass="Primary"/>
-						</MenuItem.Icon>
-					</MenuItem>
-				</ContextMenu>
-			</DataGrid.ContextMenu>
 		</DataGrid>
 	</Grid>
 </UserControl>

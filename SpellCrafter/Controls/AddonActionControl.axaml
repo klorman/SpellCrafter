@@ -9,7 +9,7 @@
 	</UserControl.Resources>
 	<StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
 		<Button Content="Install" FontWeight="Bold" Padding="14 7"
-				Command="{Binding Path=InstallModCommand}"
+				Command="{Binding Path=InstallCommand}"
                 IsVisible="{Binding Path=AddonState,
 				Converter={StaticResource StateToVisibility}, 
 				ConverterParameter={x:Static enums:AddonState.NotInstalled}}"/>
@@ -21,11 +21,13 @@
 				ConverterParameter={x:Static enums:AddonState.Outdated}}"/>
 
 		<TextBlock Text="Up to date" Margin="7 0" FontWeight="Bold"
+				   Foreground="{DynamicResource MaterialBodyBrush}"
                    IsVisible="{Binding Path=AddonState, 
 				   Converter={StaticResource StateToVisibility}, 
 				   ConverterParameter={x:Static enums:AddonState.LatestVersion}}"/>
 
 		<TextBlock Text="Updating..." Margin="7 0" FontWeight="Bold"
+				   Foreground="{DynamicResource MaterialBodyBrush}"
                    IsVisible="{Binding Path=AddonState, 
 				   Converter={StaticResource StateToVisibility}, 
 				   ConverterParameter={x:Static enums:AddonState.Updating}}"/>
@@ -37,8 +39,6 @@
 			<Button Content="Update" FontWeight="Bold" Padding="14 7" 
 					Command="{Binding Path=UpdateCommand}"/>
 			<controls:ColoredSvg Path="avares://SpellCrafter/Assets/alert.svg"
-								 SvgColor="{DynamicResource MaterialPrimaryMidBrush}"
-								 SvgClass="Primary"
 								 Margin="7 0 0 0"
 								 VerticalAlignment="Center"
 								 ToolTip.Tip="An error occurred during the update!"/>

@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace SpellCrafter.Views.MainWindowTabs
 {
@@ -7,6 +8,12 @@ namespace SpellCrafter.Views.MainWindowTabs
         public AddonDetails()
         {
             InitializeComponent();
+        }
+
+        private void OpenContextMenu_Click(object? sender, RoutedEventArgs e)
+        {
+            var button = sender as Control;
+            button?.ContextMenu?.Open(button);
         }
     }
 }

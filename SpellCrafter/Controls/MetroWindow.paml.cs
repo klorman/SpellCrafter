@@ -35,6 +35,9 @@ namespace SpellCrafter.Controls
         public static readonly StyledProperty<bool> ClientDecorationsProperty =
             AvaloniaProperty.Register<MetroWindow, bool>(nameof(ClientDecorations));
 
+        public static readonly StyledProperty<Control> TitleBarMenuContentProperty =
+            AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarMenuContent));
+
         private Grid? _bottomHorizontalGrip;
         private Grid? _bottomLeftGrip;
         private Grid? _bottomRightGrip;
@@ -61,6 +64,12 @@ namespace SpellCrafter.Controls
         {
             get { return GetValue(TitleBarContentProperty); }
             set { SetValue(TitleBarContentProperty, value); }
+        }
+
+        public Control TitleBarMenuContent
+        {
+            get => GetValue(TitleBarMenuContentProperty);
+            set => SetValue(TitleBarMenuContentProperty, value);
         }
 
         protected override Type StyleKeyOverride => typeof(MetroWindow);

@@ -7,6 +7,8 @@
 		<StyleInclude Source="avares://SpellCrafter/Controls/MetroWindow.paml"/>
 		<StyleInclude Source="avares://SpellCrafter/Styles/TabControl.axaml"/>
 		<StyleInclude Source="avares://SpellCrafter/Styles/DataGrid.axaml"/>
+		<StyleInclude Source="avares://SpellCrafter/Styles/ColoredSvg.axaml"/>
+		<StyleInclude Source="avares://SpellCrafter/Styles/ContextMenu.axaml"/>
 		
 		<Style Selector=":is(Control)">
 			<Setter Property="FocusAdorner">

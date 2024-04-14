@@ -1,4 +1,4 @@
-﻿using SpellCrafter.Models.DbClasses;
+﻿using SpellCrafter.ViewModels;
 
 namespace SpellCrafter.Messages
 {

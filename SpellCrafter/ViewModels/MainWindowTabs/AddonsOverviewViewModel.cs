@@ -2,8 +2,6 @@
 using ReactiveUI.Fody.Helpers;
 using SpellCrafter.Enums;
 using SpellCrafter.Messages;
-using SpellCrafter.Models.DbClasses;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -21,17 +19,9 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
         [Reactive] public Addon? DataGridModsSelectedItem { get; set; }
 
         public ICommand UpdateAllCommand { get; }
-        public ICommand UpdateCommand { get; }
-        public ICommand InstallModsCommand { get; }
-        public ICommand InstallModCommand { get; }
         public ICommand FilterModsCommand { get; }
         public ICommand RefreshModsCommand { get; }
-        public ICommand ReinstallCommand { get; }
         public ICommand ViewModCommand { get; }
-        public ICommand ViewModWebsiteCommand { get; }
-        public ICommand CopyModLinkCommand { get; }
-        public ICommand BrowseFolderCommand { get; }
-        public ICommand DeleteCommand { get; }
 
         public AddonsOverviewViewModel(bool browseMode) : base()
         {
@@ -49,37 +39,14 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
             FilterMods();
 
             UpdateAllCommand = new RelayCommand(_ => UpdateAll());
-            UpdateCommand = new RelayCommand(_ => Update());
-            InstallModsCommand = new RelayCommand(_ => InstallMods());
-            InstallModCommand = new RelayCommand(_ => InstallMod());
             FilterModsCommand = new RelayCommand(_ => FilterMods());
             RefreshModsCommand = new RelayCommand(_ => RefreshMods());
-            ReinstallCommand = new RelayCommand(_ => Reinstall());
             ViewModCommand = new RelayCommand(_ => ViewMod());
-            ViewModWebsiteCommand = new RelayCommand(_ => ViewModWebsite());
-            CopyModLinkCommand = new RelayCommand(_ => CopyModLink());
-            BrowseFolderCommand = new RelayCommand(_ => BrowseFolder());
-            DeleteCommand = new RelayCommand(_ => Delete());
         }
 
         private void UpdateAll()
         {
             Debug.WriteLine("UpdateAll!");
-        }
-
-        private void Update()
-        {
-            Debug.WriteLine("Update!");
-        }
-
-        private void InstallMods()
-        {
-            Debug.WriteLine("InstallMods!");
-        }
-
-        private void InstallMod()
-        {
-            Debug.WriteLine("InstallMod!");
         }
 
         private void FilterMods()
@@ -110,12 +77,7 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
 
         private void RefreshMods()
         {
-            Debug.WriteLine("Refresh!");
-        }
-
-        private void Reinstall()
-        {
-            Debug.WriteLine("Reinstall!");
+            Debug.WriteLine("RefreshMods!");
         }
 
         private void ViewMod()
@@ -123,26 +85,6 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
             Debug.WriteLine("ViewMod!");
 
             MessageBus.Current.SendMessage(new AddonUpdatedMessage(DataGridModsSelectedItem));
-        }
-
-        private void ViewModWebsite()
-        {
-            Debug.WriteLine("ViewModWebsite!");
-        }
-
-        private void CopyModLink()
-        {
-            Debug.WriteLine("CopyModLink!");
-        }
-
-        private void BrowseFolder()
-        {
-            Debug.WriteLine("BrowseFolder!");
-        }
-
-        private void Delete()
-        {
-            Debug.WriteLine("Delete!");
         }
     }
 }

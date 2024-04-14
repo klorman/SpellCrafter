@@ -20,16 +20,17 @@
 
 									<TextBlock Grid.Column="1" Text="{TemplateBinding Title}" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Padding="7 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-									<Grid Grid.Column="2" Margin="7 0 0 0" IsVisible="{TemplateBinding ClientDecorations}"
-										  ColumnDefinitions="* Auto Auto Auto">
+									<Grid Grid.Column="2" Margin="7 -2 -3 0" IsVisible="{TemplateBinding ClientDecorations}"
+										  ColumnDefinitions="* Auto Auto Auto" Height="40">
 										<Grid.Styles>
 											<Styles>
 												<StyleInclude Source="/Controls/MetroWindowControlsTheme.paml" />
 											</Styles>
 										</Grid.Styles>
-										<Button Classes="Flat" Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="10" Margin="0 -2 0 0" Height="40" Width="40" CornerRadius="0" Name="minimiseButton" />
-										<Button Classes="Flat" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="10" Margin="0 -2 0 0" Height="40" Width="40" CornerRadius="0" Name="restoreButton" />
-										<Button Classes="Flat" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="10" Margin="0 -2 -3 0" Height="40" Width="40" CornerRadius="0" Name="closeButton" />
+										<ContentPresenter Grid.Column="0" x:Name="TitleBarMenuContent" Content="{Binding Path=TitleBarMenuContent, RelativeSource={RelativeSource AncestorType=local:MetroWindow}}" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
+										<Button Classes="Flat" Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="10" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="minimiseButton" />
+										<Button Classes="Flat" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="10" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="restoreButton" />
+										<Button Classes="Flat" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="10" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="closeButton" />
 									</Grid>
 								</Grid>
 								
@@ -77,9 +78,7 @@
 	<Style Selector="local|MetroWindow /template/ Button#minimiseButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-minimize.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
-									 SvgClass="Primary"/>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-minimize.svg"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -87,9 +86,7 @@
 	<Style Selector="local|MetroWindow /template/ Button#restoreButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-maximize.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
-									 SvgClass="Primary"/>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-maximize.svg"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -97,9 +94,7 @@
 	<Style Selector="local|MetroWindow:maximised /template/ Button#restoreButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-restore.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
-									 SvgClass="Primary"/>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-restore.svg"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -107,9 +102,7 @@
 	<Style Selector="local|MetroWindow /template/ Button#closeButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-close.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryForegroundBrush}"
-									 SvgClass="Primary"/>
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-close.svg"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -118,8 +111,7 @@
 		<Setter Property="Content">
 			<Template>
 				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-close.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryMidForegroundBrush}"
-									 SvgClass="Primary"/>
+									 SvgColor="{DynamicResource MaterialPrimaryMidForegroundBrush}"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -128,7 +120,7 @@
 		<Setter Property="BorderThickness" Value="0" />
 	</Style>
 	<Style Selector="local|MetroWindow">
-		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="BorderThickness" Value="3" />
 		<Setter Property="Focusable" Value="True" />
 		<Setter Property="BorderBrush" Value="{DynamicResource MaterialDividerBrush}" />
 	</Style>

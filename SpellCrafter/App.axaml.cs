@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Material.Styles.Themes;
+using SpellCrafter.Services;
 using SpellCrafter.Views;
 
 namespace SpellCrafter
@@ -18,7 +19,9 @@ namespace SpellCrafter
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow();
+                var mainWindow = new MainWindow();
+                StorageProviderService.Initialize(mainWindow);
+                desktop.MainWindow = mainWindow;
             }
 
             base.OnFrameworkInitializationCompleted();

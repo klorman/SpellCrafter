@@ -1,19 +1,85 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
-		xmlns:tabs="clr-namespace:SpellCrafter.Views.MainWindowTabs"
-        mc:Ignorable="d" d:DesignWidth="770" d:DesignHeight="500"
-        x:Class="SpellCrafter.Views.MainWindow"
-		WindowStartupLocation="CenterScreen"
-        Title="Spell Crafter" MinWidth="770" MinHeight="500">
+<controls:MetroWindow xmlns="https://github.com/avaloniaui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					  xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
+					  xmlns:local="clr-namespace:SpellCrafter.Views"
+					  xmlns:controls="clr-namespace:SpellCrafter.Controls"
+					  xmlns:converters="clr-namespace:SpellCrafter.Converters"
+					  xmlns:tabs="clr-namespace:SpellCrafter.Views.MainWindowTabs"
+					  mc:Ignorable="d" d:DesignWidth="770" d:DesignHeight="500"
+					  x:Class="SpellCrafter.Views.MainWindow"
+					  WindowStartupLocation="CenterScreen"
+					  Title="Spell Crafter" MinWidth="770" MinHeight="500">
 	<Design.DataContext>
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
+	<Window.Resources>
+		<ResourceDictionary>
+			<converters:NotInstalledAddonStateToVisability x:Key="NotInstalledAddonStateToVisability"/>
+			<converters:InvertedNotInstalledAddonStateToVisability x:Key="InvertedNotInstalledAddonStateToVisability"/>
+			
+			<ContextMenu x:Key="AddonContextMenu">
+				<MenuItem Header="Install" Command="{Binding Path=InstallCommand}"
+						  IsVisible="{Binding Path=AddonState, 
+											  Converter={StaticResource NotInstalledAddonStateToVisability}}">
+					<MenuItem.Icon>
+						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Reinstall" Command="{Binding Path=ReinstallCommand}"
+						  IsVisible="{Binding Path=AddonState, 
+											  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
+					<MenuItem.Icon>
+						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/download.svg"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="View Mod Website" Command="{Binding Path=ViewWebsiteCommand}">
+					<MenuItem.Icon>
+						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/language.svg"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Copy Mod Link" Command="{Binding Path=CopyLinkCommand}">
+					<MenuItem.Icon>
+						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/link.svg"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Browse Folder" Command="{Binding Path=BrowseFolderCommand}"
+						  IsVisible="{Binding Path=AddonState, 
+											  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
+					<MenuItem.Icon>
+						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/folder.svg"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Delete Mod" Command="{Binding Path=DeleteCommand}"
+						  IsVisible="{Binding Path=AddonState, 
+											  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
+					<MenuItem.Icon>
+						<controls:ColoredSvg Path="avares://SpellCrafter/Assets/delete.svg"/>
+					</MenuItem.Icon>
+				</MenuItem>
+			</ContextMenu>
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<controls:MetroWindow.TitleBarMenuContent>
+		<Grid ColumnDefinitions="* Auto">
+			<Button Grid.Column="0" Padding="10" HorizontalAlignment="Right" Classes="Flat" 
+					CornerRadius="0" Width="{Binding $self.Bound.Height}" IsEnabled="False"
+					Click="ShowPaletteSwatchDialog_Click">
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/palette-swatch.svg"/>
+			</Button>
+			<Button Grid.Column="1" Padding="10" Classes="Flat"
+					CornerRadius="0" Width="{Binding $self.Bound.Height}"
+					Click="ShowSettingsDialog_Click">
+				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/cog.svg"/>
+			</Button>
+		</Grid>
+	</controls:MetroWindow.TitleBarMenuContent>
 	
 	<Grid>
-		<TabControl SelectedIndex="{Binding Path=MainTabControlSelectedIndex}" AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}" Margin="28 0 28 28">
+		<TabControl SelectedIndex="{Binding Path=MainTabControlSelectedIndex}" 
+					AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}" Margin="28 0 28 28">
 			<TabControl.ItemsPanel>
 				<ItemsPanelTemplate>
 					<StackPanel Orientation="Horizontal"/>
@@ -35,5 +101,9 @@
 				<tabs:AddonDetails DataContext="{Binding Path=SelectedAddon}"/>
 			</TabItem>
 		</TabControl>
+		<Border x:Name="blurBackground" IsVisible="False" Background="#C0000000"
+				PointerPressed="BlurBackground_PointerPressed" Cursor="Hand"/>
+		<local:SettingsDialog x:Name="settingsDialog" IsVisible="False"/>
+		<local:SettingsDialog x:Name="paletteSwatchDialog" IsVisible="False"/>
 	</Grid>
-</Window>
+</controls:MetroWindow>

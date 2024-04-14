@@ -39,17 +39,12 @@ namespace SpellCrafter.Controls
 
             if (change.Property == SvgClassProperty || change.Property == SvgColorProperty)
             {
-                UpdateCss();
-            }
-        }
-
-        private void UpdateCss()
-        {
-            var solidColorBrush = SvgColor as ISolidColorBrush;
-            if (solidColorBrush != null)
-            {
-                string css = $".{SvgClass} {{ fill: #{solidColorBrush.Color.R:X2}{solidColorBrush.Color.G:X2}{solidColorBrush.Color.B:X2}; }}";
-                SetCurrentCss(this, css);
+                if (SvgColor is ISolidColorBrush solidColorBrush)
+                {
+                    string css = $".{SvgClass} {{ fill: #{solidColorBrush.Color.R:X2}{solidColorBrush.Color.G:X2}{solidColorBrush.Color.B:X2}; }}";
+                    SetCss(this, css);
+                    //SetCurrentCss(this, css);
+                }
             }
         }
     }
