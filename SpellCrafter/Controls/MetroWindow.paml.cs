@@ -50,6 +50,7 @@ namespace SpellCrafter.Controls
         private Grid? _rightVerticalGrip;
 
         private Grid? _titleBar;
+        private Grid? _titleBarMenu;
         private Grid? _topHorizontalGrip;
         private Grid? _topLeftGrip;
         private Grid? _topRightGrip;
@@ -168,6 +169,7 @@ namespace SpellCrafter.Controls
 			base.OnApplyTemplate(e);
 
             _titleBar = e.NameScope.Find<Grid>("titlebar");
+            _titleBarMenu = e.NameScope.Find<Grid>("titlebarMenu");
             _minimiseButton = e.NameScope.Find<Button>("minimiseButton");
             _restoreButton = e.NameScope.Find<Button>("restoreButton");
             _closeButton = e.NameScope.Find<Button>("closeButton");
@@ -199,7 +201,9 @@ namespace SpellCrafter.Controls
 
             if (_closeButton != null) _closeButton.Command = ReactiveCommand.Create(Close);
 
-            if (_titleBar != null) _titleBar.DoubleTapped += (sender, ee) => { ToggleWindowState(); };
+            if (_titleBar != null) _titleBar.DoubleTapped += (sender, ee) => { if (!(ee.Source is Button) && !(ee.Source is ColoredSvg)) ToggleWindowState(); };
+
+            if (_titleBarMenu != null) _titleBarMenu.DoubleTapped += (sender, ee) => { e.Handled = true; };
 
             if (_icon != null) _icon.DoubleTapped += (sender, ee) => { Close(); };
 

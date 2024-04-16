@@ -20,7 +20,7 @@
 
 									<TextBlock Grid.Column="1" Text="{TemplateBinding Title}" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Padding="7 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-									<Grid Grid.Column="2" Margin="7 -2 -3 0" IsVisible="{TemplateBinding ClientDecorations}"
+									<Grid Grid.Column="2" Name="titlebarMenu" Margin="7 -2 -3 0" IsVisible="{TemplateBinding ClientDecorations}"
 										  ColumnDefinitions="* Auto Auto Auto" Height="40">
 										<Grid.Styles>
 											<Styles>

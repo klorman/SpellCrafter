@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace SpellCrafter.ViewModels.MainWindowTabs
 {
-    public class AddonsOverviewViewModel : ReactiveObject
+    public class AddonsOverviewViewModel : ViewModelBase
     {
         private readonly List<Addon> modsSource = new();
         [Reactive] public ObservableCollection<Addon> DisplayedMods { get; set; } = new();

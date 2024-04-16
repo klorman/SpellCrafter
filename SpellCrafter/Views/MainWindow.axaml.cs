@@ -1,49 +1,29 @@
-using Avalonia.Input;
-using Avalonia.Interactivity;
+using ReactiveUI;
+using SpellCrafter.Enums;
 using SpellCrafter.ViewModels;
+using System.Diagnostics;
 
 namespace SpellCrafter.Views
 {
-    public partial class MainWindow : SPPOWindowBase<MainWindowViewModel>
+    public partial class MainWindow : ReactiveMetroWindow<MainWindowViewModel>
     {
         public MainWindow() : base()
         {
             InitializeComponent();
 
+            var addonsFolderPath = IniParser.GetParam(IniDefines.AddonsFolderPath);
+
             var vm = new MainWindowViewModel();
             DataContext = vm;
-        }
-        public void ShowSettingsDialog_Click(object sender, RoutedEventArgs e)
-        {
-            var isVisible = settingsDialog.IsVisible;
-            settingsDialog.IsVisible = !isVisible;
-            blurBackground.IsVisible = !isVisible;
-        }
 
-        public void CloseSettingsDialog_Click(object sender, RoutedEventArgs e)
-        {
-            settingsDialog.IsVisible = false;
-            blurBackground.IsVisible = false;
-        }
-
-        public void ShowPaletteSwatchDialog_Click(object sender, RoutedEventArgs e)
-        {
-            var isVisible = paletteSwatchDialog.IsVisible;
-            paletteSwatchDialog.IsVisible = !isVisible;
-            blurBackground.IsVisible = !isVisible;
-        }
-
-        public void ClosePaletteSwatchDialog_Click(object sender, RoutedEventArgs e)
-        {
-            paletteSwatchDialog.IsVisible = false;
-            blurBackground.IsVisible = false;
-        }
-
-        private void BlurBackground_PointerPressed(object sender, PointerPressedEventArgs e)
-        {
-            settingsDialog.IsVisible = false;
-            paletteSwatchDialog.IsVisible = false;
-            blurBackground.IsVisible = false;
+            this.WhenActivated(async _ =>
+            {
+                if (string.IsNullOrEmpty(addonsFolderPath))
+                {
+                    Debug.WriteLine("AddonsFolderPath is empty!");
+                    await vm.ShowMainDialogAsync(new AddonFolderSelectionDialogViewModel());
+                }
+            });
         }
     }
 }

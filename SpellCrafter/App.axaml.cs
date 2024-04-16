@@ -2,9 +2,13 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using DialogHostAvalonia;
 using Material.Styles.Themes;
+using SpellCrafter.Enums;
 using SpellCrafter.Services;
+using SpellCrafter.ViewModels;
 using SpellCrafter.Views;
+using System.Diagnostics;
 
 namespace SpellCrafter
 {
@@ -17,6 +21,8 @@ namespace SpellCrafter
 
         public override void OnFrameworkInitializationCompleted()
         {
+            Current!.Resources["MaterialPaperBrush"] = new SolidColorBrush(Color.Parse("#FFFFFF"));
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var mainWindow = new MainWindow();
@@ -32,6 +38,8 @@ namespace SpellCrafter
             var accentColor = Color.Parse("#00224D");
 
             var theme = Theme.Create(Theme.Dark, midPrimaryColor, accentColor);
+            Current!.Resources["MaterialPaperBrush"] = new SolidColorBrush(theme.Paper);
+
             theme.PrimaryLight = lightPrimaryColor;
             theme.PrimaryDark = darkPrimaryColor;
 

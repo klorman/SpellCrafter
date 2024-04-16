@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace SpellCrafter.ViewModels
 {
-    public class SettingsDialogViewModel : ViewModelBase
+    public class AddonFolderSelectionDialogViewModel : ViewModelBase
     {
         const string AddonsFolderName = "AddOns";
 
@@ -16,7 +16,7 @@ namespace SpellCrafter.ViewModels
         public ICommand BrowseAddonsFolderCommand { get; }
         public ICommand ApplyCommand { get; }
 
-        public SettingsDialogViewModel() : base()
+        public AddonFolderSelectionDialogViewModel() : base()
         {
             BrowseAddonsFolderCommand = new RelayCommand(_ => BrowseAddonsFolder());
             ApplyCommand = new RelayCommand(

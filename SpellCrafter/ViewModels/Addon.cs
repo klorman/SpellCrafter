@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace SpellCrafter.ViewModels
 {
-    public class Addon : ReactiveObject
+    public class Addon : ViewModelBase
     {
         [Reactive] public long Id { get; set; }
         [Reactive] public string Name { get; set; } = "";

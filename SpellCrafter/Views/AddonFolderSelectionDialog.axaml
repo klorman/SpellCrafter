@@ -6,15 +6,13 @@
 			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="150"
 			 Width="600"
-             x:Class="SpellCrafter.Views.SettingsDialog">
+             x:Class="SpellCrafter.Views.AddonFolderSelectionDialog">
 	<UserControl.KeyBindings>
 		<KeyBinding Command="{Binding Path=ApplyCommand}" Gesture="Enter"/>
 	</UserControl.KeyBindings>
-	
+
 	<StackPanel VerticalAlignment="Center">
-		<TextBlock Text="Settings" Foreground="{DynamicResource MaterialBodyBrush}"
-				   FontSize="24" FontWeight="Bold"/>
-		<TextBlock Text="Addons Folder" Margin="0 20"
+		<TextBlock Text="Specify the addons folder directory" Margin="0 20"
 				   Foreground="{DynamicResource MaterialBodyBrush}" FontSize="20"/>
 		<Grid ColumnDefinitions="* Auto">
 			<materialcontrols:Card Padding="7 0 0 0">
@@ -27,7 +25,7 @@
 				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/folder-settings.svg"/>
 			</Button>
 		</Grid>
-		<Button Content="Apply" Command="{Binding Path=ApplyCommand}" 
+		<Button Content="Apply" Command="{Binding Path=ApplyCommand}"
 				HorizontalAlignment="Right" Margin="0 28 0 0"/>
 	</StackPanel>
 </UserControl>

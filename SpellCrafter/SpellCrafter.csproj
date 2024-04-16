@@ -5,6 +5,13 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+  	<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+  	<DefineConstants>$(DefineConstants);LINUX</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove=".gitignore" />
     <None Remove="Assets\alert.svg" />
@@ -73,6 +80,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
     <PackageReference Include="Material.Avalonia" Version="3.5.0" />
     <PackageReference Include="Material.Avalonia.DataGrid" Version="3.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -95,6 +103,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <Reference Include="DialogHost.Avalonia">
+      <HintPath>DialogHost.Avalonia.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

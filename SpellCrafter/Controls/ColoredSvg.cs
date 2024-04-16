@@ -1,14 +1,16 @@
 ﻿using Avalonia;
 using Avalonia.Data;
 using Avalonia.Media;
+using ReactiveUI;
 using System;
+using System.Reactive.Linq;
 
 namespace SpellCrafter.Controls
 {
     public class ColoredSvg : Avalonia.Svg.Skia.Svg
     {
         public static readonly StyledProperty<string> SvgClassProperty =
-        AvaloniaProperty.Register<ColoredSvg, string>(nameof(SvgClass), "");
+            AvaloniaProperty.Register<ColoredSvg, string>(nameof(SvgClass), "");
 
         public string SvgClass
         {
@@ -27,24 +29,24 @@ namespace SpellCrafter.Controls
 
         public ColoredSvg(Uri baseUri) : base(baseUri)
         {
+            EnableCache = true;
+            this.WhenAnyValue(x => x.SvgColor, x => x.SvgClass)
+                .Subscribe(_ => UpdateCss());
         }
 
         public ColoredSvg(IServiceProvider serviceProvider) : base(serviceProvider)
         {
+            EnableCache = true;
+            this.WhenAnyValue(x => x.SvgColor, x => x.SvgClass)
+                .Subscribe(_ => UpdateCss());
         }
 
-        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        private void UpdateCss()
         {
-            base.OnPropertyChanged(change);
-
-            if (change.Property == SvgClassProperty || change.Property == SvgColorProperty)
+            if (SvgColor is ISolidColorBrush solidColorBrush)
             {
-                if (SvgColor is ISolidColorBrush solidColorBrush)
-                {
-                    string css = $".{SvgClass} {{ fill: #{solidColorBrush.Color.R:X2}{solidColorBrush.Color.G:X2}{solidColorBrush.Color.B:X2}; }}";
-                    SetCss(this, css);
-                    //SetCurrentCss(this, css);
-                }
+                string css = $".{SvgClass} {{ fill: #{solidColorBrush.Color.R:X2}{solidColorBrush.Color.G:X2}{solidColorBrush.Color.B:X2}; }}";
+                SetCss(this, css);
             }
         }
     }

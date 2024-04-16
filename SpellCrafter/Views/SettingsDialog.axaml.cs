@@ -1,5 +1,5 @@
-using Avalonia.Controls;
 using SpellCrafter.ViewModels;
+using Avalonia.Controls;
 
 namespace SpellCrafter.Views
 {
