@@ -12,7 +12,7 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
 {
     public class AddonsOverviewViewModel : ViewModelBase
     {
-        private readonly List<Addon> modsSource = new();
+        protected List<Addon> modsSource = new();
         [Reactive] public ObservableCollection<Addon> DisplayedMods { get; set; } = new();
         [Reactive] public string ModsFilter { get; set; } = "";
         [Reactive] public bool BrowseMode { get; set; }
@@ -27,17 +27,6 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
         {
             BrowseMode = browseMode;
 
-            modsSource.Add(new() { Name = "CustomCompassPins", ArchiveName = "CustomCompassPins.zip", AddonState = AddonState.NotInstalled, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize="1K", Downloads=1625, Overview= "Slight improvements to the default experience bar that adds current/max experience and always displays the bar\n\nSlight improvements to the default experience bar that adds current/max experience and always displays the bar" });
-            modsSource.Add(new() { Name = "LibAddonMenu", ArchiveName = "LibAddonMenu.zip", AddonState = AddonState.LatestVersion, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize = "1K", Downloads = 1625 });
-            modsSource.Add(new() { Name = "MiniMap by Fyrakin", ArchiveName = "MiniMap by Fyrakin.zip", AddonState = AddonState.Outdated, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize = "1K", Downloads = 1625 });
-            modsSource.Add(new() { Name = "LibLazyCrafting", ArchiveName = "LibLazyCrafting.zip", AddonState = AddonState.Updating, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize = "1K", Downloads = 1625 });
-            modsSource.Add(new() { Name = "CustomCompassPins", ArchiveName = "CustomCompassPins.zip", AddonState = AddonState.UpdateError, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize = "1K", Downloads = 1625 });
-            modsSource.Add(new() { Name = "LibAddonMenu", ArchiveName = "LibAddonMenu.zip", AddonState = AddonState.LatestVersion, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize = "1K", Downloads = 1625 });
-            modsSource.Add(new() { Name = "MiniMap by Fyrakin", ArchiveName = "MiniMap by Fyrakin.zip", AddonState = AddonState.LatestVersion, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize = "1K", Downloads = 1625 });
-            modsSource.Add(new() { Name = "LibLazyCrafting", ArchiveName = "LibLazyCrafting.zip", AddonState = AddonState.LatestVersion, Latest = "12/15/2016", Category = "Map", GameVersion = "8.0", Author = "mastropos21", Description = "Slight improvements to the default experience bar that adds current/max experience and always displays the bar", FileSize = "1K", Downloads = 1625 });
-
-            FilterMods();
-
             UpdateAllCommand = new RelayCommand(_ => UpdateAll());
             FilterModsCommand = new RelayCommand(_ => FilterMods());
             RefreshModsCommand = new RelayCommand(_ => RefreshMods());
@@ -49,7 +38,7 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
             Debug.WriteLine("UpdateAll!");
         }
 
-        private void FilterMods()
+        protected void FilterMods()
         {
             Debug.WriteLine("Filter!");
 

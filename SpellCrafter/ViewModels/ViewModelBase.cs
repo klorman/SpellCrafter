@@ -6,14 +6,21 @@ namespace SpellCrafter.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {
-        private const string dialogIdentifier = "MainDialogHost";
+        protected const string dialogIdentifier = "MainDialogHost";
 
         public async Task ShowMainDialogAsync(ViewModelBase dialogViewModel)
         {
             if (DialogHost.IsDialogOpen(dialogIdentifier))
+            {
+                var currentContent = DialogHost.GetDialogSession(dialogIdentifier)?.Content as ViewModelBase;
+
                 DialogHost.Close(dialogIdentifier);
 
-            await DialogHost.Show(dialogViewModel, dialogIdentifier);
+                if (currentContent == null || currentContent.GetType() != dialogViewModel.GetType())
+                    await DialogHost.Show(dialogViewModel, dialogIdentifier);
+            }
+            else
+                await DialogHost.Show(dialogViewModel, dialogIdentifier);
         }
         
         public void CloseMainDialog() =>

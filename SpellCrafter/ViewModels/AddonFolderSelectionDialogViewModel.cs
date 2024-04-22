@@ -1,5 +1,6 @@
 ﻿using Avalonia.Platform.Storage;
 using ReactiveUI.Fody.Helpers;
+using SpellCrafter.Enums;
 using SpellCrafter.Services;
 using System.Diagnostics;
 using System.IO;
@@ -21,7 +22,7 @@ namespace SpellCrafter.ViewModels
             BrowseAddonsFolderCommand = new RelayCommand(_ => BrowseAddonsFolder());
             ApplyCommand = new RelayCommand(
                 _ => Apply(),
-                _ => string.IsNullOrEmpty(AddonsFolderPath)
+                _ => !string.IsNullOrEmpty(AddonsFolderPath)
             );
         }
 
@@ -46,6 +47,8 @@ namespace SpellCrafter.ViewModels
         private void Apply()
         {
             Debug.WriteLine("Apply!");
+            IniParser.SetParam(IniDefines.AddonsFolderPath, AddonsFolderPath);
+            CloseMainDialog();
         }
     }
 }

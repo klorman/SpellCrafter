@@ -21,6 +21,8 @@ namespace SpellCrafter.ViewModels
         [Reactive] public string Description { get; set; } = "";
         [Reactive] public string FileSize { get; set; } = "";
         [Reactive] public string Overview { get; set; } = "";
+        [Reactive] public string DisplayedVersion { get; set; } = "";
+        [Reactive] public string AddonVersion { get; set; } = "";
 
         public ICommand InstallCommand { get; }
         public ICommand ReinstallCommand { get; }

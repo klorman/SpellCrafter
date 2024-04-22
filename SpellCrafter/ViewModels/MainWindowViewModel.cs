@@ -24,12 +24,9 @@ namespace SpellCrafter.ViewModels
                     MainTabControlSelectedIndex = MainTabControlTabs.ModPage;
                 });
 
-            OpenSettingsDialogCommand = new RelayCommand(async param =>
+            OpenSettingsDialogCommand = new RelayCommand(async _ =>
             {
-                if (param is bool isOpened && isOpened)
-                    await ShowMainDialogAsync(new SettingsDialogViewModel());
-                else
-                    CloseMainDialog();
+                await ShowMainDialogAsync(new SettingsDialogViewModel());
             });
         }
     }

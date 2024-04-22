@@ -11,19 +11,8 @@ namespace SpellCrafter.Views
         {
             InitializeComponent();
 
-            var addonsFolderPath = IniParser.GetParam(IniDefines.AddonsFolderPath);
-
             var vm = new MainWindowViewModel();
             DataContext = vm;
-
-            this.WhenActivated(async _ =>
-            {
-                if (string.IsNullOrEmpty(addonsFolderPath))
-                {
-                    Debug.WriteLine("AddonsFolderPath is empty!");
-                    await vm.ShowMainDialogAsync(new AddonFolderSelectionDialogViewModel());
-                }
-            });
         }
     }
 }

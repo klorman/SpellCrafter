@@ -2,12 +2,15 @@
 using IniParser.Model;
 using SpellCrafter.Enums;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace SpellCrafter
 {
     public static class IniParser
     {
+        private static IniData? _cachedIniData = null;
+
 #if WINDOWS
         static readonly string IniFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/SpellCrafter/SpellCrafter.ini";
 #else
@@ -15,41 +18,48 @@ namespace SpellCrafter
 #endif
         const string Section = "Application";
 
-        public static void InitIfNotExists()
+        [MemberNotNull(nameof(_cachedIniData))]
+        private static void LoadIniData()
         {
-            var directoryPath = Path.GetDirectoryName(IniFilePath);
-
-            if (!Directory.Exists(directoryPath))
+            if (_cachedIniData == null)
             {
-                Directory.CreateDirectory(directoryPath!);
-            }
+                var directoryPath = Path.GetDirectoryName(IniFilePath);
 
-            if (!File.Exists(IniFilePath))
-            {
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath!);
+                }
+
                 var parser = new FileIniDataParser();
-                IniData data = new IniData();
-                data[Section][IniDefines.AddonsFolderPath.ToString()] = "";
 
-                parser.WriteFile(IniFilePath, data);
+                if (!File.Exists(IniFilePath))
+                {
+                    IniData data = new IniData();
+                    data[Section][IniDefines.AddonsFolderPath.ToString()] = "";
+
+                    parser.WriteFile(IniFilePath, data);
+                    _cachedIniData = data;
+                }
+                else
+                {
+                    _cachedIniData = parser.ReadFile(IniFilePath);
+                }
             }
         }
 
         public static string GetParam(IniDefines paramId, string defaultValue = "")
         {
-            InitIfNotExists();
-            var parser = new FileIniDataParser();
-            var iniData = parser.ReadFile(IniFilePath);
-            var res = iniData[Section][paramId.ToString()];
-            return res;
+            LoadIniData();
+            var res = _cachedIniData[Section][paramId.ToString()];
+            return !string.IsNullOrEmpty(res) ? res : defaultValue;
         }
 
         public static void SetParam(IniDefines paramId, object value)
         {
-            InitIfNotExists();
+            LoadIniData();
+            _cachedIniData[Section][paramId.ToString()] = value.ToString();
             var parser = new FileIniDataParser();
-            var iniData = parser.ReadFile(IniFilePath);
-            iniData[Section][paramId.ToString()] = value.ToString();
-            parser.WriteFile(IniFilePath, iniData);
+            parser.WriteFile(IniFilePath, _cachedIniData);
         }
     }
 }

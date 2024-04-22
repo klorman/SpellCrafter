@@ -70,12 +70,11 @@
 					CornerRadius="0" Width="{Binding $self.Bound.Height}" IsEnabled="False">
 				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/palette-swatch.svg"/>
 			</Button>
-			<ToggleButton Grid.Column="1" Padding="10" Classes="Flat"
+			<Button Grid.Column="1" Padding="10" Classes="Flat"
 					CornerRadius="0" Width="{Binding $self.Bound.Height}"
-					Command="{Binding Path=OpenSettingsDialogCommand}"
-					CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}">
+					Command="{Binding Path=OpenSettingsDialogCommand}">
 				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/cog.svg"/>
-			</ToggleButton>
+			</Button>
 		</Grid>
 	</controls:MetroWindow.TitleBarMenuContent>
 
