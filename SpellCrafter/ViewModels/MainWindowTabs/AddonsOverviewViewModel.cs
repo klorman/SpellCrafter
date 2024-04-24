@@ -21,7 +21,6 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
         public ICommand UpdateAllCommand { get; }
         public ICommand FilterModsCommand { get; }
         public ICommand RefreshModsCommand { get; }
-        public ICommand ViewModCommand { get; }
 
         public AddonsOverviewViewModel(bool browseMode) : base()
         {
@@ -30,7 +29,6 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
             UpdateAllCommand = new RelayCommand(_ => UpdateAll());
             FilterModsCommand = new RelayCommand(_ => FilterMods());
             RefreshModsCommand = new RelayCommand(_ => RefreshMods());
-            ViewModCommand = new RelayCommand(_ => ViewMod());
         }
 
         private void UpdateAll()
@@ -67,13 +65,6 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
         private void RefreshMods()
         {
             Debug.WriteLine("RefreshMods!");
-        }
-
-        private void ViewMod()
-        {
-            Debug.WriteLine("ViewMod!");
-
-            MessageBus.Current.SendMessage(new AddonUpdatedMessage(DataGridModsSelectedItem));
         }
     }
 }

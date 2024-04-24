@@ -2,12 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SpellCrafter.ViewModels.MainWindowTabs"
 			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
 			 xmlns:converters="clr-namespace:SpellCrafter.Converters"
 			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="450"
 			 Focusable="True"
-             x:Class="SpellCrafter.Views.MainWindowTabs.AddonsOverview">
+             x:Class="SpellCrafter.Views.MainWindowTabs.AddonsOverview"
+			 x:DataType="vm:AddonsOverviewViewModel">
 	<Grid RowDefinitions="40 *">
 		<Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto Auto * Auto Auto">
 			<Button Classes="Flat" Grid.Column="0"
@@ -101,7 +103,7 @@
 								<Grid Grid.Column="1" RowDefinitions="Auto Auto" VerticalAlignment="Center">
 									<Button Classes="Flat" Grid.Row="0" Content="{Binding Path=Name}" ToolTip.Tip="{Binding Path=$self.Content}"
 											HorizontalAlignment="Left" Padding="0" Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Bold"
-											Command="{Binding Path=$parent[DataGrid].DataContext.ViewModCommand}"/>
+											Command="{Binding Path=ViewModCommand}"/>
 									<TextBlock Grid.Row="1" Text="{Binding Path=ArchiveName}" Margin="0 4 0 0"/>
 								</Grid>
 							</Grid>

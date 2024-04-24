@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<linker>
+	<!-- App -->
+	<assembly fullname="SpellCrafter" preserve="All" />
+	<!-- Avalonia Themes -->
+	<assembly fullname="Material.Avalonia" preserve="All" />
+</linker>

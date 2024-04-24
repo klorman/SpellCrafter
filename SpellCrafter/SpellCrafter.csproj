@@ -1,111 +1,71 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-  	<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-  	<DefineConstants>$(DefineConstants);LINUX</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove=".gitignore" />
-    <None Remove="Assets\alert.svg" />
-    <None Remove="Assets\archive.svg" />
-    <None Remove="Assets\clock.svg" />
-    <None Remove="Assets\cog.svg" />
-    <None Remove="Assets\default-addon-icon.jpg" />
-    <None Remove="Assets\delete.svg" />
-    <None Remove="Assets\dots-vertical.svg" />
-    <None Remove="Assets\download-multiple.svg" />
-    <None Remove="Assets\download.svg" />
-    <None Remove="Assets\extension.svg" />
-    <None Remove="Assets\filter.svg" />
-    <None Remove="Assets\folder-settings.svg" />
-    <None Remove="Assets\folder.svg" />
-    <None Remove="Assets\grid_view.svg" />
-    <None Remove="Assets\language.svg" />
-    <None Remove="Assets\link.svg" />
-    <None Remove="Assets\palette-swatch.svg" />
-    <None Remove="Assets\search.svg" />
-    <None Remove="Assets\sync.svg" />
-    <None Remove="Assets\table_chart.svg" />
-    <None Remove="Assets\view.svg" />
-    <None Remove="Assets\view_list.svg" />
-    <None Remove="Assets\window-close.svg" />
-    <None Remove="Assets\window-maximize.svg" />
-    <None Remove="Assets\window-minimize.svg" />
-    <None Remove="Assets\window-restore.svg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\alert.svg" />
-    <AvaloniaResource Include="Assets\archive.svg" />
-    <AvaloniaResource Include="Assets\clock.svg" />
-    <AvaloniaResource Include="Assets\cog.svg" />
-    <AvaloniaResource Include="Assets\default-addon-icon.jpg" />
-    <AvaloniaResource Include="Assets\delete.svg" />
-    <AvaloniaResource Include="Assets\dots-vertical.svg" />
-    <AvaloniaResource Include="Assets\download-multiple.svg" />
-    <AvaloniaResource Include="Assets\download.svg" />
-    <AvaloniaResource Include="Assets\filter.svg" />
-    <AvaloniaResource Include="Assets\folder-settings.svg" />
-    <AvaloniaResource Include="Assets\folder.svg" />
-    <AvaloniaResource Include="Assets\grid_view.svg" />
-    <AvaloniaResource Include="Assets\link.svg" />
-    <AvaloniaResource Include="Assets\extension.svg" />
-    <AvaloniaResource Include="Assets\palette-swatch.svg" />
-    <AvaloniaResource Include="Assets\search.svg" />
-    <AvaloniaResource Include="Assets\table_chart.svg" />
-    <AvaloniaResource Include="Assets\view_list.svg" />
-    <AvaloniaResource Include="Assets\window-close.svg" />
-    <AvaloniaResource Include="Assets\window-maximize.svg" />
-    <AvaloniaResource Include="Assets\window-minimize.svg" />
-    <AvaloniaResource Include="Assets\window-restore.svg" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<TrimMode>copyused</TrimMode>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<!--Publish AOT-->
+		<PublishAot>true</PublishAot>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<StripSymbols>true</StripSymbols>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+		<DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.10" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.10" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.0.10" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
-    <PackageReference Include="Avalonia.Svg.Skia" Version="11.0.0.18" />
-    <PackageReference Include="Fody" Version="6.8.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
-    <PackageReference Include="Material.Avalonia" Version="3.5.0" />
-    <PackageReference Include="Material.Avalonia.DataGrid" Version="3.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="protobuf-net" Version="3.2.30" />
-    <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+		<DefineConstants>$(DefineConstants);LINUX</DefineConstants>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<Content Include=".ReflectionDefine\**" />
+		<AvaloniaResource Include="Assets\**" />
+		<None Remove=".gitignore" />
+	</ItemGroup>
+	
+	<!--AOT Reflection Define-->
 
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\sync.svg" />
-  </ItemGroup>
+	<ItemGroup>
+		<!--This helps with theme dll-s trimming.
+        If you will publish your application in self-contained mode with p:PublishTrimmed=true and it will use Fluent theme Default theme will be trimmed from the output and vice versa.
+        https://github.com/AvaloniaUI/Avalonia/issues/5593 -->
+		<TrimmableAssembly Include="Material.Avalonia" />
+		<TrimmableAssembly Include="Avalonia.Themes.Default" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\language.svg" />
-    <AvaloniaResource Include="Assets\view.svg" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Diagnostics" Version="11.0.10" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Svg.Skia" Version="11.0.0.18" />
+		<PackageReference Include="Fody" Version="6.8.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
+		<PackageReference Include="Material.Avalonia" Version="3.5.0" />
+		<PackageReference Include="Material.Avalonia.DataGrid" Version="3.5.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="protobuf-net" Version="3.2.30" />
+		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />
+		<PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Views\MainWindowTabs\AddonDetails.axaml.cs">
-      <DependentUpon>AddonDetails.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Views\MainWindowTabs\AddonDetails.axaml.cs">
+			<DependentUpon>AddonDetails.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="DialogHost.Avalonia">
-      <HintPath>DialogHost.Avalonia.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="DialogHost.Avalonia">
+			<HintPath>DialogHost.Avalonia.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>

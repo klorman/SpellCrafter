@@ -6,7 +6,8 @@
 			 xmlns:vm="clr-namespace:SpellCrafter.ViewModels.MainWindowTabs"
 			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SpellCrafter.Views.MainWindowTabs.MyMods">
+             x:Class="SpellCrafter.Views.MainWindowTabs.MyMods"
+			 x:DataType="vm:MyModsViewModel">
 	<Design.DataContext>
 		<vm:MyModsViewModel/>
 	</Design.DataContext>

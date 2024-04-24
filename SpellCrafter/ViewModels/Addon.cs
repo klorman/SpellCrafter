@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SpellCrafter.Enums;
+using SpellCrafter.Messages;
 using System.Diagnostics;
 using System.Windows.Input;
 
@@ -24,6 +25,7 @@ namespace SpellCrafter.ViewModels
         [Reactive] public string DisplayedVersion { get; set; } = "";
         [Reactive] public string AddonVersion { get; set; } = "";
 
+        public ICommand ViewModCommand { get; }
         public ICommand InstallCommand { get; }
         public ICommand ReinstallCommand { get; }
         public ICommand UpdateCommand { get; }
@@ -34,6 +36,7 @@ namespace SpellCrafter.ViewModels
 
         public Addon() : base()
         {
+            ViewModCommand = new RelayCommand(_ => ViewMod());
             InstallCommand = new RelayCommand(
                 _ => Install(), 
                 _ => AddonState == AddonState.NotInstalled
@@ -56,6 +59,13 @@ namespace SpellCrafter.ViewModels
                 _ => BrowseFolder(), 
                 _ => AddonState != AddonState.NotInstalled
             );
+        }
+
+        private void ViewMod()
+        {
+            Debug.WriteLine("ViewMod!");
+
+            MessageBus.Current.SendMessage(new AddonUpdatedMessage(this));
         }
 
         private void Install()

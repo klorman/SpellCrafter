@@ -3,9 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
+			 xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
 			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SpellCrafter.Views.MainWindowTabs.AddonDetails">
+             x:Class="SpellCrafter.Views.MainWindowTabs.AddonDetails"
+			 x:DataType="vm:Addon">
     <Grid RowDefinitions="Auto *">
 		<materialcontrols:Card Padding="14" Grid.Row="0">
 			<Grid ColumnDefinitions="134 * Auto">
