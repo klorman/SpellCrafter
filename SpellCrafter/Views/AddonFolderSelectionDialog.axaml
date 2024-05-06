@@ -18,7 +18,7 @@
 				   Foreground="{DynamicResource MaterialBodyBrush}" FontSize="20"/>
 		<Grid ColumnDefinitions="* Auto">
 			<materialcontrols:Card Padding="7 0 0 0">
-				<TextBox Grid.Column="0" Text="{Binding Path=AddonsFolderPath}" IsReadOnly="True"
+				<TextBox Grid.Column="0" Text="{Binding Path=AddonsDirectory}" IsReadOnly="True"
 						 Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
 						 Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Not specified"/>
 			</materialcontrols:Card>

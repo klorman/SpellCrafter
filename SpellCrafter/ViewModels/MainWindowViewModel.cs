@@ -5,6 +5,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SpellCrafter.Enums;
 using SpellCrafter.Messages;
+using SpellCrafter.Models;
 
 namespace SpellCrafter.ViewModels
 {
@@ -13,7 +14,7 @@ namespace SpellCrafter.ViewModels
         [Reactive] public MainTabControlTabs MainTabControlSelectedIndex { get; set; } = 0;
         [Reactive] public Addon? SelectedAddon { get; set; }
 
-        public ICommand OpenSettingsDialogCommand { get; }
+        public RelayCommand OpenSettingsDialogCommand { get; }
 
         public MainWindowViewModel() : base()
         {

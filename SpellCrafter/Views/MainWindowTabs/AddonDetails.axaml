@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
-			 xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
+			 xmlns:models="clr-namespace:SpellCrafter.Models"
 			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SpellCrafter.Views.MainWindowTabs.AddonDetails"
-			 x:DataType="vm:Addon">
+			 x:DataType="models:Addon">
     <Grid RowDefinitions="Auto *">
 		<materialcontrols:Card Padding="14" Grid.Row="0">
 			<Grid ColumnDefinitions="134 * Auto">
@@ -29,9 +29,22 @@
 					<Rectangle Width="2" Height="14" Margin="7 0"
 							   VerticalAlignment="Center"
 							   Fill="{DynamicResource MaterialDividerBrush}"/>
-					<TextBlock Classes="Body2" Text="{Binding Path=Author, StringFormat='by {0}'}"
-							   Foreground="{DynamicResource MaterialBodyLightBrush}"
-							   VerticalAlignment="Center"/>
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+						<TextBlock Text="by " Classes="Body2" Foreground="{DynamicResource MaterialBodyLightBrush}" />
+						<ItemsControl ItemsSource="{Binding Path=Authors}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal"/>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Path=Name}" Classes="Body2" Margin="0 0 5 0"
+											   Foreground="{DynamicResource MaterialBodyLightBrush}"/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
 				</StackPanel>
 				<TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=Description}"
 						   Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Light" Margin="4"/>
@@ -52,7 +65,7 @@
 							<controls:ColoredSvg Path="avares://SpellCrafter/Assets/clock.svg"
 												 SvgColor="{DynamicResource MaterialBodyBrush}"
 												 Grid.Column="0"/>
-							<TextBlock Grid.Column="1" Text="{Binding Path=Latest}"
+							<TextBlock Grid.Column="1" Text="{Binding Path=LatestVersion}"
 									   VerticalAlignment="Center" Margin="4 0 14 0"
 									   Foreground="{DynamicResource MaterialBodyBrush}"
 									   ToolTip.Tip="File release date"/>

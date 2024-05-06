@@ -1,4 +1,4 @@
-﻿using SpellCrafter.ViewModels;
+﻿using SpellCrafter.Models;
 
 namespace SpellCrafter.Messages
 {

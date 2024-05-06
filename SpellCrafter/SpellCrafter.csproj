@@ -7,6 +7,7 @@
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<!--Publish AOT-->
 		<PublishAot>true</PublishAot>
+		<OptimizationPreference>Speed</OptimizationPreference>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<StripSymbols>true</StripSymbols>
@@ -48,13 +49,17 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
+		<PackageReference Include="linq2db" Version="5.4.1" />
+		<PackageReference Include="linq2db.SQLite" Version="5.4.1" />
 		<PackageReference Include="Material.Avalonia" Version="3.5.0" />
 		<PackageReference Include="Material.Avalonia.DataGrid" Version="3.5.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="protobuf-net" Version="3.2.30" />
 		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />
 		<PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
+		<PackageReference Include="System.Data.SQLite" Version="1.0.118" />
 	</ItemGroup>
 
 	<ItemGroup>

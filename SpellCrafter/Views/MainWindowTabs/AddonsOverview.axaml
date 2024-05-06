@@ -104,7 +104,7 @@
 									<Button Classes="Flat" Grid.Row="0" Content="{Binding Path=Name}" ToolTip.Tip="{Binding Path=$self.Content}"
 											HorizontalAlignment="Left" Padding="0" Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Bold"
 											Command="{Binding Path=ViewModCommand}"/>
-									<TextBlock Grid.Row="1" Text="{Binding Path=ArchiveName}" Margin="0 4 0 0"/>
+									<TextBlock Grid.Row="1" Text="TODO" Margin="0 4 0 0"/>
 								</Grid>
 							</Grid>
 						</DataTemplate>
@@ -118,10 +118,34 @@
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTextColumn Width="1*" MinWidth="100" Header="Downloads" Binding="{Binding Path=Downloads}" IsVisible="{Binding Path=BrowseMode}"/>
-				<DataGridTextColumn Width="1*" MinWidth="110" Header="Latest Version" Binding="{Binding Path=Latest}"/>
-				<DataGridTextColumn Width="1*" MinWidth="110" Header="Category" Binding="{Binding Path=Category}" IsVisible="{Binding Path=BrowseMode}"/>
+				<DataGridTextColumn Width="1*" MinWidth="110" Header="Latest Version" Binding="{Binding Path=LatestVersion}"/>
+				<DataGridTemplateColumn Header="Category" Width="1*" MinWidth="110" IsVisible="{Binding Path=BrowseMode}">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ItemsControl ItemsSource="{Binding Path=Categories}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Path=Name}"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 				<DataGridTextColumn Width="1*" MinWidth="80" Header="Game Version" Binding="{Binding Path=GameVersion}"/>
-				<DataGridTextColumn Width="1.5*" MinWidth="120" Header="Author" Binding="{Binding Path=Author}"/>
+				<DataGridTemplateColumn Header="Authors" Width="1.5*" MinWidth="120">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ItemsControl ItemsSource="{Binding Path=Authors}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Path=Name}"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>

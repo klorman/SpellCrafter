@@ -4,10 +4,10 @@
 					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					  xmlns:dha="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
 					  xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
+					  xmlns:models="clr-namespace:SpellCrafter.Models"
 					  xmlns:local="clr-namespace:SpellCrafter.Views"
 					  xmlns:controls="clr-namespace:SpellCrafter.Controls"
 					  xmlns:converters="clr-namespace:SpellCrafter.Converters"
-					  xmlns:models="clr-namespace:SpellCrafter.Models"
 					  xmlns:tabs="clr-namespace:SpellCrafter.Views.MainWindowTabs"
 					  mc:Ignorable="d" d:DesignWidth="770" d:DesignHeight="500"
 					  x:Class="SpellCrafter.Views.MainWindow"
@@ -22,7 +22,7 @@
 			<converters:NotInstalledAddonStateToVisability x:Key="NotInstalledAddonStateToVisability"/>
 			<converters:InvertedNotInstalledAddonStateToVisability x:Key="InvertedNotInstalledAddonStateToVisability"/>
 			
-			<ContextMenu x:Key="AddonContextMenu" x:DataType="vm:Addon">
+			<ContextMenu x:Key="AddonContextMenu" x:DataType="models:Addon">
 				<MenuItem Header="Install" Command="{Binding Path=InstallCommand}"
 						  IsVisible="{Binding Path=AddonState, 
 											  Converter={StaticResource NotInstalledAddonStateToVisability}}">

@@ -2,6 +2,7 @@
 using ReactiveUI.Fody.Helpers;
 using SpellCrafter.Enums;
 using SpellCrafter.Messages;
+using SpellCrafter.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -18,9 +19,9 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
         [Reactive] public bool BrowseMode { get; set; }
         [Reactive] public Addon? DataGridModsSelectedItem { get; set; }
 
-        public ICommand UpdateAllCommand { get; }
-        public ICommand FilterModsCommand { get; }
-        public ICommand RefreshModsCommand { get; }
+        public RelayCommand UpdateAllCommand { get; }
+        public RelayCommand FilterModsCommand { get; }
+        public RelayCommand RefreshModsCommand { get; protected set; }
 
         public AddonsOverviewViewModel(bool browseMode) : base()
         {
@@ -50,8 +51,8 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
                     where
                     (
                         addon.Name.ToLower().Contains(filter) ||
-                        addon.Category.ToLower().Contains(filter) ||
-                        addon.Author.ToLower().Contains(filter)
+                        addon.Categories.Any(category => category.Name.ToLower().Contains(filter)) ||
+                        addon.Authors.Any(author => author.Name.ToLower().Contains(filter))
                     )
                     select addon
                 );
