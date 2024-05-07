@@ -9,10 +9,10 @@
 					  xmlns:controls="clr-namespace:SpellCrafter.Controls"
 					  xmlns:converters="clr-namespace:SpellCrafter.Converters"
 					  xmlns:tabs="clr-namespace:SpellCrafter.Views.MainWindowTabs"
-					  mc:Ignorable="d" d:DesignWidth="770" d:DesignHeight="500"
+					  mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
 					  x:Class="SpellCrafter.Views.MainWindow"
 					  WindowStartupLocation="CenterScreen"
-					  Title="Spell Crafter" MinWidth="770" MinHeight="500"
+					  Title="Spell Crafter" MinWidth="900" MinHeight="600"
 					  x:DataType="vm:MainWindowViewModel">
 	<Design.DataContext>
 		<vm:MainWindowViewModel/>

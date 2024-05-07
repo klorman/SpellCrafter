@@ -44,7 +44,7 @@ namespace SpellCrafter.ViewModels.MainWindowTabs
                 addonsDirectory = AppSettings.Instance.AddonsDirectory;
             }
 
-            AddonsScannerService.ScanAndUpdateDatabase(addonsDirectory);
+            //AddonsScannerService.ScanAndUpdateDatabase(addonsDirectory);
 
             using (var db = new ESODataConnection())
             {
