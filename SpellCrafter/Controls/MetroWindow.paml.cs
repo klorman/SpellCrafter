@@ -201,7 +201,7 @@ namespace SpellCrafter.Controls
 
             if (_closeButton != null) _closeButton.Command = ReactiveCommand.Create(Close);
 
-            if (_titleBar != null) _titleBar.DoubleTapped += (sender, ee) => { if (!(ee.Source is Button) && !(ee.Source is ColoredSvg)) ToggleWindowState(); };
+            if (_titleBar != null) _titleBar.DoubleTapped += (sender, ee) => { if (!(ee.Source is Button) && !(ee.Source is PathIcon)) ToggleWindowState(); };
 
             if (_titleBarMenu != null) _titleBarMenu.DoubleTapped += (sender, ee) => { e.Handled = true; };
 

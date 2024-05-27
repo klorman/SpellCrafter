@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace SpellCrafter.Models
 {
-    public class Addon
+    public class Addon : ReactiveObject
     {
         private const string baseDownloadLink = "https://www.esoui.com/downloads";
         
@@ -35,14 +35,14 @@ namespace SpellCrafter.Models
         [Reactive] public string DisplayedLatestVersion { get; set; } = string.Empty;
         [Reactive] public string GameVersion { get; set; } = string.Empty;
 
-        public RelayCommand ViewModCommand { get; }
-        public RelayCommand InstallCommand { get; }
-        public RelayCommand ReinstallCommand { get; }
-        public RelayCommand UpdateCommand { get; }
-        public RelayCommand DeleteCommand { get; }
-        public RelayCommand ViewWebsiteCommand { get; }
-        public RelayCommand CopyLinkCommand { get; }
-        public RelayCommand BrowseFolderCommand { get; }
+        public ICommand ViewModCommand { get; }
+        public ICommand InstallCommand { get; }
+        public ICommand ReinstallCommand { get; }
+        public ICommand UpdateCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand ViewWebsiteCommand { get; }
+        public ICommand CopyLinkCommand { get; }
+        public ICommand BrowseFolderCommand { get; }
 
         public Addon()
         {
@@ -75,7 +75,7 @@ namespace SpellCrafter.Models
         {
             Debug.WriteLine("ViewMod!");
 
-            MessageBus.Current.SendMessage(new AddonUpdatedMessage(this));
+            MessageBus.Current.SendMessage(new ViewAddonMessage(this));
         }
 
         private void Install()

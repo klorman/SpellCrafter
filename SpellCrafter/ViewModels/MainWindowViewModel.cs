@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Windows.Input;
-using DialogHostAvalonia;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SpellCrafter.Enums;
@@ -9,26 +9,45 @@ using SpellCrafter.Models;
 
 namespace SpellCrafter.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : ViewModelBase, IScreen
     {
-        [Reactive] public MainTabControlTabs MainTabControlSelectedIndex { get; set; } = 0;
-        [Reactive] public Addon? SelectedAddon { get; set; }
+        [Reactive] public RoutingState Router { get; set; } = new();
 
-        public RelayCommand OpenSettingsDialogCommand { get; }
+        public ICommand ShowInstalledAddonsCommand { get; }
+        public ICommand ShowBrowseCommand { get; }
+        public ICommand ShowSettingsCommand { get; }
 
         public MainWindowViewModel() : base()
         {
-            MessageBus.Current.Listen<AddonUpdatedMessage>()
+            MessageBus.Current.Listen<ViewAddonMessage>()
                 .Subscribe(message =>
                 {
-                    SelectedAddon = message.UpdatedAddon;
-                    MainTabControlSelectedIndex = MainTabControlTabs.ModPage;
+                    var addon = message.Addon;
+                    if (addon != null)
+                    {
+                        var addonDetailsViewModel = new AddonDetailsViewModel();
+                        addonDetailsViewModel.CopyFromAddon(addon);
+                        Router.Navigate.Execute(addonDetailsViewModel);
+                    }
                 });
 
-            OpenSettingsDialogCommand = new RelayCommand(async _ =>
-            {
-                await ShowMainDialogAsync(new SettingsDialogViewModel());
-            });
+            ShowInstalledAddonsCommand = new RelayCommand
+            ( 
+                _ => { Router.Navigate.Execute(new InstalledAddonsViewModel()); }, 
+                _ => !(Router.GetCurrentViewModel() is InstalledAddonsViewModel)
+            );
+
+            ShowBrowseCommand = new RelayCommand
+            (
+                _ => { Router.Navigate.Execute(new BrowseViewModel()); },
+                _ => !(Router.GetCurrentViewModel() is BrowseViewModel)
+            );
+
+            ShowSettingsCommand = new RelayCommand
+            (
+                _ => { Router.Navigate.Execute(new SettingsViewModel()); },
+                _ => !(Router.GetCurrentViewModel() is SettingsViewModel)
+            );
         }
     }
 }

@@ -1,0 +1,131 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
+			 xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
+			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SpellCrafter.Views.AddonDetailsView"
+			 x:DataType="vm:AddonDetailsViewModel">
+	<Design.DataContext>
+		<vm:AddonDetailsViewModel/>
+	</Design.DataContext>
+    <Grid RowDefinitions="Auto *">
+		<materialcontrols:Card Padding="14" Grid.Row="0">
+			<Grid ColumnDefinitions="134 * Auto">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="32"/>
+					<RowDefinition Height="Auto" MinHeight="64"/>
+					<RowDefinition Height="24"/>
+				</Grid.RowDefinitions>
+				<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDividerBrush}"
+						Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Margin="0 0 14 0"
+						HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="{Binding $self.Bounds.Width}">
+					<Image Source="avares://SpellCrafter/Assets/default-addon-icon.jpg"/>
+				</Border>
+				<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+					<TextBlock Text="{Binding Path=Name}"
+							   Foreground="{DynamicResource MaterialBodyBrush}"
+							   FontSize="24" FontWeight="Bold"
+							   VerticalAlignment="Center"/>
+					<Rectangle Width="2" Height="14" Margin="7 0"
+							   VerticalAlignment="Center"
+							   Fill="{DynamicResource MaterialDividerBrush}"/>
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+						<TextBlock Text="by " Classes="Body2" Foreground="{DynamicResource MaterialBodyLightBrush}" />
+						<ItemsControl ItemsSource="{Binding Path=Authors}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal"/>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Path=Name}" Classes="Body2" Margin="0 0 5 0"
+											   Foreground="{DynamicResource MaterialBodyLightBrush}"/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</StackPanel>
+				<TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=Description}"
+						   Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Light" Margin="4"/>
+				<StackPanel Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
+					<TextBlock>
+						<Grid ColumnDefinitions="Auto Auto">
+							<PathIcon Data="{StaticResource DownloadIcon}"
+									  Height="20" Width="20"
+									  Foreground="{DynamicResource MaterialBodyBrush}"
+									  Grid.Column="0"/>
+							<TextBlock Grid.Column="1" Text="{Binding Path=Downloads}"
+									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   Foreground="{DynamicResource MaterialBodyBrush}"
+									   ToolTip.Tip="Downloads"/>
+						</Grid>
+					</TextBlock>
+					<TextBlock>
+						<Grid ColumnDefinitions="Auto Auto">
+							<PathIcon Data="{StaticResource ClockIcon}"
+									  Height="20" Width="20"
+									  Foreground="{DynamicResource MaterialBodyBrush}"
+									  Grid.Column="0"/>
+							<TextBlock Grid.Column="1" Text="{Binding Path=LatestVersion}"
+									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   Foreground="{DynamicResource MaterialBodyBrush}"
+									   ToolTip.Tip="File release date"/>
+						</Grid>
+					</TextBlock>
+					<TextBlock>
+						<Grid ColumnDefinitions="Auto Auto">
+							<PathIcon Data="{StaticResource ArchiveIcon}"
+									  Height="20" Width="20"
+									  Foreground="{DynamicResource MaterialBodyBrush}"
+									  Grid.Column="0"/>
+							<TextBlock Grid.Column="1" Text="{Binding Path=FileSize}"
+									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   Foreground="{DynamicResource MaterialBodyBrush}"
+									   ToolTip.Tip="File size"/>
+						</Grid>
+					</TextBlock>
+				</StackPanel>
+				<Grid Grid.Column="2" Grid.Row="0" ColumnDefinitions="Auto Auto"
+					  HorizontalAlignment="Right">
+					<Button Grid.Column="0" Classes="Flat" Margin="7 0" Width="{Binding $self.Bounds.Height}"
+							ContextMenu="{DynamicResource AddonContextMenu}" Click="OpenContextMenu_Click">
+						<PathIcon Data="{StaticResource DotsVerticalIcon}"
+								  Height="20" Width="20"
+								  Foreground="{DynamicResource MaterialBodyBrush}"/>
+					</Button>
+					<controls:AddonActionControl Grid.Column="1"/>
+				</Grid>
+			</Grid>
+		</materialcontrols:Card>
+
+		<TabControl AutoScrollToSelectedItem="True" Theme="{StaticResource ScrollableTabControl}" 
+					Margin="0 14 0 0" Grid.Row="1">
+			<TabControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</TabControl.ItemsPanel>
+
+			<TabItem TabIndex="0" Header="Overview">
+				<TextBlock Text="{Binding Path=Overview}" TextWrapping="Wrap" 
+						   Foreground="{DynamicResource MaterialBodyBrush}" Margin="0 14 0 0"/>
+			</TabItem>
+
+			<TabItem TabIndex="1" Header="Changelog" IsEnabled="False">
+				
+			</TabItem>
+
+			<TabItem TabIndex="1" Header="Screenshots" IsEnabled="False">
+
+			</TabItem>
+
+			<TabItem TabIndex="1" Header="Versions" IsEnabled="False">
+
+			</TabItem>
+		</TabControl>
+    </Grid>
+</UserControl>

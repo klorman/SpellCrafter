@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
+			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
+			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="150"
+			 Width="600"
+             x:Class="SpellCrafter.Views.SettingsView"
+			 x:DataType="vm:SettingsViewModel">
+	<UserControl.KeyBindings>
+		<KeyBinding Command="{Binding Path=ApplyCommand}" Gesture="Enter"/>
+	</UserControl.KeyBindings>
+	
+	<StackPanel Margin="0 28 0 0">
+		<TextBlock Text="Settings" Foreground="{DynamicResource MaterialBodyBrush}"
+				   FontSize="24" FontWeight="Bold"/>
+		<TextBlock Text="Addons Folder" Margin="0 20"
+				   Foreground="{DynamicResource MaterialBodyBrush}" FontSize="20"/>
+		<Grid ColumnDefinitions="* Auto">
+			<materialcontrols:Card Padding="7 0 0 0">
+				<TextBox Grid.Column="0" Text="{Binding Path=AddonsDirectory}" IsReadOnly="True"
+						 Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
+						 Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Not specified"/>
+			</materialcontrols:Card>
+			<Button Grid.Column="1" Padding="4" Classes="Flat" Command="{Binding Path=BrowseAddonsFolderCommand}"
+					Margin="14 0 0 0" Width="{Binding $self.Bounds.Height}" ToolTip.Tip="Manually select addons folder">
+				<PathIcon Data="{StaticResource FolderSettingsIcon}"/>
+			</Button>
+		</Grid>
+		<Button Content="Apply" Command="{Binding Path=ApplyCommand}" 
+				HorizontalAlignment="Right" Margin="0 28 0 0"/>
+	</StackPanel>
+</UserControl>

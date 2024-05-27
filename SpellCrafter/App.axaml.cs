@@ -2,15 +2,14 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using DialogHostAvalonia;
 using LinqToDB.Data;
 using Material.Styles.Themes;
+using ReactiveUI;
 using SpellCrafter.Data;
-using SpellCrafter.Enums;
 using SpellCrafter.Services;
 using SpellCrafter.ViewModels;
 using SpellCrafter.Views;
-using System.Diagnostics;
+using Splat;
 
 namespace SpellCrafter
 {
@@ -30,7 +29,13 @@ namespace SpellCrafter
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var mainWindow = new MainWindow();
+                Locator.CurrentMutable.RegisterConstant<IScreen>(new MainWindowViewModel());
+                Locator.CurrentMutable.Register<IViewFor<InstalledAddonsViewModel>>(() => new InstalledAddonsView());
+                Locator.CurrentMutable.Register<IViewFor<BrowseViewModel>>(() => new BrowseView());
+                Locator.CurrentMutable.Register<IViewFor<SettingsViewModel>>(() => new SettingsView());
+                Locator.CurrentMutable.Register<IViewFor<AddonDetailsViewModel>>(() => new AddonDetailsView());
+
+                var mainWindow = new MainWindowView { DataContext = Locator.Current.GetService<IScreen>() };
                 StorageProviderService.Initialize(mainWindow);
                 desktop.MainWindow = mainWindow;
             }

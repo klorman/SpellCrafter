@@ -27,7 +27,7 @@ namespace SpellCrafter.Services
         {
             var addons = new List<Addon>();
 
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
                 return addons;
 
             foreach (var addonDir in Directory.GetDirectories(path))

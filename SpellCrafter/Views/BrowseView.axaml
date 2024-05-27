@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:local="clr-namespace:SpellCrafter.Views"
+			 xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="450"
+			 Focusable="True"
+             x:Class="SpellCrafter.Views.BrowseView"
+			 x:DataType="vm:BrowseViewModel">
+	<Design.DataContext>
+		<vm:BrowseViewModel/>
+	</Design.DataContext>
+	<local:AddonsOverviewView/>
+</UserControl>

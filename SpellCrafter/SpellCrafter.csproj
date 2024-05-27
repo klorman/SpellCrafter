@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<Content Include=".ReflectionDefine\**" />
 		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Remove="Assets\Icons.axaml" />
 		<None Remove=".gitignore" />
 	</ItemGroup>
 	
@@ -37,40 +38,55 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="11.0.10" />
-		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.10" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+		<PackageReference Include="Avalonia" Version="11.1.0-beta2" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.1.0-beta2" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.1.0-beta2" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
-		<PackageReference Include="Avalonia.Diagnostics" Version="11.0.10" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
-		<PackageReference Include="Avalonia.Svg.Skia" Version="11.0.0.18" />
-		<PackageReference Include="Fody" Version="6.8.0">
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.0-beta2" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="11.1.0-beta2" />
+		<PackageReference Include="Fody" Version="6.8.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="linq2db" Version="5.4.1" />
 		<PackageReference Include="linq2db.SQLite" Version="5.4.1" />
-		<PackageReference Include="Material.Avalonia" Version="3.5.0" />
-		<PackageReference Include="Material.Avalonia.DataGrid" Version="3.5.0" />
+		<PackageReference Include="Material.Avalonia" Version="3.6.0" />
+		<PackageReference Include="Material.Avalonia.DataGrid" Version="3.6.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="protobuf-net" Version="3.2.30" />
 		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />
 		<PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
 		<PackageReference Include="System.Data.SQLite" Version="1.0.118" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Views\MainWindowTabs\AddonDetails.axaml.cs">
-			<DependentUpon>AddonDetails.axaml</DependentUpon>
+		<Compile Update="Controls\MenuButton.axaml.cs">
+		  <DependentUpon>MenuButton.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\MainWindowView.axaml.cs">
+		  <DependentUpon>MainWindowView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\AddonDetailsView.axaml.cs">
+			<DependentUpon>AddonDetailsView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\AddonsOverviewView.axaml.cs">
+		  <DependentUpon>AddonsOverviewView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\BrowseView.axaml.cs">
+		  <DependentUpon>BrowseView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\InstalledAddonsView.axaml.cs">
+		  <DependentUpon>InstalledAddonsView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SettingsView.axaml.cs">
+		  <DependentUpon>SettingsView.axaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="DialogHost.Avalonia">
-			<HintPath>DialogHost.Avalonia.dll</HintPath>
-		</Reference>
+	  <AvaloniaXaml Update="Assets\Icons.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaXaml>
 	</ItemGroup>
 </Project>

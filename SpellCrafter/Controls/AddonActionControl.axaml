@@ -40,10 +40,10 @@
 					ConverterParameter={x:Static enums:AddonState.UpdateError}}">
 			<Button Content="Update" FontWeight="Bold" Padding="14 7" 
 					Command="{Binding Path=UpdateCommand}"/>
-			<controls:ColoredSvg Path="avares://SpellCrafter/Assets/alert.svg"
-								 Margin="7 0 0 0"
-								 VerticalAlignment="Center"
-								 ToolTip.Tip="An error occurred during the update!"/>
+			<PathIcon Data="{StaticResource AlertIcon}"
+					  Margin="7 0 0 0"
+					  VerticalAlignment="Center"
+					  ToolTip.Tip="An error occurred during the update!"/>
 		</StackPanel>
 	</StackPanel>
 </UserControl>

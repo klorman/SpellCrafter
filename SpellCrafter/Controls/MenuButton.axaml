@@ -1,0 +1,35 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:SpellCrafter.Controls"
+		xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple"
+		xmlns:system="clr-namespace:System;assembly=netstandard">
+	<Design.PreviewWith>
+		<controls:MenuButton Text="Test" />
+	</Design.PreviewWith>
+
+	<Style Selector="controls|MenuButton">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<RadioButton Height="{TemplateBinding Height}"
+								 Command="{TemplateBinding Command}"
+								 IsChecked="{TemplateBinding IsChecked}"
+								 GroupName="{TemplateBinding GroupName}"
+								 Cursor="Hand"
+								 Theme="{StaticResource MaterialButtonlikeRadioButton}"
+								 Padding="0" 
+								 HorizontalAlignment="Stretch">
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="12 0">
+							<PathIcon Data="{TemplateBinding Icon}"/>
+							<TextBlock Text="{TemplateBinding Text}"
+									   IsVisible="{TemplateBinding IsTextVisible}"
+									   Margin="12 0 0 0" VerticalAlignment="Center"
+									   Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"/>
+						</StackPanel>
+					</RadioButton>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</Styles>

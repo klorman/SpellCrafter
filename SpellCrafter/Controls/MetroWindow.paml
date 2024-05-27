@@ -28,13 +28,13 @@
 											</Styles>
 										</Grid.Styles>
 										<ContentPresenter Grid.Column="0" x:Name="TitleBarMenuContent" Content="{Binding Path=TitleBarMenuContent, RelativeSource={RelativeSource AncestorType=local:MetroWindow}}" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
-										<Button Classes="Flat" Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="10" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="minimiseButton" />
-										<Button Classes="Flat" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="10" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="restoreButton" />
-										<Button Classes="Flat" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="10" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="closeButton" />
+										<Button Classes="Flat" Grid.Column="1" Background="Transparent" BorderThickness="0" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="minimiseButton" />
+										<Button Classes="Flat" Grid.Column="2" Background="Transparent" BorderThickness="0" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="restoreButton" />
+										<Button Classes="Flat" Grid.Column="3" Background="Transparent" BorderThickness="0" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="closeButton" />
 									</Grid>
 								</Grid>
 								
-								<ContentPresenter Name="PART_ContentPresenter" Grid.Row="1" Content="{TemplateBinding Content}" Margin="-3 0 -3 -3" />
+								<ContentPresenter Name="PART_ContentPresenter" Grid.Row="1" Content="{TemplateBinding Content}" Margin="-3 1 -3 -3" />
 							</Grid>
 						</Border>
 							
@@ -78,7 +78,7 @@
 	<Style Selector="local|MetroWindow /template/ Button#minimiseButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-minimize.svg"/>
+				<PathIcon Data="{StaticResource WindowMinimizeIcon}" Height="14" Width="14"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -86,7 +86,7 @@
 	<Style Selector="local|MetroWindow /template/ Button#restoreButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-maximize.svg"/>
+				<PathIcon Data="{StaticResource WindowMaximizeIcon}" Height="14" Width="14"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -94,7 +94,7 @@
 	<Style Selector="local|MetroWindow:maximised /template/ Button#restoreButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-restore.svg"/>
+				<PathIcon Data="{StaticResource WindowRestoreIcon}" Height="14" Width="14"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -102,7 +102,7 @@
 	<Style Selector="local|MetroWindow /template/ Button#closeButton">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-close.svg"/>
+				<PathIcon Data="{StaticResource WindowCloseIcon}" Height="14" Width="14"/>
 			</Template>
 		</Setter>
 	</Style>
@@ -110,8 +110,8 @@
 	<Style Selector="Button#closeButton:pointerover /template/ ContentPresenter">
 		<Setter Property="Content">
 			<Template>
-				<controls:ColoredSvg Path="avares://SpellCrafter/Assets/window-close.svg"
-									 SvgColor="{DynamicResource MaterialPrimaryMidForegroundBrush}"/>
+				<PathIcon Data="{StaticResource WindowCloseIcon}" Height="14" Width="14"
+						  Foreground="{DynamicResource MaterialPrimaryMidForegroundBrush}"/>
 			</Template>
 		</Setter>
 	</Style>

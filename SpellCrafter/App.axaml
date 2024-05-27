@@ -6,13 +6,12 @@
     <Application.Styles>
 		<themes:MaterialThemeBase/>
 		<StyleInclude Source="avares://SpellCrafter/Controls/MetroWindow.paml"/>
-		<StyleInclude Source="avares://SpellCrafter/Styles/TabControl.axaml"/>
+		<StyleInclude Source="avares://SpellCrafter/Controls/MenuButton.axaml"/>
 		<StyleInclude Source="avares://SpellCrafter/Styles/DataGrid.axaml"/>
-		<StyleInclude Source="avares://SpellCrafter/Styles/ColoredSvg.axaml"/>
 		<StyleInclude Source="avares://SpellCrafter/Styles/ContextMenu.axaml"/>
-
-		<dha:DialogHostStyles/>
-
+		<StyleInclude Source="avares://SpellCrafter/Styles/TabControl.axaml"/>
+		<StyleInclude Source="avares://SpellCrafter/Assets/Icons.axaml"/>
+		
 		<Style Selector=":is(Control)">
 			<Setter Property="FocusAdorner">
 				<Setter.Value>
