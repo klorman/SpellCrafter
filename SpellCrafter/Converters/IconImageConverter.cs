@@ -9,9 +9,9 @@ namespace SpellCrafter.Converters
 {
     public class IconImageConverter : IValueConverter
     {
-        private static IconImageConverter s_converter = new IconImageConverter();
+        private static IconImageConverter _sConverter = new IconImageConverter();
 
-        public static IconImageConverter Converter => s_converter;
+        public static IconImageConverter Converter => _sConverter;
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {

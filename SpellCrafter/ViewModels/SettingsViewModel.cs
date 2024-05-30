@@ -5,7 +5,6 @@ using SpellCrafter.Services;
 using System.Diagnostics;
 using System.IO;
 using System;
-using System.Reactive.Linq;
 using Splat;
 
 namespace SpellCrafter.ViewModels
@@ -61,7 +60,7 @@ namespace SpellCrafter.ViewModels
             {
                 AppSettings.Instance.AddonsDirectory = AddonsDirectory;
                 AppSettings.Instance.Save();
-                AddonsScannerService.ScanAndUpdateDatabase(AddonsDirectory);
+                AddonsScannerService.ScanAndSyncLocalAddons(AddonsDirectory);
             }
         }
     }

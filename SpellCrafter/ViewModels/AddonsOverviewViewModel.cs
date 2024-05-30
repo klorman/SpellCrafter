@@ -9,7 +9,7 @@ namespace SpellCrafter.ViewModels
 {
     public class AddonsOverviewViewModel : ViewModelBase
     {
-        protected List<Addon> modsSource = new();
+        protected List<Addon> ModsSource = new();
         [Reactive] public ObservableCollection<Addon> DisplayedMods { get; set; } = new();
         [Reactive] public string ModsFilter { get; set; } = "";
         [Reactive] public bool BrowseMode { get; set; }
@@ -43,7 +43,7 @@ namespace SpellCrafter.ViewModels
             {
                 DisplayedMods = new ObservableCollection<Addon>
                 (
-                    from addon in modsSource
+                    from addon in ModsSource
                     where
                     
                         addon.Name.ToLower().Contains(filter) ||
@@ -55,7 +55,7 @@ namespace SpellCrafter.ViewModels
             }
             else
             {
-                DisplayedMods = new ObservableCollection<Addon>(modsSource);
+                DisplayedMods = new ObservableCollection<Addon>(ModsSource);
             }
         }
 

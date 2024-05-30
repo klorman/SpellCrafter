@@ -1,22 +1,46 @@
-﻿using LinqToDB;
-using LinqToDB.Data;
-using SpellCrafter.Models;
-
+﻿using SpellCrafter.Models;
+using SQLite;
+using System;
 
 namespace SpellCrafter.Data
 {
-    public class ESODataConnection : DataConnection
+    public class EsoDataConnection() : SQLiteConnection("ESOAddons.db")
     {
-        public ESODataConnection() : base("ESO") { }
+        /// <summary>
+        /// Ensures that a database table is created only if it does not already exist.
+        /// This function is particularly necessary when publishing with native AOT,
+        /// where the CreateTable method attempts to create the table regardless of its existence..
+        /// </summary>
+        public bool CheckTableExists<T>()
+        {
+            try
+            {
+                ExecuteScalar<string>($"SELECT name FROM sqlite_master WHERE type='table' AND name='{typeof(T).Name}'");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
-        public ITable<CommonAddon> CommonAddons => this.GetTable<CommonAddon>();
-        public ITable<LocalAddon> LocalAddons => this.GetTable<LocalAddon>();
-        public ITable<OnlineAddon> OnlineAddons => this.GetTable<OnlineAddon>();
-        public ITable<AddonDependency> AddonDependencies => this.GetTable<AddonDependency>();
-        public ITable<Author> Authors => this.GetTable<Author>();
-        public ITable<AddonAuthor> AddonAuthors => this.GetTable<AddonAuthor>();
-        public ITable<Category> Categories => this.GetTable<Category>();
-        public ITable<AddonCategory> AddonCategories => this.GetTable<AddonCategory>();
+        public void CreateTableIfNotExists<T>()
+        {
+            if (CheckTableExists<T>())
+                CreateTable<T>();
+        }
 
+        public static void CreateTablesIfNotExists()
+        {
+            using var db = new EsoDataConnection();
+            db.CreateTableIfNotExists<CommonAddon>();
+            db.CreateTableIfNotExists<LocalAddon>();
+            db.CreateTableIfNotExists<OnlineAddon>();
+            db.CreateTableIfNotExists<Author>();
+            db.CreateTableIfNotExists<Category>();
+            db.CreateTableIfNotExists<AddonAuthor>();
+            db.CreateTableIfNotExists<AddonCategory>();
+            db.CreateTableIfNotExists<AddonDependency>();
+        }
     }
 }

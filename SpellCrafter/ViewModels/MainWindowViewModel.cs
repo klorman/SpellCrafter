@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Reactive.Linq;
 using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using SpellCrafter.Enums;
 using SpellCrafter.Messages;
-using SpellCrafter.Models;
 
 namespace SpellCrafter.ViewModels
 {

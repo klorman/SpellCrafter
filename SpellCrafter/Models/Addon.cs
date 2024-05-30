@@ -2,30 +2,26 @@
 using ReactiveUI.Fody.Helpers;
 using SpellCrafter.Enums;
 using SpellCrafter.Messages;
-using SpellCrafter.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.IO;
 using System.Windows.Input;
 
 namespace SpellCrafter.Models
 {
     public class Addon : ReactiveObject
     {
-        private const string baseDownloadLink = "https://www.esoui.com/downloads";
+        private const string BaseDownloadLink = "https://www.esoui.com/downloads";
         
-        public List<CommonAddon> Dependencies { get; set; } = new();
+        public List<CommonAddon> Dependencies { get; set; } = [];
         public int CommonAddonId { get; set; } = -1;
         [Reactive] public string Name { get; set; } = string.Empty;
         [Reactive] public string Description { get; set; } = string.Empty;
         [Reactive] public AddonState AddonState { get; set; } = AddonState.NotInstalled;
         [Reactive] public AddonInstallationMethod InstallationMethod { get; set; } = AddonInstallationMethod.Other;
         [Reactive] public string Downloads { get; set; } = string.Empty;
-        [Reactive] public ObservableCollection<Category> Categories { get; set; } = new();
-        [Reactive] public ObservableCollection<Author> Authors { get; set; } = new();
+        [Reactive] public ObservableCollection<Category> Categories { get; set; } = [];
+        [Reactive] public ObservableCollection<Author> Authors { get; set; } = [];
         [Reactive] public string UniqueIdentifier { get; set; } = string.Empty;
         [Reactive] public string FileSize { get; set; } = string.Empty;
         [Reactive] public string Overview { get; set; } = string.Empty;

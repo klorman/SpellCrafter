@@ -1,7 +1,4 @@
-using ReactiveUI;
-using SpellCrafter.Enums;
 using SpellCrafter.ViewModels;
-using System.Diagnostics;
 
 namespace SpellCrafter.Views
 {

@@ -7,9 +7,9 @@ namespace SpellCrafter.Converters
 {
     public class ResizeCursorConverter : IValueConverter
     {
-        private static ResizeCursorConverter s_converter = new ResizeCursorConverter();
+        private static ResizeCursorConverter _sConverter = new ResizeCursorConverter();
 
-        public static ResizeCursorConverter Converter => s_converter;
+        public static ResizeCursorConverter Converter => _sConverter;
 
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {

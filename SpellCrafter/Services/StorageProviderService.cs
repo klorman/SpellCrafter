@@ -13,7 +13,7 @@ namespace SpellCrafter.Services
             _topLevel = topLevel;
         }
 
-        public async static Task<string> OpenFolderPickerAsync(FolderPickerOpenOptions options)
+        public static async Task<string> OpenFolderPickerAsync(FolderPickerOpenOptions options)
         {
             if (_topLevel == null) return "";
 

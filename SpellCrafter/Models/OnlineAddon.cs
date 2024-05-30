@@ -1,26 +1,26 @@
-﻿using LinqToDB.Mapping;
+﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace SpellCrafter.Models
 {
-    [Table(Name = "OnlineAddons")]
     public class OnlineAddon
     {
-        [PrimaryKey, Identity]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        [Column, NotNull]
+        [ForeignKey(typeof(CommonAddon))]
         public int CommonAddonId { get; set; }
 
-        [Column, NotNull]
+        [MaxLength(20)]
         public string LatestVersion { get; set; } = string.Empty;
 
-        [Column, NotNull]
+        [MaxLength(20)]
         public string DisplayedLatestVersion { get; set; } = string.Empty;
 
-        [Column, NotNull]
+        [MaxLength(100)]
         public string UniqueIdentifier { get; set; } = string.Empty;
 
-        [Association(ThisKey = nameof(CommonAddonId), OtherKey = nameof(Models.CommonAddon.Id), CanBeNull = false)]
+        [OneToOne]
         public CommonAddon CommonAddon { get; set; } = null!;
     }
 }

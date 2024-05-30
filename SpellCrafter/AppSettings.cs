@@ -6,7 +6,7 @@ namespace SpellCrafter
 {
     public class AppSettings
     {
-        private const string _settingsPath = "settings.json";
+        private const string SettingsPath = "settings.json";
 
         private static AppSettings? _instance;
         public static AppSettings Instance => _instance ?? (_instance = Load());
@@ -17,7 +17,7 @@ namespace SpellCrafter
 
         private static AppSettings Load()
         {
-            var filePath = _settingsPath;
+            var filePath = SettingsPath;
             if (File.Exists(filePath))
             {
                 var json = File.ReadAllText(filePath);
@@ -29,7 +29,7 @@ namespace SpellCrafter
         public void Save()
         {
             var json = JsonConvert.SerializeObject(this);
-            File.WriteAllText(_settingsPath, json);
+            File.WriteAllText(SettingsPath, json);
         }
     }
 }

@@ -1,30 +1,28 @@
-﻿using LinqToDB.Mapping;
-using SpellCrafter.Enums;
+﻿using SpellCrafter.Enums;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace SpellCrafter.Models
 {
-    [Table(Name = "LocalAddons")]
     public class LocalAddon
     {
-        [PrimaryKey, Identity]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        [Column, NotNull]
+        [ForeignKey(typeof(CommonAddon))]
         public int CommonAddonId { get; set; }
 
-        [Column, NotNull]
+        [MaxLength(20)]
         public string Version { get; set; } = string.Empty;
 
-        [Column, NotNull]
+        [MaxLength(20)]
         public string DisplayedVersion { get; set; } = string.Empty;
 
-        [Column, NotNull]
         public AddonState State { get; set; } = AddonState.NotInstalled;
 
-        [Column, NotNull]
         public AddonInstallationMethod InstallationMethod { get; set; } = AddonInstallationMethod.Other;
 
-        [Association(ThisKey = nameof(CommonAddonId), OtherKey = nameof(Models.CommonAddon.Id), CanBeNull = false)]
+        [OneToOne]
         public CommonAddon CommonAddon { get; set; } = null!;
     }
 }

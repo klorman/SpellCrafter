@@ -3,7 +3,7 @@
     public enum DialogResult
     {
         None,
-        OK,
+        Ok,
         Cancel,
         Yes,
         No

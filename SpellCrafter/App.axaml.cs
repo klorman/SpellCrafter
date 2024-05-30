@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using LinqToDB.Data;
 using Material.Styles.Themes;
 using ReactiveUI;
 using SpellCrafter.Data;
@@ -22,8 +21,7 @@ namespace SpellCrafter
 
         public override void OnFrameworkInitializationCompleted()
         {
-            DataConnection.DefaultSettings = new ESODbSettings();
-            ESODbInitializer.CreateTablesIfNotExists();
+            EsoDataConnection.CreateTablesIfNotExists();
 
             Current!.Resources["MaterialPaperBrush"] = new SolidColorBrush(Color.Parse("#FFFFFF"));
 

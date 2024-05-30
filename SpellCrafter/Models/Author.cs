@@ -1,14 +1,18 @@
-﻿using LinqToDB.Mapping;
+﻿using System.Collections.Generic;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace SpellCrafter.Models
 {
-    [Table(Name = "Authors")]
     public class Author
     {
-        [PrimaryKey, Identity]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        [Column, NotNull]
+        [MaxLength(50), Unique]
         public string Name { get; set; } = string.Empty;
+
+        [ManyToMany(typeof(AddonAuthor))]
+        public List<CommonAddon> CommonAddons { get; set; } = [];
     }
 }
