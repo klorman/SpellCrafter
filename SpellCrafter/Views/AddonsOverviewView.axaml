@@ -78,7 +78,7 @@
 			</materialcontrols:Card>
 
 			<Button Classes="Flat" Grid.Column="5" Margin="10 0 0 0" Padding="5" Width="{Binding $self.Bounds.Height}"
-					Command="{Binding Path=FilterModsCommand}">
+					Command="{Binding Path=FilterModsCommand}" IsEnabled="False">
 				<PathIcon Data="{StaticResource FilterIcon}"/>
 			</Button>
 
@@ -88,7 +88,7 @@
 			</Button>
 		</Grid>
 
-		<DataGrid CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True"
+		<DataGrid CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsVisible="{Binding Path=IsAddonsDisplayed}"
 				  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 				  AutoGenerateColumns="False" SelectionMode="Single" Grid.Row="1" 
 				  Margin="0 14 0 0" ItemsSource="{Binding Path=DisplayedMods}" SelectedItem="{Binding Path=DataGridModsSelectedItem}">
@@ -168,5 +168,11 @@
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
-	</Grid>
+		<StackPanel Grid.Row="1" 
+                    IsVisible="{Binding Path=!IsAddonsDisplayed}"
+                    VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="No Results" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
+                       FontSize="30"/>
+        </StackPanel>
+    </Grid>
 </UserControl>

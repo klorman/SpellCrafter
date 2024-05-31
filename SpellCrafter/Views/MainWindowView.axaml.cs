@@ -1,3 +1,4 @@
+using ReactiveUI;
 using SpellCrafter.ViewModels;
 
 namespace SpellCrafter.Views
@@ -10,6 +11,8 @@ namespace SpellCrafter.Views
 
             var vm = new MainWindowViewModel();
             DataContext = vm;
+
+            this.WhenActivated(_ => { });
         }
     }
 }

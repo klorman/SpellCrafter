@@ -18,16 +18,22 @@
 				   FontSize="24" FontWeight="Bold"/>
 		<TextBlock Text="Addons Folder" Margin="0 20"
 				   Foreground="{DynamicResource MaterialBodyBrush}" FontSize="20"/>
-		<Grid ColumnDefinitions="* Auto">
-			<materialcontrols:Card Padding="7 0 0 0">
-				<TextBox Grid.Column="0" Text="{Binding Path=AddonsDirectory}" IsReadOnly="True"
-						 Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
-						 Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Not specified"/>
+		<Grid ColumnDefinitions="* Auto" RowDefinitions="Auto Auto">
+			<materialcontrols:Card Grid.Column="0" Grid.Row="0" Padding="7 0 0 0">
+				<TextBox Text="{Binding Path=AddonsDirectory}" IsReadOnly="True"
+                         Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
+                         Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Not specified"/>
 			</materialcontrols:Card>
-			<Button Grid.Column="1" Padding="4" Classes="Flat" Command="{Binding Path=BrowseAddonsFolderCommand}"
+			<Button Grid.Column="1" Grid.Row="0" Padding="4" Classes="Flat" Command="{Binding Path=BrowseAddonsFolderCommand}"
 					Margin="14 0 0 0" Width="{Binding $self.Bounds.Height}" ToolTip.Tip="Manually select addons folder">
 				<PathIcon Data="{StaticResource FolderSettingsIcon}"/>
 			</Button>
+			<TextBlock Grid.Column="0" Grid.Row="1" 
+                       IsVisible="{Binding AddonsDirectory, Converter={x:Static StringConverters.IsNullOrEmpty}}" 
+                       Text="Please specify the path to the addons directory"
+                       Foreground="#cc0000"
+					   FontWeight="Bold"
+                       Margin="10 16 10 0"/>
 		</Grid>
 		<Button Content="Apply" Command="{Binding Path=ApplyCommand}" 
 				HorizontalAlignment="Right" Margin="0 28 0 0"/>

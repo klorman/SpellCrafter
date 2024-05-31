@@ -21,8 +21,6 @@ namespace SpellCrafter
 
         public override void OnFrameworkInitializationCompleted()
         {
-            EsoDataConnection.CreateTablesIfNotExists();
-
             Current!.Resources["MaterialPaperBrush"] = new SolidColorBrush(Color.Parse("#FFFFFF"));
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

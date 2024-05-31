@@ -1,6 +1,7 @@
 ﻿using SpellCrafter.Models;
 using SQLite;
 using System;
+using System.Diagnostics;
 
 namespace SpellCrafter.Data
 {

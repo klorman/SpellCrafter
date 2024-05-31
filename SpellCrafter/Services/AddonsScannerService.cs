@@ -1,5 +1,4 @@
 ﻿using DynamicData;
-using SpellCrafter.Data;
 using SpellCrafter.Enums;
 using SpellCrafter.Models;
 using System;
@@ -12,14 +11,7 @@ namespace SpellCrafter.Services
 {
     public static partial class AddonsScannerService
     {
-        public static void ScanAndSyncLocalAddons(string path)
-        {
-            var addons = ScanDirectory(path);
-            using var db = new EsoDataConnection();
-            AddonDataManager.UpdateLocalAddonList(db, addons);
-        }
-
-        private static List<Addon> ScanDirectory(string path)
+        public static List<Addon> ScanDirectory(string path)
         {
             var addons = new List<Addon>();
 

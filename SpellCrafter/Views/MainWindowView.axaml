@@ -2,13 +2,11 @@
 					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					  xmlns:dha="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
 					  xmlns:vm="clr-namespace:SpellCrafter.ViewModels"
 					  xmlns:models="clr-namespace:SpellCrafter.Models"
-					  xmlns:local="clr-namespace:SpellCrafter.Views"
+					  xmlns:local="clr-namespace:SpellCrafter"
 					  xmlns:controls="clr-namespace:SpellCrafter.Controls"
 					  xmlns:converters="clr-namespace:SpellCrafter.Converters"
-					  xmlns:tabs="clr-namespace:SpellCrafter.Views.MainWindowTabs"
 					  xmlns:rxui="http://reactiveui.net"
 					  mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
 					  x:Class="SpellCrafter.Views.MainWindowView"
@@ -95,27 +93,35 @@
 				</ToggleButton>
 
 				<controls:MenuButton DockPanel.Dock="Top"
+									 x:Name="MyModsButton"
 									 GroupName="SideBar"
 									 Command="{Binding Path=ShowInstalledAddonsCommand}"
 									 Height="50"
 									 Icon="{StaticResource HomeStorageIcon}"
 									 Text="My Mods"
+									 IsChecked="{Binding Path=IsMyModsButtonChecked}"
+									 IsEnabled="{Binding Source={x:Static local:AppSettings.Instance}, Path=AddonsDirectory, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 									 IsTextVisible="{Binding Path=IsPaneOpen, Mode=TwoWay, ElementName=MainSplitView}"/>
 
 				<controls:MenuButton DockPanel.Dock="Top"
+									 x:Name="BrowseButton"
 									 GroupName="SideBar"
 									 Command="{Binding Path=ShowBrowseCommand}"
 									 Height="50"
 									 Icon="{StaticResource BrowseIcon}"
 									 Text="Browse"
+									 IsChecked="{Binding Path=IsBrowseButtonChecked}"
+                                     IsEnabled="{Binding Source={x:Static local:AppSettings.Instance}, Path=AddonsDirectory, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 									 IsTextVisible="{Binding Path=IsPaneOpen, Mode=TwoWay, ElementName=MainSplitView}"/>
 
 				<controls:MenuButton DockPanel.Dock="Bottom"
+									 x:Name="SettingsButton"
 									 GroupName="SideBar"
 									 Command="{Binding Path=ShowSettingsCommand}"
 									 Height="50"
 									 Icon="{StaticResource CogIcon}"
 									 Text="Settings"
+									 IsChecked="{Binding Path=IsSettingsButtonChecked}"
 									 IsTextVisible="{Binding Path=IsPaneOpen, Mode=TwoWay, ElementName=MainSplitView}"/>
 			</DockPanel>
 		</SplitView.Pane>

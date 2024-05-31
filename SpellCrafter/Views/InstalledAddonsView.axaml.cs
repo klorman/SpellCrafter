@@ -12,8 +12,6 @@ namespace SpellCrafter.Views
 
             var vm = new InstalledAddonsViewModel();
             DataContext = vm;
-
-            this.WhenActivated(_ => { });
         }
     }
 }

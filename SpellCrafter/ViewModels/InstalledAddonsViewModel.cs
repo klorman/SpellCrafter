@@ -3,15 +3,11 @@ using SpellCrafter.Data;
 using SpellCrafter.Services;
 using Splat;
 using System.Diagnostics;
-using System.Reactive.Disposables;
 
 namespace SpellCrafter.ViewModels
 {
-    public class InstalledAddonsViewModel : AddonsOverviewViewModel, IActivatableViewModel, IRoutableViewModel
+    public class InstalledAddonsViewModel : AddonsOverviewViewModel, IRoutableViewModel
     {
-        private bool _isInitialized = false;
-        public ViewModelActivator Activator { get; } = new();
-
         public string? UrlPathSegment => "/installed";
 
         public IScreen HostScreen { get; }
@@ -20,34 +16,31 @@ namespace SpellCrafter.ViewModels
         {
             HostScreen = screen ?? Locator.Current.GetService<IScreen>()!;
 
-            this.WhenActivated((CompositeDisposable disposable) =>
-            {
-                if (!_isInitialized)
-                {
-                    _isInitialized = LoadLocalAddons();
-                }
-            });
-
-            RefreshModsCommand = new RelayCommand(_ => LoadLocalAddons());
+            LoadLocalAddons();
         }
 
-        private bool LoadLocalAddons()
+        private void LoadLocalAddons()
         {
             var addonsDirectory = AppSettings.Instance.AddonsDirectory;
 
             if (string.IsNullOrEmpty(addonsDirectory))
             {
                 Debug.WriteLine("AddonsDirectory is empty!");
-                return false;
+                return;
             }
 
-            //AddonsScannerService.ScanAndSyncLocalAddons(addonsDirectory);
-
-            using var db = new EsoDataConnection();
-            ModsSource = AddonDataManager.GetAllLocalAddonsWithDetails(db);
+            ModsSource = AddonDataManager.InstalledAddons;
             FilterMods();
+        }
 
-            return true;
+        protected override void RefreshMods()
+        {
+            base.RefreshMods();
+
+            var addons = AddonsScannerService.ScanDirectory(AppSettings.Instance.AddonsDirectory);
+            using var db = new EsoDataConnection();
+            AddonDataManager.UpdateLocalAddonList(db, addons);
+            LoadLocalAddons();
         }
     }
 }

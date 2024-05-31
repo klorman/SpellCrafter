@@ -1,26 +1,32 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
-using ReactiveUI.Fody.Helpers;
+using ReactiveUI;
 
 namespace SpellCrafter
 {
-    public class AppSettings
+    public class AppSettings : ReactiveObject
     {
         private const string SettingsPath = "settings.json";
 
         private static AppSettings? _instance;
-        public static AppSettings Instance => _instance ?? (_instance = Load());
+        public static AppSettings Instance => _instance ??= Load();
 
-        [Reactive] public string AddonsDirectory { get; set; } = string.Empty;
+        [JsonProperty(PropertyName = nameof(AddonsDirectory))]
+        private string _addonsDirectory = string.Empty;
+
+        public string AddonsDirectory
+        {
+            get => _addonsDirectory;
+            set => Instance.RaiseAndSetIfChanged(ref _addonsDirectory, value);
+        }
 
         private AppSettings() { }
 
         private static AppSettings Load()
         {
-            var filePath = SettingsPath;
-            if (File.Exists(filePath))
+            if (File.Exists(SettingsPath))
             {
-                var json = File.ReadAllText(filePath);
+                var json = File.ReadAllText(SettingsPath);
                 return JsonConvert.DeserializeObject<AppSettings>(json) ?? new AppSettings();
             }
             return new AppSettings();

@@ -6,16 +6,17 @@ using System.Diagnostics;
 using System.IO;
 using System;
 using Splat;
+using SpellCrafter.Data;
 
 namespace SpellCrafter.ViewModels
 {
     public class SettingsViewModel : ViewModelBase, IRoutableViewModel
     {
-        const string AddonsDirectoryName = "AddOns";
+        private const string AddonsDirectoryName = "AddOns";
         public string? UrlPathSegment => "/settings";
         public IScreen HostScreen { get; }
 
-        [Reactive] public string AddonsDirectory { get; set; } = "";
+        [Reactive] public string AddonsDirectory { get; set; }
 
         public RelayCommand BrowseAddonsFolderCommand { get; }
         public RelayCommand ApplyCommand { get; }
@@ -23,6 +24,7 @@ namespace SpellCrafter.ViewModels
         public SettingsViewModel(IScreen? screen = null) : base()
         {
             HostScreen = screen ?? Locator.Current.GetService<IScreen>()!;
+
             AddonsDirectory = AppSettings.Instance.AddonsDirectory;
 
             BrowseAddonsFolderCommand = new RelayCommand(_ => BrowseAddonsFolder());
@@ -43,14 +45,12 @@ namespace SpellCrafter.ViewModels
                 Title = "Addons folder"
             };
 
-            var folderPath = await StorageProviderService.OpenFolderPickerAsync(options);
-            var folderName = Path.GetFileName(folderPath);
-            Debug.WriteLine(folderPath, folderName);
+            var directoryPath = await StorageProviderService.OpenFolderPickerAsync(options);
 
-            if (string.IsNullOrEmpty(folderName) || !folderName.Equals(AddonsDirectoryName, StringComparison.OrdinalIgnoreCase))
+            if (!CheckIsAddonDirectoryValid(directoryPath))
                 return;
 
-            AddonsDirectory = folderPath;
+            AddonsDirectory = directoryPath;
         }
 
         private void Apply()
@@ -60,8 +60,19 @@ namespace SpellCrafter.ViewModels
             {
                 AppSettings.Instance.AddonsDirectory = AddonsDirectory;
                 AppSettings.Instance.Save();
-                AddonsScannerService.ScanAndSyncLocalAddons(AddonsDirectory);
+
+                var addons = AddonsScannerService.ScanDirectory(AddonsDirectory);
+                using var db = new EsoDataConnection();
+                AddonDataManager.UpdateLocalAddonList(db, addons);
             }
+        }
+
+        public static bool CheckIsAddonDirectoryValid(string? directoryPath)
+        {
+            var directoryName = Path.GetFileName(directoryPath);
+
+            return !string.IsNullOrEmpty(directoryName) &&
+                   directoryName.Equals(AddonsDirectoryName, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

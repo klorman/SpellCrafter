@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Disposables;
 using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -6,16 +7,40 @@ using SpellCrafter.Messages;
 
 namespace SpellCrafter.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase, IScreen
+    public class MainWindowViewModel : ViewModelBase, IScreen, IActivatableViewModel
     {
+        public ViewModelActivator Activator { get; } = new();
         [Reactive] public RoutingState Router { get; set; } = new();
+        [Reactive] public bool IsMyModsButtonChecked { get; set; }
+        [Reactive] public bool IsBrowseButtonChecked { get; set; }
+        [Reactive] public bool IsSettingsButtonChecked { get; set; }
 
         public ICommand ShowInstalledAddonsCommand { get; }
         public ICommand ShowBrowseCommand { get; }
         public ICommand ShowSettingsCommand { get; }
 
-        public MainWindowViewModel() : base()
+        public MainWindowViewModel()
         {
+            var isAddonsDirectoryValid =
+                SettingsViewModel.CheckIsAddonDirectoryValid(AppSettings.Instance.AddonsDirectory);
+
+            if (!isAddonsDirectoryValid)
+                AppSettings.Instance.AddonsDirectory = string.Empty;
+
+            this.WhenActivated((CompositeDisposable _) =>
+            {
+                if (isAddonsDirectoryValid)
+                {
+                    Router.Navigate.Execute(new InstalledAddonsViewModel());
+                    IsMyModsButtonChecked = true;
+                }
+                else
+                {
+                    Router.Navigate.Execute(new SettingsViewModel());
+                    IsSettingsButtonChecked = true;
+                }
+            });
+
             MessageBus.Current.Listen<ViewAddonMessage>()
                 .Subscribe(message =>
                 {
@@ -46,5 +71,6 @@ namespace SpellCrafter.ViewModels
                 _ => !(Router.GetCurrentViewModel() is SettingsViewModel)
             );
         }
+
     }
 }
