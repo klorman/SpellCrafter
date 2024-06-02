@@ -61,7 +61,7 @@ namespace SpellCrafter.ViewModels
                 AppSettings.Instance.AddonsDirectory = AddonsDirectory;
                 AppSettings.Instance.Save();
 
-                var addons = AddonsScannerService.ScanDirectory(AddonsDirectory);
+                var addons = LocalAddonsScannerService.ScanDirectory(AddonsDirectory);
                 using var db = new EsoDataConnection();
                 AddonDataManager.UpdateLocalAddonList(db, addons);
             }

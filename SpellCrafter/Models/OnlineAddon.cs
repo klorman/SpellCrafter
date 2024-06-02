@@ -18,7 +18,7 @@ namespace SpellCrafter.Models
         public string DisplayedLatestVersion { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string UniqueIdentifier { get; set; } = string.Empty;
+        public int? UniqueId { get; set; }
 
         [OneToOne]
         public CommonAddon CommonAddon { get; set; } = null!;

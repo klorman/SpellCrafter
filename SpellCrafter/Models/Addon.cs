@@ -14,7 +14,7 @@ namespace SpellCrafter.Models
         private const string BaseDownloadLink = "https://www.esoui.com/downloads";
         
         public List<CommonAddon> Dependencies { get; set; } = [];
-        public int CommonAddonId { get; set; } = -1;
+        public int? CommonAddonId { get; set; }
         [Reactive] public string Name { get; set; } = string.Empty;
         [Reactive] public string Description { get; set; } = string.Empty;
         [Reactive] public AddonState AddonState { get; set; } = AddonState.NotInstalled;
@@ -22,7 +22,7 @@ namespace SpellCrafter.Models
         [Reactive] public string Downloads { get; set; } = string.Empty;
         [Reactive] public ObservableCollection<Category> Categories { get; set; } = [];
         [Reactive] public ObservableCollection<Author> Authors { get; set; } = [];
-        [Reactive] public string UniqueIdentifier { get; set; } = string.Empty;
+        [Reactive] public int? UniqueId { get; set; }
         [Reactive] public string FileSize { get; set; } = string.Empty;
         [Reactive] public string Overview { get; set; } = string.Empty;
         [Reactive] public string Version { get; set; } = string.Empty;

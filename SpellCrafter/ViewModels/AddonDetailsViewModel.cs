@@ -26,7 +26,7 @@ namespace SpellCrafter.ViewModels
             Downloads = addon.Downloads;
             Categories = addon.Categories;
             Authors = addon.Authors;
-            UniqueIdentifier = addon.UniqueIdentifier;
+            UniqueId = addon.UniqueId;
             FileSize = addon.FileSize;
             Overview = addon.Overview;
             Version = addon.Version;

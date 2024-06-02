@@ -38,6 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AngleSharp" Version="1.1.2" />
 		<PackageReference Include="Avalonia" Version="11.1.0-beta2" />
 		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.1.0-beta2" />
 		<PackageReference Include="Avalonia.Desktop" Version="11.1.0-beta2" />
@@ -55,6 +56,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />
 		<PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
+		<PackageReference Include="SharpCompress" Version="0.37.2" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
 		<PackageReference Include="System.Data.SQLite" Version="1.0.118" />

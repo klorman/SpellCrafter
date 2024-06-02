@@ -37,7 +37,7 @@ namespace SpellCrafter.ViewModels
         {
             base.RefreshMods();
 
-            var addons = AddonsScannerService.ScanDirectory(AppSettings.Instance.AddonsDirectory);
+            var addons = LocalAddonsScannerService.ScanDirectory(AppSettings.Instance.AddonsDirectory);
             using var db = new EsoDataConnection();
             AddonDataManager.UpdateLocalAddonList(db, addons);
             LoadLocalAddons();

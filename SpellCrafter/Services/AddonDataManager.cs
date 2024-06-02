@@ -8,7 +8,7 @@ using SQLiteNetExtensions.Extensions;
 
 namespace SpellCrafter.Services
 {
-    public static class AddonDataManager
+    public static partial class AddonDataManager
     {
         public static List<Addon> InstalledAddons { get; set; }
         public static List<Addon> OnlineAddons { get; set; } = [];
@@ -70,7 +70,7 @@ namespace SpellCrafter.Services
                     InstallationMethod = la.InstallationMethod,
                     Categories = new ObservableCollection<Category>(addonCategoriesList),
                     Authors = new ObservableCollection<Author>(addonAuthorsList),
-                    UniqueIdentifier = commonAddon.OnlineAddon?.UniqueIdentifier ?? string.Empty,
+                    UniqueId = commonAddon.OnlineAddon?.UniqueId,
                     Version = la.Version,
                     DisplayedVersion = la.DisplayedVersion,
                     LatestVersion = commonAddon.OnlineAddon?.LatestVersion ?? string.Empty,
@@ -180,10 +180,10 @@ namespace SpellCrafter.Services
 
             var localCommonAddonIds = new HashSet<int>(localAddons.Select(a => a.CommonAddonId));
             var toInsert = (from updatedAddon in updatedAddons
-                where !localCommonAddonIds.Contains(updatedAddon.CommonAddonId)
+                where updatedAddon.CommonAddonId != null && !localCommonAddonIds.Contains(updatedAddon.CommonAddonId.Value)
                 select new LocalAddon
                 {
-                    CommonAddonId = updatedAddon.CommonAddonId,
+                    CommonAddonId = updatedAddon.CommonAddonId!.Value,
                     Version = updatedAddon.Version,
                     DisplayedVersion = updatedAddon.DisplayedVersion,
                     State = updatedAddon.AddonState,
