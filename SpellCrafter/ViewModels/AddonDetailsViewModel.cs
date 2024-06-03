@@ -4,22 +4,18 @@ using Splat;
 
 namespace SpellCrafter.ViewModels
 {
-    public class AddonDetailsViewModel : Addon, IRoutableViewModel
+    public class AddonDetailsViewModel(IScreen? screen = null) : Addon, IRoutableViewModel
     {
         public string? UrlPathSegment => "/details";
 
-        public IScreen HostScreen { get; }
-
-        public AddonDetailsViewModel(IScreen? screen = null) : base()
-        {
-            HostScreen = screen ?? Locator.Current.GetService<IScreen>()!;
-        }
+        public IScreen HostScreen { get; } = screen ?? Locator.Current.GetService<IScreen>()!;
 
         public void CopyFromAddon(Addon addon)
         {
             Dependencies = addon.Dependencies;
             CommonAddonId = addon.CommonAddonId;
             Name = addon.Name;
+            Title = addon.Title;
             Description = addon.Description;
             AddonState = addon.AddonState;
             InstallationMethod = addon.InstallationMethod;
@@ -33,7 +29,6 @@ namespace SpellCrafter.ViewModels
             DisplayedVersion = addon.DisplayedVersion;
             LatestVersion = addon.LatestVersion;
             DisplayedLatestVersion = addon.DisplayedLatestVersion;
-            GameVersion = addon.GameVersion;
         }
     }
 }

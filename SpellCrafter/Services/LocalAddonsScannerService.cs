@@ -22,7 +22,7 @@ namespace SpellCrafter.Services
                 if (!File.Exists(addonManifest))
                     continue;
 
-                var addon = AddonManifestParser.ParseAddonManifest(addonManifest);
+                var addon = AddonManifestParser.ParseAddonManifest(addonManifest, false);
                 addon.AddonState = AddonState.LatestVersion; // TODO check latest version
 
                 addons.Add(addon);

@@ -30,8 +30,9 @@ namespace SpellCrafter.ViewModels
 
             var parser = new OnlineAddonsParserService();
             var addons = await parser.ParseAddonsAsync();
-            AddonDataManager.OnlineAddons.Clear();
-            AddonDataManager.OnlineAddons.AddRange(addons);
+            using var db = new EsoDataConnection();
+            AddonDataManager.UpdateOnlineAddonList(db, addons);
+            ModsSource = AddonDataManager.OnlineAddons;
             FilterMods();
         }
     }

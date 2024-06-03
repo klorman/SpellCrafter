@@ -17,7 +17,7 @@ namespace SpellCrafter.Models
         [MaxLength(20)]
         public string DisplayedLatestVersion { get; set; } = string.Empty;
 
-        [MaxLength(100)]
+        [Unique]
         public int? UniqueId { get; set; }
 
         [OneToOne]

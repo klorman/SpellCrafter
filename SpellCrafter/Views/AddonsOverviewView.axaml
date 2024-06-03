@@ -110,10 +110,10 @@
 									<Image Source="avares://SpellCrafter/Assets/default-addon-icon.jpg"/>
 								</Border>
 								<Grid Grid.Column="1" RowDefinitions="Auto Auto" VerticalAlignment="Center">
-									<Button Classes="Flat" Grid.Row="0" Content="{Binding Path=Name}" ToolTip.Tip="{Binding Path=$self.Content}"
+									<Button Classes="Flat" Grid.Row="0" Content="{Binding Path=Title}" ToolTip.Tip="{Binding Path=$self.Content}"
 											HorizontalAlignment="Left" Padding="0" Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Bold"
 											Command="{Binding Path=ViewModCommand}"/>
-									<TextBlock Grid.Row="1" Text="TODO" Margin="0 4 0 0"/>
+									<TextBlock Grid.Row="1" Text="{Binding Path=Name}" Margin="0 4 0 0"/>
 								</Grid>
 							</Grid>
 						</DataTemplate>
@@ -147,7 +147,6 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTextColumn Width="1*" MinWidth="80" Header="Game Version" Binding="{Binding Path=GameVersion}"/>
 				<DataGridTemplateColumn Header="Authors" Width="1.5*" MinWidth="120">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>

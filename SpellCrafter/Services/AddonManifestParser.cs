@@ -28,7 +28,7 @@ namespace SpellCrafter.Services
         [GeneratedRegex(@"## Description: (.+)")]
         private static partial Regex DescriptionRegex();
 
-        public static Addon ParseAddonManifest(string manifestPath)
+        public static Addon ParseAddonManifest(string manifestPath, bool isOnline)
         {
             var addon = new Addon();
             var lines = File.ReadAllLines(manifestPath);
@@ -45,6 +45,9 @@ namespace SpellCrafter.Services
                 var displayVersionMatch = DisplayVersionRegex().Match(line);
                 if (displayVersionMatch.Success)
                 {
+                    if (isOnline)
+                        addon.DisplayedLatestVersion = displayVersionMatch.Groups[1].Value.Trim();
+                    
                     addon.DisplayedVersion = displayVersionMatch.Groups[1].Value.Trim();
                     continue;
                 }
@@ -52,7 +55,10 @@ namespace SpellCrafter.Services
                 var versionMatch = VersionRegex().Match(line);
                 if (versionMatch.Success)
                 {
-                    addon.Version = versionMatch.Groups[1].Value;
+                    if (isOnline)
+                        addon.LatestVersion = versionMatch.Groups[1].Value.Trim();
+
+                    addon.Version = versionMatch.Groups[1].Value.Trim();
                     continue;
                 }
 
@@ -74,7 +80,7 @@ namespace SpellCrafter.Services
                 if (titleMatch.Success)
                 {
                     var addonName = titleMatch.Groups[1].Value.Trim();
-                    addon.Name = ColorCodeRegex().Replace(addonName, "");
+                    addon.Title = ColorCodeRegex().Replace(addonName, "");
                 }
 
                 var descriptionMatch = DescriptionRegex().Match(line);
@@ -86,14 +92,18 @@ namespace SpellCrafter.Services
             }
 
             if (string.IsNullOrEmpty(addon.DisplayedVersion) && !string.IsNullOrEmpty(addon.Version))
-            {
                 addon.DisplayedVersion = addon.Version;
-            }
 
             if (string.IsNullOrEmpty(addon.Version) && !string.IsNullOrEmpty(addon.DisplayedVersion))
-            {
                 addon.Version = addon.DisplayedVersion;
-            }
+
+            if (string.IsNullOrEmpty(addon.DisplayedLatestVersion) && !string.IsNullOrEmpty(addon.LatestVersion))
+                addon.DisplayedLatestVersion = addon.LatestVersion;
+
+            if (string.IsNullOrEmpty(addon.LatestVersion) && !string.IsNullOrEmpty(addon.DisplayedLatestVersion))
+                addon.LatestVersion = addon.DisplayedLatestVersion;
+
+            addon.Name = Path.GetFileNameWithoutExtension(manifestPath);
 
             return addon;
         }
@@ -110,7 +120,7 @@ namespace SpellCrafter.Services
                 .Select(name => name.Trim())
                 .Where(name => !string.IsNullOrEmpty(name));
 
-            return names.Select(name => new Author { Name = name }).ToList();
+            return names.Select(name => new Author { Name = name.ToLower() }).ToList();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace SpellCrafter.Services
 
         public async Task<List<Addon>> ParseAddonsAsync()
         {
-            var addonIds = new HashSet<int>();
+            var addonsMap = new Dictionary<int, Addon>();
             var categoryUrls = new List<string>
             {
                 $"{BaseUrl}{AddonsPath}",
@@ -34,16 +34,22 @@ namespace SpellCrafter.Services
 
             foreach (var url in categoryUrls)
             {
-                var categoryPages = await ParseCategoriesAsync(url);
-                foreach (var categoryPage in categoryPages)
+                var categoryInfos = await ParseCategoriesAsync(url);
+                foreach (var (categoryUrl, categoryName) in categoryInfos)
                 {
-                    var categoryPaginationPages = await ParseCategoryPaginationAsync(categoryPage); // TODO maybe parse only PageRegex
+                    var categoryPaginationPages = await ParseCategoryPaginationAsync(categoryUrl); // TODO maybe parse only PageRegex
 
                     foreach (var categoryPaginationPage in categoryPaginationPages)
                     {
                         var ids = await ParseCategoryPageAsync(categoryPaginationPage);
                         foreach (var id in ids)
-                            addonIds.Add(id);
+                        {
+                            if (addonsMap.TryGetValue(id, out var addon))
+                                addon.Categories.Add(new Category { Name = categoryName });
+                            else
+                                addonsMap.Add(id,
+                                    new Addon { UniqueId = id, Categories = [new Category { Name = categoryName }] });
+                        }
                     }
                 }
             }
@@ -52,7 +58,9 @@ namespace SpellCrafter.Services
             Directory.CreateDirectory(tempFolder);
             Debug.WriteLine($"Temp folder: {tempFolder}");
             
-            var addons = await ProcessAddonsAsync(addonIds, tempFolder);
+            var addons = await ProcessAddonsAsync([.. addonsMap.Keys], tempFolder);
+            foreach (var addon in addons)
+                addon.Categories = addonsMap[addon.UniqueId!.Value].Categories;
 
             Directory.Delete(tempFolder, true);
 
@@ -69,7 +77,25 @@ namespace SpellCrafter.Services
         private async Task<Addon?> ProcessAddonAsync(int id, string tempFolder)
         {
             await _semaphore.WaitAsync();
-            var archivePath = await DownloadAddonArchive(id, tempFolder);
+
+            const int maxRetryAttempts = 3;
+            const int delayOnRetry = 1000;
+
+            string? archivePath = null;
+            for (var attempt = 0; attempt < maxRetryAttempts; ++attempt)
+            {
+                try
+                {
+                    archivePath = await DownloadAddonArchive(id, tempFolder);
+                    break;
+                }
+                catch (HttpRequestException ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    Thread.Sleep(delayOnRetry);
+                }
+            }
+
             if (string.IsNullOrEmpty(archivePath)) return null;
 
             try
@@ -80,12 +106,12 @@ namespace SpellCrafter.Services
                 Addon? addon;
                 try
                 {
-                    addon = AddonManifestParser.ParseAddonManifest(tempManifestPath);
+                    addon = AddonManifestParser.ParseAddonManifest(tempManifestPath, true);
                     addon.UniqueId = id;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error: {ex}");
+                    Debug.WriteLine($"Error: {ex.Message}");
                     return null;
                 }
                 finally
@@ -98,7 +124,7 @@ namespace SpellCrafter.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error: {ex}");
+                Debug.WriteLine($"Error: {ex.Message}");
                 return null;
             }
             finally
@@ -109,19 +135,16 @@ namespace SpellCrafter.Services
             }
         }
 
-        private async Task<List<string>> ParseCategoriesAsync(string url)
+        private async Task<List<(string Url, string Name)>> ParseCategoriesAsync(string url)
         {
             var html = await _httpClient.GetStringAsync(url);
             var context = BrowsingContext.New(Configuration.Default);
             var document = await context.OpenAsync(req => req.Content(html));
 
-            var categoryLink = document.QuerySelectorAll("div.subtitle > a")
-                .Select(node => node.GetAttribute("href"))
-                .Where(href => !string.IsNullOrEmpty(href))
-                .Select(href => href!)
-                .ToList();
-
-            return categoryLink;
+            return document.QuerySelectorAll("div.subtitle > a")
+                .Select(node => (Url: node.GetAttribute("href"), Text: node.TextContent))
+                .Where(item => !string.IsNullOrEmpty(item.Url))
+                .ToList()!;
         }
 
         [GeneratedRegex(@"Page \d+ of (\d+)")]
@@ -205,7 +228,7 @@ namespace SpellCrafter.Services
             }
 
             var archivePath = Path.Combine(tempFolder, contentDisposition);
-            await using var fs = new FileStream(archivePath, FileMode.Create, FileAccess.Write);
+            await using var fs = new FileStream(archivePath, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.Asynchronous);
             await response.Content.CopyToAsync(fs);
 
             return archivePath;
@@ -242,7 +265,7 @@ namespace SpellCrafter.Services
             }
             catch (InvalidDataException ex)
             {
-                Debug.WriteLine($"Archive {archivePath} is corrupted! {ex}");
+                Debug.WriteLine($"Archive {archivePath} is corrupted! {ex.Message}");
                 return null;
             }
         }

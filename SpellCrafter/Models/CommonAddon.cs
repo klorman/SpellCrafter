@@ -9,8 +9,11 @@ namespace SpellCrafter.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        [MaxLength(100), Unique]
+        [MaxLength(150)]
         public string Name { get; set; } = string.Empty;
+
+        [MaxLength(150)]
+        public string Title { get; set; } = string.Empty;
 
         [MaxLength(500)]
         public string Description { get; set; } = string.Empty;
