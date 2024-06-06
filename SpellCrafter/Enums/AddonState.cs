@@ -5,7 +5,7 @@
         NotInstalled,
         Outdated,
         LatestVersion,
-        Updating,
-        UpdateError
+        Installing,
+        InstallationError
     }
 }

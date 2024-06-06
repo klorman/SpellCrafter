@@ -3,7 +3,7 @@ using SQLiteNetExtensions.Attributes;
 
 namespace SpellCrafter.Models
 {
-    public class OnlineAddon
+    public class OnlineAddon : IOnlineAddon
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

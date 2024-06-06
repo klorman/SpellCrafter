@@ -63,7 +63,7 @@ namespace SpellCrafter.ViewModels
 
                 var addons = LocalAddonsScannerService.ScanDirectory(AddonsDirectory);
                 using var db = new EsoDataConnection();
-                AddonDataManager.UpdateLocalAddonList(db, addons);
+                AddonDataManager.UpdateInstalledAddonsInfo(db, addons);
             }
         }
 

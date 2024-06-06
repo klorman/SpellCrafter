@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using System.Threading.Tasks;
+using ReactiveUI;
 using SpellCrafter.Data;
 using SpellCrafter.Services;
 using Splat;
@@ -21,19 +22,22 @@ namespace SpellCrafter.ViewModels
         private void LoadAddons()
         {
             ModsSource = AddonDataManager.OnlineAddons;
-            FilterMods();
+            IsLoading = false;
         }
 
-        protected override async void RefreshMods()
+        protected override void RescanMods()
         {
-            base.RefreshMods();
+            IsLoading = true;
+            base.RescanMods();
 
-            var parser = new OnlineAddonsParserService();
-            var addons = await parser.ParseAddonsAsync();
-            using var db = new EsoDataConnection();
-            AddonDataManager.UpdateOnlineAddonList(db, addons);
-            ModsSource = AddonDataManager.OnlineAddons;
-            FilterMods();
+            Task.Run(async () =>
+            {
+                var parser = new OnlineAddonsParserService();
+                var addons = await parser.ParseAddonsAsync();
+                using var db = new EsoDataConnection();
+                AddonDataManager.UpdateOnlineAddonsInfo(db, addons);
+                IsLoading = false;
+            });
         }
     }
 }

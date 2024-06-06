@@ -15,7 +15,7 @@
 		<materialcontrols:Card Padding="14" Grid.Row="0">
 			<Grid ColumnDefinitions="134 * Auto">
 				<Grid.RowDefinitions>
-					<RowDefinition Height="32"/>
+					<RowDefinition Height="36"/>
 					<RowDefinition Height="Auto" MinHeight="64"/>
 					<RowDefinition Height="24"/>
 				</Grid.RowDefinitions>
@@ -25,7 +25,7 @@
 					<Image Source="avares://SpellCrafter/Assets/default-addon-icon.jpg"/>
 				</Border>
 				<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-					<TextBlock Text="{Binding Path=Name}"
+					<TextBlock Text="{Binding Path=Title}"
 							   Foreground="{DynamicResource MaterialBodyBrush}"
 							   FontSize="24" FontWeight="Bold"
 							   VerticalAlignment="Center"/>
@@ -59,7 +59,7 @@
 									  Foreground="{DynamicResource MaterialBodyBrush}"
 									  Grid.Column="0"/>
 							<TextBlock Grid.Column="1" Text="{Binding Path=Downloads}"
-									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   VerticalAlignment="Center" Margin="8 0 14 0"
 									   Foreground="{DynamicResource MaterialBodyBrush}"
 									   ToolTip.Tip="Downloads"/>
 						</Grid>
@@ -70,8 +70,8 @@
 									  Height="20" Width="20"
 									  Foreground="{DynamicResource MaterialBodyBrush}"
 									  Grid.Column="0"/>
-							<TextBlock Grid.Column="1" Text="{Binding Path=LatestVersion}"
-									   VerticalAlignment="Center" Margin="4 0 14 0"
+							<TextBlock Grid.Column="1" Text="TODO latest update date"
+									   VerticalAlignment="Center" Margin="8 0 14 0"
 									   Foreground="{DynamicResource MaterialBodyBrush}"
 									   ToolTip.Tip="File release date"/>
 						</Grid>
@@ -83,7 +83,7 @@
 									  Foreground="{DynamicResource MaterialBodyBrush}"
 									  Grid.Column="0"/>
 							<TextBlock Grid.Column="1" Text="{Binding Path=FileSize}"
-									   VerticalAlignment="Center" Margin="4 0 14 0"
+									   VerticalAlignment="Center" Margin="8 0 14 0"
 									   Foreground="{DynamicResource MaterialBodyBrush}"
 									   ToolTip.Tip="File size"/>
 						</Grid>

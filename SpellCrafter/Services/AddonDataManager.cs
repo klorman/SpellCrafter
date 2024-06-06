@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using DynamicData;
 using SpellCrafter.Data;
 using SpellCrafter.Enums;
 using SpellCrafter.Models;
@@ -10,61 +13,77 @@ namespace SpellCrafter.Services
 {
     public static class AddonDataManager
     {
-        public static List<Addon> InstalledAddons { get; set; }
-        public static List<Addon> OnlineAddons { get; set; }
+        public static RangedObservableCollection<Addon> InstalledAddons { get; set; } = [];
+        public static RangedObservableCollection<Addon> OnlineAddons { get; set; } = [];
 
         static AddonDataManager() // TODO move to startup waiting window
         {
             EsoDataConnection.CreateTablesIfNotExists();
 
             using var db = new EsoDataConnection();
-            InstalledAddons = GetAllLocalAddonsWithDetails(db);
-            OnlineAddons = GetAllOnlineAddonsWithDetails(db);
-            SyncAddonLists();
+            InstalledAddons.Refresh(GetAllLocalAddonsWithDetails(db));
+            OnlineAddons.Refresh(GetAllOnlineAddonsWithDetails(db));
+            SyncAddonLists(db);
+
+            CheckAddonInstallationErrors(db);
         }
 
-        private static void UpdateAddonsState() // TODO move to startup waiting window
+        private static void CheckAddonVersions(EsoDataConnection db) // TODO move to startup waiting window
         {
+            var toUpdate = new List<Addon>();
             foreach (var installedAddon in InstalledAddons)
             {
-                if (installedAddon.AddonState is AddonState.LatestVersion or AddonState.Outdated &&
+                if (installedAddon.State is AddonState.LatestVersion &&
                     Addon.CompareVersions(installedAddon.Version, installedAddon.LatestVersion) < 0)
                 {
-                    installedAddon.AddonState = AddonState.Outdated;
+                    installedAddon.State = AddonState.Outdated;
+                    toUpdate.Add(installedAddon);
                 }
             }
+
+            InsertOrUpdateLocalAddons(db, toUpdate);
         }
 
-        public static void UpdateLocalAddonList(EsoDataConnection db, List<Addon> addons)
+        private static void CheckAddonInstallationErrors(EsoDataConnection db)
         {
-            var filteredAddons = FilterAddonsWithLatestVersion(addons);
-            UpdateCommonAddons(db, filteredAddons);
-            UpdateLocalAddons(db, filteredAddons);
-            RemoveUnusedCommonAddons(db);
+            var incorrectAddons =
+                InstalledAddons.Where(installedAddon => installedAddon.State == AddonState.Installing).ToList();
+            foreach (var addon in incorrectAddons)
+                addon.State = AddonState.InstallationError;
 
-            UpdateAuthors(db, filteredAddons);
-            RemoveUnusedAuthors(db);
-            UpdateCategories(db, filteredAddons);
-            RemoveUnusedCategories(db);
-
-            InstalledAddons = GetAllLocalAddonsWithDetails(db);
-            SyncAddonLists();
+            InsertOrUpdateLocalAddons(db, incorrectAddons);
         }
 
-        public static void UpdateOnlineAddonList(EsoDataConnection db, List<Addon> addons)
+        public static void UpdateInstalledAddonsInfo(EsoDataConnection db, List<Addon> addons)
         {
             var filteredAddons = FilterAddonsWithLatestVersion(addons);
-            UpdateCommonAddons(db, filteredAddons);
-            UpdateOnlineAddons(db, filteredAddons);
+            InsertOrUpdateCommonAddons(db, filteredAddons);
+            RefreshLocalAddons(db, filteredAddons);
             RemoveUnusedCommonAddons(db);
 
-            UpdateAuthors(db, filteredAddons);
+            InsertOrUpdateAuthors(db, filteredAddons);
             RemoveUnusedAuthors(db);
-            UpdateCategories(db, filteredAddons);
+            InsertOrUpdateCategories(db, filteredAddons);
             RemoveUnusedCategories(db);
 
-            OnlineAddons = GetAllOnlineAddonsWithDetails(db);
-            SyncAddonLists();
+            InstalledAddons.Refresh(GetAllLocalAddonsWithDetails(db));
+            SyncAddonLists(db);
+        }
+
+        public static void UpdateOnlineAddonsInfo(EsoDataConnection db, List<Addon> addons)
+        {
+            var filteredAddons = FilterAddonsWithLatestVersion(addons);
+            InsertOrUpdateCommonAddons(db, filteredAddons);
+            RefreshOnlineAddons(db, filteredAddons);
+            RemoveUnusedCommonAddons(db);
+
+            InsertOrUpdateAuthors(db, filteredAddons);
+            RemoveUnusedAuthors(db);
+            InsertOrUpdateCategories(db, filteredAddons);
+            RemoveUnusedCategories(db);
+
+            OnlineAddons.Refresh(GetAllOnlineAddonsWithDetails(db));
+            SyncAddonLists(db);
         }
 
         private static List<Addon> FilterAddonsWithLatestVersion(List<Addon> addons)
@@ -77,48 +96,40 @@ namespace SpellCrafter.Services
                 }).ToList();
         }
 
-        public static void SyncAddonLists()
+        public static void SyncAddonLists(EsoDataConnection db)
         {
-            var addonMap = new Dictionary<string, Addon>();
-
-            foreach (var addon in InstalledAddons.Where(addon => !addonMap.ContainsKey(addon.Name)))
-                addonMap.Add(addon.Name, addon);
-
+            var addonMap = InstalledAddons.ToDictionary(addon => (addon.Name, GetAuthorsKey(addon.Authors)), addon => addon);
+            
             for (var i = 0; i < OnlineAddons.Count; ++i)
             {
-                if (addonMap.TryGetValue(OnlineAddons[i].Name, out var matchedAddon))
-                {
-                    matchedAddon.UniqueId = OnlineAddons[i].UniqueId;
-                    matchedAddon.LatestVersion = OnlineAddons[i].LatestVersion;
-                    matchedAddon.DisplayedLatestVersion = OnlineAddons[i].DisplayedLatestVersion;
-                    matchedAddon.Categories = OnlineAddons[i].Categories;
-                    OnlineAddons[i] = matchedAddon;
-                }
-                else
-                    addonMap.Add(OnlineAddons[i].Name, OnlineAddons[i]);
+                var authorsKey = GetAuthorsKey(OnlineAddons[i].Authors);
+                var addonKey = (OnlineAddons[i].Name, authorsKey);
+
+                if (!addonMap.TryGetValue(addonKey, out var matchedAddon)) continue;
+
+                matchedAddon.UniqueId = OnlineAddons[i].UniqueId;
+                matchedAddon.LatestVersion = OnlineAddons[i].LatestVersion;
+                matchedAddon.DisplayedLatestVersion = OnlineAddons[i].DisplayedLatestVersion;
+                matchedAddon.Categories = OnlineAddons[i].Categories;
+                OnlineAddons[i] = matchedAddon;
             }
             
-            UpdateAddonsState();
+            CheckAddonVersions(db);
         }
 
-        public static List<Addon> GetAllLocalAddonsWithDetails(EsoDataConnection db)
+        public static RangedObservableCollection<Addon> GetAllLocalAddonsWithDetails(EsoDataConnection db)
         {
             var localAddons = db.GetAllWithChildren<LocalAddon>(recursive: true);
 
             var addonAuthors = db.Table<AddonAuthor>().ToList();
             var authors = db.Table<Author>().ToList().ToDictionary(a => a.Id);
-            var addonCategories = db.Table<AddonCategory>().ToList();
-            var categories = db.Table<Category>().ToList().ToDictionary(c => c.Id);
 
-            return localAddons.Select(localAddon =>
+            return new RangedObservableCollection<Addon>(localAddons.Select(localAddon =>
             {
                 var commonAddon = localAddon.CommonAddon;
 
                 var addonAuthorsList = addonAuthors.Where(aa => aa.CommonAddonId == commonAddon.Id)
                     .Select(aa => authors[aa.AuthorId])
-                    .ToList();
-                var addonCategoriesList = addonCategories.Where(ac => ac.CommonAddonId == commonAddon.Id)
-                    .Select(ac => categories[ac.CategoryId])
                     .ToList();
 
                 return new Addon
@@ -127,17 +138,17 @@ namespace SpellCrafter.Services
                     Name = commonAddon.Name,
                     Title = commonAddon.Title,
                     Description = commonAddon.Description,
-                    AddonState = localAddon.State,
+                    State = localAddon.State,
                     InstallationMethod = localAddon.InstallationMethod,
                     Authors = new ObservableCollection<Author>(addonAuthorsList),
                     Version = localAddon.Version,
                     DisplayedVersion = localAddon.DisplayedVersion,
                     Dependencies = commonAddon.Dependencies
                 };
-            }).ToList();
+            }).ToList());
         }
 
-        public static List<Addon> GetAllOnlineAddonsWithDetails(EsoDataConnection db) // TODO change to pagination
+        public static RangedObservableCollection<Addon> GetAllOnlineAddonsWithDetails(EsoDataConnection db) // TODO change to pagination
         {
             var onlineAddons = db.GetAllWithChildren<OnlineAddon>(recursive: true);
 
@@ -146,7 +157,7 @@ namespace SpellCrafter.Services
             var addonCategories = db.Table<AddonCategory>().ToList();
             var categories = db.Table<Category>().ToList().ToDictionary(c => c.Id);
 
-            return onlineAddons.Select(onlineAddon =>
+            return new RangedObservableCollection<Addon>(onlineAddons.Select(onlineAddon =>
             {
                 var commonAddon = onlineAddon.CommonAddon;
 
@@ -163,7 +174,7 @@ namespace SpellCrafter.Services
                     Name = commonAddon.Name,
                     Title = commonAddon.Title,
                     Description = commonAddon.Description,
-                    AddonState = AddonState.NotInstalled,
+                    State = AddonState.NotInstalled,
                     Categories = new ObservableCollection<Category>(addonCategoriesList),
                     Authors = new ObservableCollection<Author>(addonAuthorsList),
                     UniqueId = onlineAddon.UniqueId,
@@ -171,13 +182,13 @@ namespace SpellCrafter.Services
                     DisplayedLatestVersion = onlineAddon.DisplayedLatestVersion,
                     Dependencies = commonAddon.Dependencies
                 };
-            }).ToList();
+            }).ToList());
         }
 
-        public static string GetAuthorsKey(IEnumerable<Author> authors) =>
+        public static string GetAuthorsKey(IEnumerable<Author> authors) => // TODO replace with ids
             string.Join(',', authors.Select(author => author.Name).OrderBy(name => name));
 
-        private static bool UpdateCommonAddonIfChanged(CommonAddon commonAddon, Addon updatedAddon)
+        private static bool UpdateCommonAddonFieldsIfChanged(CommonAddon commonAddon, ICommonAddon updatedAddon)
         {
             var isChanged = false;
 
@@ -197,13 +208,14 @@ namespace SpellCrafter.Services
             return isChanged;
         }
 
-        private static void UpdateCommonAddons(EsoDataConnection db, List<Addon> updatedAddons)
+        private static void InsertOrUpdateCommonAddons(EsoDataConnection db, List<Addon> updatedAddons)
         {
             if (updatedAddons.Count == 0)
                 return;
 
-            var commonAddons = db.Table<CommonAddon>().ToList().ToDictionary(
-                addon => (addon.Name, GetAuthorsKey(addon.Authors)), author => author);
+            var commonAddons = db.GetAllWithChildren<CommonAddon>(recursive: true);
+            var commonAddonsDictionary = commonAddons.ToDictionary(
+                addon => (addon.Name, GetAuthorsKey(addon.Authors)), addon => addon);
 
             var toInsert = new List<CommonAddon>();
             var toUpdate = new List<CommonAddon>();
@@ -213,7 +225,7 @@ namespace SpellCrafter.Services
                 var authorsKey = GetAuthorsKey(addon.Authors);
                 var addonKey = (addon.Name, authorsKey);
 
-                if (!commonAddons.TryGetValue(addonKey, out var dbAddon))
+                if (!commonAddonsDictionary.TryGetValue(addonKey, out var dbAddon))
                 {
                     dbAddon = new CommonAddon
                     {
@@ -228,7 +240,7 @@ namespace SpellCrafter.Services
                 else
                 {
                     addon.CommonAddonId = dbAddon.Id;
-                    if (UpdateCommonAddonIfChanged(dbAddon, addon))
+                    if (UpdateCommonAddonFieldsIfChanged(dbAddon, addon))
                         toUpdate.Add(dbAddon);
                 }
             }
@@ -250,7 +262,7 @@ namespace SpellCrafter.Services
                 db.UpdateAll(toUpdate);
         }
 
-        private static bool UpdateLocalAddonIfChanged(LocalAddon localAddon, Addon updatedAddon)
+        private static bool UpdateLocalAddonFieldsIfChanged(LocalAddon localAddon, ILocalAddon updatedAddon)
         {
             var isChanged = false;
 
@@ -266,9 +278,9 @@ namespace SpellCrafter.Services
                 isChanged = true;
             }
 
-            if (localAddon.State != updatedAddon.AddonState)
+            if (localAddon.State != updatedAddon.State)
             {
-                localAddon.State = updatedAddon.AddonState;
+                localAddon.State = updatedAddon.State;
                 isChanged = true;
             }
 
@@ -281,7 +293,7 @@ namespace SpellCrafter.Services
             return isChanged;
         }
 
-        private static void UpdateLocalAddons(EsoDataConnection db, List<Addon> updatedAddons)
+        private static void RefreshLocalAddons(EsoDataConnection db, List<Addon> updatedAddons)
         {
             var localAddons = db.Table<LocalAddon>().ToList();
             var toUpdate = new List<LocalAddon>();
@@ -291,22 +303,22 @@ namespace SpellCrafter.Services
                 var updatedAddon = updatedAddons.FirstOrDefault(a => a.CommonAddonId == addon.CommonAddonId);
                 if (updatedAddon != null)
                 {
-                    if (UpdateLocalAddonIfChanged(addon, updatedAddon))
+                    if (UpdateLocalAddonFieldsIfChanged(addon, updatedAddon))
                         toUpdate.Add(addon);
                 }
                 else
                     db.Delete(addon);
             }
 
-            var localCommonAddonIds = new HashSet<int>(localAddons.Select(a => a.CommonAddonId));
+            var localCommonAddonIds = new HashSet<int>(localAddons.Select(localAddon => localAddon.CommonAddonId));
             var toInsert = (from updatedAddon in updatedAddons
-                where updatedAddon.CommonAddonId != null && !localCommonAddonIds.Contains(updatedAddon.CommonAddonId.Value)
+                where !localCommonAddonIds.Contains(updatedAddon.CommonAddonId)
                 select new LocalAddon
                 {
-                    CommonAddonId = updatedAddon.CommonAddonId!.Value,
+                    CommonAddonId = updatedAddon.CommonAddonId,
                     Version = updatedAddon.Version,
                     DisplayedVersion = updatedAddon.DisplayedVersion,
-                    State = updatedAddon.AddonState,
+                    State = updatedAddon.State,
                     InstallationMethod = updatedAddon.InstallationMethod
                 }).ToList();
 
@@ -317,7 +329,7 @@ namespace SpellCrafter.Services
                 db.InsertAll(toInsert);
         }
 
-        private static bool UpdateOnlineAddonIfChanged(OnlineAddon onlineAddon, Addon updatedAddon)
+        private static bool UpdateOnlineAddonFieldsIfChanged(OnlineAddon onlineAddon, IOnlineAddon updatedAddon)
         {
             var isChanged = false;
 
@@ -336,7 +348,7 @@ namespace SpellCrafter.Services
             return isChanged;
         }
 
-        private static void UpdateOnlineAddons(EsoDataConnection db, List<Addon> updatedAddons)
+        private static void RefreshOnlineAddons(EsoDataConnection db, List<Addon> updatedAddons)
         {
             var onlineAddons = db.Table<OnlineAddon>().ToList();
             var toUpdate = new List<OnlineAddon>();
@@ -346,21 +358,22 @@ namespace SpellCrafter.Services
                 var updatedAddon = updatedAddons.FirstOrDefault(a => a.CommonAddonId == addon.CommonAddonId);
                 if (updatedAddon != null)
                 {
-                    if (UpdateOnlineAddonIfChanged(addon, updatedAddon))
+                    if (UpdateOnlineAddonFieldsIfChanged(addon, updatedAddon))
                         toUpdate.Add(addon);
                 }
                 else
                     db.Delete(addon);
             }
 
-            var onlineCommonAddonIds = new HashSet<int>(onlineAddons.Select(a => a.CommonAddonId));
+            var onlineCommonAddonIds = new HashSet<int>(onlineAddons.Select(onlineAddon => onlineAddon.CommonAddonId));
             var toInsert = (from updatedAddon in updatedAddons
-                where updatedAddon.CommonAddonId != null && !onlineCommonAddonIds.Contains(updatedAddon.CommonAddonId.Value)
+                where !onlineCommonAddonIds.Contains(updatedAddon.CommonAddonId)
                 select new OnlineAddon
                 {
-                    CommonAddonId = updatedAddon.CommonAddonId!.Value,
+                    CommonAddonId = updatedAddon.CommonAddonId,
                     LatestVersion = updatedAddon.LatestVersion,
-                    DisplayedLatestVersion = updatedAddon.DisplayedLatestVersion
+                    DisplayedLatestVersion = updatedAddon.DisplayedLatestVersion,
+                    UniqueId = updatedAddon.UniqueId
                 }).ToList();
 
             if (toUpdate.Count != 0)
@@ -397,7 +410,7 @@ namespace SpellCrafter.Services
             }
         }
 
-        private static void UpdateAuthors(EsoDataConnection db, List<Addon> updatedAddons)
+        private static void InsertOrUpdateAuthors(EsoDataConnection db, List<Addon> updatedAddons)
         {
             var authors = db.GetAllWithChildren<Author>().ToList().ToDictionary(author => author.Name, author => author);
 
@@ -428,7 +441,7 @@ namespace SpellCrafter.Services
             }
         }
 
-        private static void UpdateCategories(EsoDataConnection db, List<Addon> updatedAddons)
+        private static void InsertOrUpdateCategories(EsoDataConnection db, List<Addon> updatedAddons)
         {
             var categories = db.GetAllWithChildren<Category>().ToList().ToDictionary(category => category.Name, category => category);
 
@@ -472,6 +485,57 @@ namespace SpellCrafter.Services
 
             foreach (var category in unusedCategories)
                 db.Delete(category);
+        }
+
+        public static void InsertOrUpdateLocalAddon(EsoDataConnection db, Addon updatedAddon) =>
+            InsertOrUpdateLocalAddons(db, [updatedAddon]);
+
+        public static void InsertOrUpdateLocalAddons(EsoDataConnection db, IList<Addon> updatedAddons)
+        {
+            try
+            {
+                db.BeginTransaction();
+
+                foreach (var addon in updatedAddons)
+                {
+                    var existingLocalAddonId = db.Table<LocalAddon>()
+                        .Where(localAddon => localAddon.CommonAddonId == addon.CommonAddonId)
+                        .Select(localAddon => localAddon.Id)
+                        .FirstOrDefault();
+
+                    var localAddon = addon.ToLocalAddon();
+                    localAddon.Id = existingLocalAddonId;
+                    if (existingLocalAddonId != null)
+                        db.Update(localAddon);
+                    else
+                        db.Insert(localAddon);
+
+                    if (!InstalledAddons.Contains(addon))
+                        InstalledAddons.Add(addon);
+                }
+
+                db.Commit();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                db.Rollback();
+            }
+        }
+
+        public static void RemoveLocalAddon(EsoDataConnection db, Addon updatedAddon) =>
+            RemoveLocalAddons(db, [updatedAddon]);
+
+        public static void RemoveLocalAddons(EsoDataConnection db, IList<Addon> updatedAddons)
+        {
+            var commonAddonIds = updatedAddons.Select(addon => addon.CommonAddonId).Distinct().ToList();
+            var toDelete = db.Table<LocalAddon>()
+                .Where(localAddon => commonAddonIds.Contains(localAddon.CommonAddonId))
+                .Select(localAddon => new LocalAddon { Id = localAddon.Id })
+                .ToList();
+            db.DeleteAll(toDelete);
+
+            InstalledAddons.RemoveAll(addon => commonAddonIds.Contains(addon.CommonAddonId));
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp;
+using SharpCompress;
 using SharpCompress.Archives;
 using SpellCrafter.Models;
 
@@ -54,17 +55,25 @@ namespace SpellCrafter.Services
                 }
             }
 
-            var tempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            var tempFolder = Path.Combine(Path.GetTempPath(), "SpellCrafterParser");
+            if (Directory.Exists(tempFolder))
+                Directory.Delete(tempFolder, true);
             Directory.CreateDirectory(tempFolder);
             Debug.WriteLine($"Temp folder: {tempFolder}");
-            
-            var addons = await ProcessAddonsAsync([.. addonsMap.Keys], tempFolder);
-            foreach (var addon in addons)
-                addon.Categories = addonsMap[addon.UniqueId!.Value].Categories;
 
-            Directory.Delete(tempFolder, true);
+            try
+            {
+                var addons = await ProcessAddonsAsync([.. addonsMap.Keys], tempFolder);
+                foreach (var addon in addons)
+                    addon.Categories = addonsMap[addon.UniqueId!.Value].Categories;
 
-            return addons;
+                return addons;
+            }
+            finally
+            {
+                if (Directory.Exists(tempFolder))
+                    Directory.Delete(tempFolder, true);
+            }
         }
 
         private async Task<List<Addon>> ProcessAddonsAsync(IEnumerable<int> addonIds, string tempFolder)
@@ -78,7 +87,7 @@ namespace SpellCrafter.Services
         {
             await _semaphore.WaitAsync();
 
-            const int maxRetryAttempts = 3;
+            const int maxRetryAttempts = 5;
             const int delayOnRetry = 1000;
 
             string? archivePath = null;
@@ -91,8 +100,10 @@ namespace SpellCrafter.Services
                 }
                 catch (HttpRequestException ex)
                 {
-                    Debug.WriteLine(ex.Message);
-                    Thread.Sleep(delayOnRetry);
+                    Debug.WriteLine($"Error occurred while downloading addon with Id {id}: {ex.Message}. Attempt {attempt + 1} of {maxRetryAttempts}");
+                    if (attempt + 1 == maxRetryAttempts)
+                        return null;
+                    await Task.Delay(delayOnRetry * (attempt + 1));
                 }
             }
 
@@ -202,7 +213,7 @@ namespace SpellCrafter.Services
                 select int.Parse(match.Groups[1].Value)).ToList();
         }
 
-        private async Task<string?> DownloadAddonArchive(int addonId, string tempFolder)
+        public async Task<string?> DownloadAddonArchive(int addonId, string tempFolder)
         {
             var url = $"{BaseUrl}{DownloadsPath}?id={addonId}";
             var response = await _httpClient.GetAsync(url);

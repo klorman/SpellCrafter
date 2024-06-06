@@ -10,34 +10,34 @@
 		<converters:AddonStateToVisibilityConverter x:Key="StateToVisibility"/>
 	</UserControl.Resources>
 	<StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-		<Button Content="Install" FontWeight="Bold" Padding="14 7"
+		<Button Content="Install" FontWeight="Bold" Padding="14 7" MinWidth="80"
 				Command="{Binding Path=InstallCommand}"
-                IsVisible="{Binding Path=AddonState,
+                IsVisible="{Binding Path=State,
 				Converter={StaticResource StateToVisibility}, 
 				ConverterParameter={x:Static enums:AddonState.NotInstalled}}"/>
 
-		<Button Content="Update" FontWeight="Bold" Padding="14 7"
+		<Button Content="Update" FontWeight="Bold" Padding="14 7" MinWidth="80"
+                Theme="{StaticResource MaterialOutlineButton}" Classes="light"
 				Command="{Binding Path=UpdateCommand}"
-                IsVisible="{Binding Path=AddonState, 
+                IsVisible="{Binding Path=State, 
 				Converter={StaticResource StateToVisibility}, 
 				ConverterParameter={x:Static enums:AddonState.Outdated}}"/>
 
 		<TextBlock Text="Up to date" Margin="7 0" FontWeight="Bold"
 				   Foreground="{DynamicResource MaterialBodyBrush}"
-                   IsVisible="{Binding Path=AddonState, 
+                   IsVisible="{Binding Path=State, 
 				   Converter={StaticResource StateToVisibility}, 
 				   ConverterParameter={x:Static enums:AddonState.LatestVersion}}"/>
 
-		<TextBlock Text="Updating..." Margin="7 0" FontWeight="Bold"
-				   Foreground="{DynamicResource MaterialBodyBrush}"
-                   IsVisible="{Binding Path=AddonState, 
-				   Converter={StaticResource StateToVisibility}, 
-				   ConverterParameter={x:Static enums:AddonState.Updating}}"/>
+        <ProgressBar IsIndeterminate="True" Height="10" MinWidth="80" CornerRadius="8"
+                     IsVisible="{Binding Path=State, 
+				     Converter={StaticResource StateToVisibility}, 
+				     ConverterParameter={x:Static enums:AddonState.Installing}}"/>
 
 		<StackPanel Orientation="Horizontal"
-					IsVisible="{Binding Path=AddonState, 
+					IsVisible="{Binding Path=State, 
 					Converter={StaticResource StateToVisibility}, 
-					ConverterParameter={x:Static enums:AddonState.UpdateError}}">
+					ConverterParameter={x:Static enums:AddonState.InstallationError}}">
 			<Button Content="Update" FontWeight="Bold" Padding="14 7" 
 					Command="{Binding Path=UpdateCommand}"/>
 			<PathIcon Data="{StaticResource AlertIcon}"

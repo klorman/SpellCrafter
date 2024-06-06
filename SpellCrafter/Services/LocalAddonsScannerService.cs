@@ -23,7 +23,7 @@ namespace SpellCrafter.Services
                     continue;
 
                 var addon = AddonManifestParser.ParseAddonManifest(addonManifest, false);
-                addon.AddonState = AddonState.LatestVersion; // TODO check latest version
+                addon.State = AddonState.LatestVersion; // TODO check latest version
 
                 addons.Add(addon);
             }

@@ -22,13 +22,21 @@
 		<Setter Property="MinHeight" Value="40"/>
 	</Style>
 
+    <Style Selector="DataGrid.MiniScrollBar DataGridRowsPresenter#PART_RowsPresenter">
+		<Setter Property="Grid.ColumnSpan" Value="3"/>
+    </Style>
+
+    <Style Selector="DataGrid.MiniScrollBar ScrollBar#PART_VerticalScrollbar">
+        <Setter Property="Grid.RowSpan" Value="2"/>
+    </Style>
+
 	<Style Selector="DataGrid DataGridFrozenGrid#PART_Root">
 		<Setter Property="MinHeight" Value="40"/>
 	</Style>
 
 	<Style Selector="DataGrid DataGridFrozenGrid#PART_Root DataGridCellsPresenter#PART_CellsPresenter DataGridCell">
 		<Setter Property="Height" Value="NaN"/>
-		<Setter Property="MaxHeight" Value="100"/>
+		<Setter Property="MaxHeight" Value="80"/>
 	</Style>
 
 	<Style Selector="DataGrid DataGridFrozenGrid#PART_Root Rectangle#BackgroundRectangle">
@@ -38,4 +46,12 @@
 	<Style Selector="DataGridRow">
 		<Setter Property="Foreground" Value="{DynamicResource MaterialColumnHeaderBrush}"/>
 	</Style>
+
+	<Style Selector="DataGrid.MaterialModernScrollBar ScrollBar:horizontal">
+		<Setter Property="Theme" Value="{StaticResource MaterialModernScrollBar}"/>
+    </Style>
+
+    <Style Selector="DataGrid.MaterialModernScrollBar ScrollBar:vertical">
+        <Setter Property="Theme" Value="{StaticResource MaterialModernScrollBar}"/>
+    </Style>
 </Styles>

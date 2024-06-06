@@ -4,10 +4,10 @@ using SQLiteNetExtensions.Attributes;
 
 namespace SpellCrafter.Models
 {
-    public class LocalAddon
+    public class LocalAddon : ILocalAddon
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
+        [PrimaryKey, AutoIncrement, NotNull]
+        public int? Id { get; set; }
 
         [ForeignKey(typeof(CommonAddon))]
         public int CommonAddonId { get; set; }

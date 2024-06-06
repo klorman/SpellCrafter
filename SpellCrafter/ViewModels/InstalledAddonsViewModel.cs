@@ -3,6 +3,7 @@ using SpellCrafter.Data;
 using SpellCrafter.Services;
 using Splat;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace SpellCrafter.ViewModels
 {
@@ -30,17 +31,21 @@ namespace SpellCrafter.ViewModels
             }
 
             ModsSource = AddonDataManager.InstalledAddons;
-            FilterMods();
+            IsLoading = false;
         }
 
-        protected override void RefreshMods()
+        protected override void RescanMods()
         {
-            base.RefreshMods();
+            IsLoading = true;
+            base.RescanMods();
 
-            var addons = LocalAddonsScannerService.ScanDirectory(AppSettings.Instance.AddonsDirectory);
-            using var db = new EsoDataConnection();
-            AddonDataManager.UpdateLocalAddonList(db, addons);
-            LoadLocalAddons();
+            Task.Run(() =>
+            {
+                var addons = LocalAddonsScannerService.ScanDirectory(AppSettings.Instance.AddonsDirectory);
+                using var db = new EsoDataConnection();
+                AddonDataManager.UpdateInstalledAddonsInfo(db, addons);
+                IsLoading = false;
+            });
         }
     }
 }

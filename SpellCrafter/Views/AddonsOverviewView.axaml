@@ -11,7 +11,8 @@
              x:Class="SpellCrafter.Views.AddonsOverviewView"
 			 x:DataType="vm:AddonsOverviewViewModel">
 	<Grid RowDefinitions="40 *">
-		<Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto Auto * Auto Auto">
+		<Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto Auto * Auto Auto"
+              IsEnabled="{Binding Path=!IsLoading}">
 			<Grid.Styles>
 				<Style Selector="Button TextBlock">
 					<Setter Property="Foreground" Value="{DynamicResource MaterialBodyBrush}"/>
@@ -88,11 +89,11 @@
 			</Button>
 		</Grid>
 
-		<DataGrid CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsVisible="{Binding Path=IsAddonsDisplayed}"
-				  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-				  AutoGenerateColumns="False" SelectionMode="Single" Grid.Row="1" 
+		<DataGrid Classes="MiniScrollBar DisableHoveringScrollBar" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True"
+				  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowHeight="85"
+				  AutoGenerateColumns="False" SelectionMode="Single" Grid.Row="1" IsEnabled="{Binding Path=!IsLoading}"
 				  Margin="0 14 0 0" ItemsSource="{Binding Path=DisplayedMods}" SelectedItem="{Binding Path=DataGridModsSelectedItem}">
-			<DataGrid.KeyBindings>
+            <DataGrid.KeyBindings>
 				<KeyBinding Command="{Binding Path=RefreshModsCommand}" Gesture="F5"/>
 			</DataGrid.KeyBindings>
 			<DataGrid.Styles>
@@ -101,7 +102,7 @@
 				</Style>
 			</DataGrid.Styles>
 			<DataGrid.Columns>
-				<DataGridTemplateColumn Width="2*" MinWidth="250" Header="Addon">
+				<DataGridTemplateColumn Width="2*" MinWidth="250" Header="Addon" SortMemberPath="Name">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<Grid ColumnDefinitions="Auto *">
@@ -119,7 +120,7 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Width="1*" MinWidth="110" Header="Action">
+				<DataGridTemplateColumn Width="120" Header="Action">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<controls:AddonActionControl/>
@@ -129,49 +130,86 @@
 				<DataGridTextColumn Width="1*" MinWidth="100" Header="Downloads" Binding="{Binding Path=Downloads}" IsVisible="{Binding Path=BrowseMode}"/>
 				<DataGridTextColumn Width="1*" MinWidth="110" Header="Version" Binding="{Binding Path=DisplayedVersion}"/>
 				<DataGridTextColumn Width="1*" MinWidth="110" Header="Latest Version" Binding="{Binding Path=DisplayedLatestVersion}"/>
-				<DataGridTemplateColumn Header="Category" Width="1*" MinWidth="110" IsVisible="{Binding Path=BrowseMode}">
+                <DataGridTemplateColumn Header="Dependencies" Width="1.5*" MinWidth="110">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ScrollViewer Theme="{StaticResource MaterialModernScrollViewer}" Margin="0 5">
+                                <ItemsControl ItemsSource="{Binding Path=Dependencies}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+											<!--Button Classes="Flat" Content="{Binding Path=Title}" ToolTip.Tip="{Binding Path=$self.Content}"
+                                                    HorizontalAlignment="Left" Padding="0" Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Bold"
+                                                    Command="{Binding Path=ViewModCommand}"/-->
+                                            <TextBlock Text="{Binding Path=Name}" Margin="0 5 15 0"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Categories" Width="1.5*" MinWidth="110" IsVisible="{Binding Path=BrowseMode}">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ItemsControl ItemsSource="{Binding Path=Categories}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<TextBlock Text="{Binding Path=Name}"/>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
+							<ScrollViewer Theme="{StaticResource MaterialModernScrollViewer}" Margin="0 5">
+								<ItemsControl ItemsSource="{Binding Path=Categories}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Vertical" VerticalAlignment="Center"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Path=Name}" Margin="0 5 15 0"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</ScrollViewer>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Header="Authors" Width="1.5*" MinWidth="120">
+				<DataGridTemplateColumn Header="Authors" Width="1*" MinWidth="120">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ItemsControl ItemsSource="{Binding Path=Authors}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<TextBlock Text="{Binding Path=Name}" Margin="0 0 5 0"/>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
+							<ScrollViewer Theme="{StaticResource MaterialModernScrollViewer}" Margin="0 5">
+								<ItemsControl ItemsSource="{Binding Path=Authors}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Vertical" VerticalAlignment="Center"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Path=Name}" Margin="0 5 15 0"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</ScrollViewer>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
-		<StackPanel Grid.Row="1" 
-                    IsVisible="{Binding Path=!IsAddonsDisplayed}"
+        <StackPanel Grid.Row="1"
                     VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="No Results" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
-                       FontSize="30"/>
+			<TextBlock Text="No Results" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
+                       FontSize="30" HorizontalAlignment="Center">
+				<TextBlock.IsVisible>
+					<MultiBinding Converter="{x:Static BoolConverters.And}">
+						<Binding Path="!IsAddonsDisplayed"></Binding>
+						<Binding Path="!IsLoading"></Binding>
+					</MultiBinding>
+                </TextBlock.IsVisible>
+            </TextBlock>
+            <ProgressBar IsIndeterminate="True" Classes="circular"
+                         Height="100" Width="100"
+						 Margin="50"
+                         IsVisible="{Binding Path=IsLoading}"/>
         </StackPanel>
     </Grid>
 </UserControl>

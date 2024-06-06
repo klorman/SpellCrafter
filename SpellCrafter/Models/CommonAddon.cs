@@ -4,7 +4,7 @@ using SQLiteNetExtensions.Attributes;
 
 namespace SpellCrafter.Models
 {
-    public class CommonAddon
+    public class CommonAddon : ICommonAddon
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -29,8 +29,10 @@ namespace SpellCrafter.Models
 
         [ManyToMany(typeof(AddonAuthor))]
         public List<Author> Authors { get; set; } = [];
+        IList<Author> ICommonAddon.Authors => Authors;
 
         [ManyToMany(typeof(AddonCategory))]
         public List<Category> Categories { get; set; } = [];
+        IList<Category> ICommonAddon.Categories => Categories;
     }
 }

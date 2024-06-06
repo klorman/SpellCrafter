@@ -17,7 +17,7 @@ namespace SpellCrafter.ViewModels
             Name = addon.Name;
             Title = addon.Title;
             Description = addon.Description;
-            AddonState = addon.AddonState;
+            State = addon.State;
             InstallationMethod = addon.InstallationMethod;
             Downloads = addon.Downloads;
             Categories = addon.Categories;

@@ -22,6 +22,7 @@
 							<TextBlock Text="{TemplateBinding Text}"
 									   IsVisible="{TemplateBinding IsTextVisible}"
 									   Margin="12 0 0 0" VerticalAlignment="Center"
+									   FontWeight="Light"
 									   Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"/>
 						</StackPanel>
 					</RadioButton>

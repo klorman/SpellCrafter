@@ -23,14 +23,14 @@
 
 			<ContextMenu x:Key="AddonContextMenu" x:DataType="models:Addon">
 				<MenuItem Header="Install" Command="{Binding Path=InstallCommand}"
-						  IsVisible="{Binding Path=AddonState, 
+						  IsVisible="{Binding Path=State, 
 											  Converter={StaticResource NotInstalledAddonStateToVisability}}">
 					<MenuItem.Icon>
 						<PathIcon Data="{StaticResource DownloadIcon}"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem Header="Reinstall" Command="{Binding Path=ReinstallCommand}"
-						  IsVisible="{Binding Path=AddonState, 
+						  IsVisible="{Binding Path=State, 
 											  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
 					<MenuItem.Icon>
 						<PathIcon Data="{StaticResource DownloadIcon}"/>
@@ -52,14 +52,14 @@
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem Header="Browse Folder" Command="{Binding Path=BrowseFolderCommand}"
-						  IsVisible="{Binding Path=AddonState, 
+						  IsVisible="{Binding Path=State, 
 											  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
 					<MenuItem.Icon>
 						<PathIcon Data="{StaticResource FolderIcon}"/>
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem Header="Delete Mod" Command="{Binding Path=DeleteCommand}"
-						  IsVisible="{Binding Path=AddonState, 
+						  IsVisible="{Binding Path=State, 
 											  Converter={StaticResource InvertedNotInstalledAddonStateToVisability}}">
 					<MenuItem.Icon>
 						<PathIcon Data="{StaticResource DeleteIcon}"/>
@@ -127,10 +127,12 @@
 		</SplitView.Pane>
 		<SplitView.Content>
 			<Border Background="{DynamicResource MaterialTextFieldBoxBackgroundBrush}" CornerRadius="16 0 0 0">
-				<rxui:RoutedViewHost Grid.Column="1" Router="{Binding Path=Router}" Margin="28 14 28 28">
+				<rxui:RoutedViewHost Router="{Binding Path=Router}" Margin="28 14 28 28">
 					<rxui:RoutedViewHost.DefaultContent>
-						<TextBlock Text="Addons Path Not Specified" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"
-								   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <ProgressBar IsIndeterminate="True" Classes="circular"
+									 VerticalAlignment="Center" HorizontalAlignment="Center"
+                                     Height="100" Width="100"
+                                     Margin="50"/>
 					</rxui:RoutedViewHost.DefaultContent>
 				</rxui:RoutedViewHost>
 			</Border>

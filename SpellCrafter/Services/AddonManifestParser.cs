@@ -1,32 +1,41 @@
 ﻿using SpellCrafter.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DynamicData;
 
 namespace SpellCrafter.Services
 {
     public static partial class AddonManifestParser
     {
-        [GeneratedRegex(@"## Author: (.+)")]
+        [GeneratedRegex(@"## Author:?\s*(.+)")]
         private static partial Regex AuthorRegex();
 
-        [GeneratedRegex(@"## Version: (.+)")]
+        [GeneratedRegex(@"## Version:?\s*(.+)")]
         private static partial Regex DisplayVersionRegex();
 
-        [GeneratedRegex(@"## AddOnVersion: (\d+)")]
+        [GeneratedRegex(@"## AddOnVersion:?\s*(\d+)")]
         private static partial Regex VersionRegex();
 
-        [GeneratedRegex(@"## DependsOn:( [^>]+(>=\d+)?)+")]
+        [GeneratedRegex(@"## DependsOn:?\s*( [^>]+(>=\d+)?)+")]
         private static partial Regex DependsOnRegex();
 
-        [GeneratedRegex(@"## Title: (.+)")]
+        [GeneratedRegex(@"## Title:?\s*(.+)")]
         private static partial Regex TitleRegex();
 
-        [GeneratedRegex(@"## Description: (.+)")]
+        [GeneratedRegex(@"## Description:?\s*(.+)")]
         private static partial Regex DescriptionRegex();
+
+        [GeneratedRegex(@"\|[cC][A-Fa-f0-9]{6}|(\|[rR])")]
+        private static partial Regex ColorCodeRegex();
+
+        [GeneratedRegex(@"\[[^\]]*\]|\([^\)]*\)")]
+        private static partial Regex BracketsRegex();
+
+        [GeneratedRegex(@"(?<=\s|^)@")]
+        private static partial Regex AtSymbolRegex();
 
         public static Addon ParseAddonManifest(string manifestPath, bool isOnline)
         {
@@ -39,7 +48,7 @@ namespace SpellCrafter.Services
                 if (authorMatch.Success)
                 {
                     var authors = ParseAuthors(authorMatch.Groups[1].Value.Trim());
-                    addon.Authors.AddRange(authors);
+                    addon.Authors = new ObservableCollection<Author>(authors);
                 }
 
                 var displayVersionMatch = DisplayVersionRegex().Match(line);
@@ -86,7 +95,8 @@ namespace SpellCrafter.Services
                 var descriptionMatch = DescriptionRegex().Match(line);
                 if (descriptionMatch.Success)
                 {
-                    addon.Description = descriptionMatch.Groups[1].Value.Trim();
+                    var description = descriptionMatch.Groups[1].Value.Trim();
+                    addon.Description = ColorCodeRegex().Replace(description, "");
                     continue;
                 }
             }
@@ -104,18 +114,19 @@ namespace SpellCrafter.Services
                 addon.LatestVersion = addon.DisplayedLatestVersion;
 
             addon.Name = Path.GetFileNameWithoutExtension(manifestPath);
+            if (string.IsNullOrEmpty(addon.Title))
+                addon.Title = addon.Name;
 
             return addon;
         }
 
-        [GeneratedRegex(@"\|c[A-Fa-f0-9]{6}(@)?|\|r")]
-        private static partial Regex ColorCodeRegex();
-
         private static List<Author> ParseAuthors(string authorsString)
         {
             var cleanedInput = ColorCodeRegex().Replace(authorsString, "");
+            cleanedInput = BracketsRegex().Replace(cleanedInput, "");
+            cleanedInput = AtSymbolRegex().Replace(cleanedInput, "");
 
-            string[] separators = [",", "&", "et al."];
+            string[] separators = [",", "&", "/", "\\", "|", " and ", "et al."];
             var names = cleanedInput.Split(separators, StringSplitOptions.RemoveEmptyEntries)
                 .Select(name => name.Trim())
                 .Where(name => !string.IsNullOrEmpty(name));
