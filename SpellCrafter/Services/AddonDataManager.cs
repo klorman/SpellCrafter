@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using Avalonia.Controls;
-using DynamicData;
 using SpellCrafter.Data;
 using SpellCrafter.Enums;
 using SpellCrafter.Models;

@@ -50,15 +50,17 @@ namespace SpellCrafter.ViewModels
                 .Subscribe(_ => this.RaisePropertyChanged(nameof(IsAddonsDisplayed)));
         }
 
-        private void UpdateAll()
+        private async void UpdateAll()
         {
             Debug.WriteLine("Updating all outdated addons");
 
-            ModsSource.ForEach(addon =>
+            IsLoading = true;
+            foreach (var addon in ModsSource)
             {
                 if (addon.State is AddonState.Outdated or AddonState.InstallationError)
-                    addon.UpdateCommand.Execute(null);
-            });
+                    await addon.Update(false);
+            }
+            IsLoading = false;
         }
 
         protected void FilterMods()

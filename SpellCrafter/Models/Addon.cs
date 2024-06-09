@@ -14,6 +14,7 @@ using SharpCompress.Archives;
 using SharpCompress.Common;
 using SpellCrafter.Data;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace SpellCrafter.Models
 {
@@ -84,7 +85,7 @@ namespace SpellCrafter.Models
             MessageBus.Current.SendMessage(new ViewAddonMessage(this));
         }
 
-        private async void Install(AddonInstallationMethod installationMethod = AddonInstallationMethod.SpellCrafter)
+        private async Task Install(AddonInstallationMethod installationMethod = AddonInstallationMethod.SpellCrafter, bool recursive = true)
         {
             Debug.WriteLine($"Installing addon {Name}");
 
@@ -130,19 +131,57 @@ namespace SpellCrafter.Models
                 DeleteDirectory(tempFolder);
                 AddonDataManager.InsertOrUpdateLocalAddon(db, this);
             }
+
+            Debug.WriteLine($"Addon {Name} installed!");
+
+            if (!recursive) return;
+
+            Debug.WriteLine($"Installing {Name} dependencies");
+
+            foreach (var dependency in Dependencies)
+            {
+                var addon = AddonDataManager.OnlineAddons.FirstOrDefault(a => a.CommonAddonId == dependency.Id);
+
+                if (addon == null)
+                {
+                    Debug.WriteLine($"Dependency {dependency.Name} not found!");
+                    continue;
+                }
+
+                switch (addon.State)
+                {
+                    case AddonState.LatestVersion:
+                        continue;
+                    case AddonState.Installing:
+                        continue;
+                    case AddonState.NotInstalled:
+                        await addon.Install(AddonInstallationMethod.Dependency);
+                        break;
+                    case AddonState.Outdated:
+                        await addon.Update();
+                        break;
+                    case AddonState.InstallationError:
+                        await addon.Reinstall();
+                        break;
+                    default:
+                        continue;
+                }
+            }
         }
 
-        private void Reinstall()
+        private async Task Reinstall()
         {
             Debug.WriteLine($"Reinstalling addon {Name}");
 
             Delete();
-            Install();
+            await Install(InstallationMethod);
         }
 
-        private void Update()
+        public async Task Update(bool recursive = true)
         {
             Debug.WriteLine($"Updating addon {Name}");
+
+            if (AddonVersionComparer.CompareVersions(Version, LatestVersion) >= 0) return;
 
             var addonPath = Path.Combine(AppSettings.Instance.AddonsDirectory, Name);
             if (!Directory.Exists(addonPath))
@@ -159,7 +198,7 @@ namespace SpellCrafter.Models
                     File.Move(file, file.Replace(addonPath, tempFolder));
 
                 DeleteDirectory(addonPath);
-                Install();
+                await Install(InstallationMethod, recursive);
                 Debug.WriteLine("Installation successful");
             }
             catch (Exception ex)
@@ -290,6 +329,17 @@ namespace SpellCrafter.Models
             DisplayedVersion = DisplayedVersion,
             State = State,
             InstallationMethod = InstallationMethod
+        };
+
+        public CommonAddon ToCommonAddon() => new()
+        {
+            Id = CommonAddonId,
+            Name = Name,
+            Title = Title,
+            Description = Description,
+            Authors = [..Authors],
+            Categories = [..Categories],
+            Dependencies = Dependencies
         };
     }
 }
