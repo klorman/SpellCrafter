@@ -7,8 +7,5 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SpellCrafter.Views.InstalledAddonsView"
 			 x:DataType="vm:InstalledAddonsViewModel">
-	<Design.DataContext>
-		<vm:InstalledAddonsViewModel/>
-	</Design.DataContext>
-	<local:AddonsOverviewView/>
+	<local:AddonsOverviewView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:InstalledAddonsView}}}"/>
 </UserControl>

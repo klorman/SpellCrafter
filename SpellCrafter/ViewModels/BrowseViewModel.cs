@@ -8,6 +8,13 @@ namespace SpellCrafter.ViewModels
 {
     public class BrowseViewModel : AddonsOverviewViewModel, IRoutableViewModel
     {
+        private static bool _isLoading;
+        public override bool IsLoading
+        {
+            get => _isLoading;
+            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
+        }
+
         public string? UrlPathSegment => "/browse";
 
         public IScreen HostScreen { get; }
@@ -22,11 +29,11 @@ namespace SpellCrafter.ViewModels
         private void LoadAddons()
         {
             ModsSource = AddonDataManager.OnlineAddons;
-            IsLoading = false;
         }
 
         protected override void RescanMods()
         {
+            var oldIsLoading = IsLoading;
             IsLoading = true;
             base.RescanMods();
 
@@ -36,7 +43,7 @@ namespace SpellCrafter.ViewModels
                 var addons = await parser.ParseAddonsAsync();
                 using var db = new EsoDataConnection();
                 AddonDataManager.UpdateOnlineAddonsInfo(db, addons);
-                IsLoading = false;
+                IsLoading = oldIsLoading;
             });
         }
     }

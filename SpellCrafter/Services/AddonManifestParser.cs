@@ -79,7 +79,10 @@ namespace SpellCrafter.Services
                     {
                         var parts = token.Trim().Split(">=");
                         var dependency = new CommonAddon { Name = parts[0] }; // TODO add support for min version
-                        addon.Dependencies.Add(dependency);
+                        if (isOnline)
+                            addon.OnlineDependencies.Add(dependency);
+                        else
+                            addon.LocalDependencies.Add(dependency);
                     }
 
                     continue;

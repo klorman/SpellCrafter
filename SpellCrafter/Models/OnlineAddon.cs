@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
+using System.Collections.Generic;
 
 namespace SpellCrafter.Models
 {
@@ -22,5 +23,8 @@ namespace SpellCrafter.Models
 
         [OneToOne]
         public CommonAddon CommonAddon { get; set; } = null!;
+
+        [ManyToMany(typeof(OnlineAddonDependency))]
+        public List<CommonAddon> Dependencies { get; set; } = [];
     }
 }

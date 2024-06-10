@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp;
-using SharpCompress;
 using SharpCompress.Archives;
 using SpellCrafter.Models;
 

@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using ReactiveUI;
-using SharpCompress;
 using SpellCrafter.Enums;
 
 namespace SpellCrafter.ViewModels
@@ -27,13 +26,14 @@ namespace SpellCrafter.ViewModels
             }
         }
 
+        [Reactive] public virtual bool IsLoading { get; set; }
+
         [Reactive] public RangedObservableCollection<Addon> DisplayedMods { get; set; } = [];
         [Reactive] public string ModsFilter { get; set; } = string.Empty;
         [Reactive] public bool BrowseMode { get; set; }
         [Reactive] public Addon? DataGridModsSelectedItem { get; set; }
-        [Reactive] public bool IsLoading { get; set; } = true;
         public bool IsAddonsDisplayed => DisplayedMods.Count > 0;
-
+       
         public RelayCommand UpdateAllCommand { get; }
         public RelayCommand FilterModsCommand { get; }
         public RelayCommand RefreshModsCommand { get; }
@@ -42,9 +42,21 @@ namespace SpellCrafter.ViewModels
         {
             BrowseMode = browseMode;
 
-            UpdateAllCommand = new RelayCommand(_ => UpdateAll());
-            FilterModsCommand = new RelayCommand(_ => FilterMods());
-            RefreshModsCommand = new RelayCommand(_ => RescanMods());
+            UpdateAllCommand = new RelayCommand
+            (
+                _ => UpdateAll(),
+                _ => !IsLoading
+            );
+            FilterModsCommand = new RelayCommand
+            (
+                _ => FilterMods(),
+                _ => !IsLoading
+            );
+            RefreshModsCommand = new RelayCommand
+            (
+                _ => RescanMods(),
+                _ => !IsLoading
+            );
             
             this.WhenAnyValue(x => x.DisplayedMods.Count)
                 .Subscribe(_ => this.RaisePropertyChanged(nameof(IsAddonsDisplayed)));
@@ -54,18 +66,23 @@ namespace SpellCrafter.ViewModels
         {
             Debug.WriteLine("Updating all outdated addons");
 
+            var oldIsLoading = IsLoading;
             IsLoading = true;
             foreach (var addon in ModsSource)
             {
                 if (addon.State is AddonState.Outdated or AddonState.InstallationError)
                     await addon.Update(false);
             }
-            IsLoading = false;
+
+            IsLoading = oldIsLoading;
         }
 
         protected void FilterMods()
         {
             Debug.WriteLine("Filtering displayed addons");
+
+            var oldIsLoading = IsLoading;
+            IsLoading = true;
 
             var filter = ModsFilter.Replace(" ", "");
             List<Addon> filteredAddons;
@@ -83,6 +100,8 @@ namespace SpellCrafter.ViewModels
             }
             
             DisplayedMods.Refresh(filteredAddons, false);
+
+            IsLoading = oldIsLoading;
         }
 
         protected virtual void RescanMods()

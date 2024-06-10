@@ -41,7 +41,8 @@ namespace SpellCrafter.Data
             db.CreateTableIfNotExists<Category>();
             db.CreateTableIfNotExists<AddonAuthor>();
             db.CreateTableIfNotExists<AddonCategory>();
-            db.CreateTableIfNotExists<AddonDependency>();
+            db.CreateTableIfNotExists<LocalAddonDependency>();
+            db.CreateTableIfNotExists<OnlineAddonDependency>();
         }
     }
 }

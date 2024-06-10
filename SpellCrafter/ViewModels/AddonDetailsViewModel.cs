@@ -12,7 +12,8 @@ namespace SpellCrafter.ViewModels
 
         public void CopyFromAddon(Addon addon)
         {
-            Dependencies = addon.Dependencies;
+            LocalDependencies = addon.LocalDependencies;
+            OnlineDependencies = addon.OnlineDependencies;
             CommonAddonId = addon.CommonAddonId;
             Name = addon.Name;
             Title = addon.Title;

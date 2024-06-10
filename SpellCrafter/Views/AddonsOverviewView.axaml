@@ -6,13 +6,17 @@
 			 xmlns:controls="clr-namespace:SpellCrafter.Controls"
 			 xmlns:converters="clr-namespace:SpellCrafter.Converters"
 			 xmlns:materialcontrols="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="450"
+			 xmlns:view="clr-namespace:SpellCrafter.Views"
+			 xmlns:models="clr-namespace:SpellCrafter.Models"
+			 mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="450"
 			 Focusable="True"
              x:Class="SpellCrafter.Views.AddonsOverviewView"
 			 x:DataType="vm:AddonsOverviewViewModel">
-	<Grid RowDefinitions="40 *">
-		<Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto Auto * Auto Auto"
-              IsEnabled="{Binding Path=!IsLoading}">
+	<UserControl.Resources>
+		<converters:DependencyTypeMultiConverter x:Key="DependencyTypeMultiConverter"/>
+	</UserControl.Resources>
+    <Grid RowDefinitions="40 *">
+		<Grid Grid.Row="0" ColumnDefinitions="Auto Auto Auto Auto * Auto Auto">
 			<Grid.Styles>
 				<Style Selector="Button TextBlock">
 					<Setter Property="Foreground" Value="{DynamicResource MaterialBodyBrush}"/>
@@ -133,23 +137,29 @@
                 <DataGridTemplateColumn Header="Dependencies" Width="1.5*" MinWidth="110">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ScrollViewer Theme="{StaticResource MaterialModernScrollViewer}" Margin="0 5">
-                                <ItemsControl ItemsSource="{Binding Path=Dependencies}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
+							<ScrollViewer Theme="{StaticResource MaterialModernScrollViewer}" Margin="0 5">
+								<ItemsControl>
+									<ItemsControl.ItemsSource>
+										<MultiBinding Converter="{StaticResource DependencyTypeMultiConverter}">
+											<Binding Path="."/>
+											<Binding Path="$parent[view:AddonsOverviewView].ViewModel"/>
+                                        </MultiBinding>
+                                    </ItemsControl.ItemsSource>
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Vertical" VerticalAlignment="Center"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
 											<!--Button Classes="Flat" Content="{Binding Path=Title}" ToolTip.Tip="{Binding Path=$self.Content}"
                                                     HorizontalAlignment="Left" Padding="0" Foreground="{DynamicResource MaterialBodyBrush}" FontWeight="Bold"
                                                     Command="{Binding Path=ViewModCommand}"/-->
-                                            <TextBlock Text="{Binding Path=Name}" Margin="0 5 15 0"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+											<TextBlock x:DataType="models:CommonAddon" Text="{Binding Path=Name}" Margin="0 5 15 0"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</ScrollViewer>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

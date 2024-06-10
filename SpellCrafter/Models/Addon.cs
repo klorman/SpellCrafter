@@ -23,6 +23,8 @@ namespace SpellCrafter.Models
         private const string BaseAddonPageLink = "https://www.esoui.com/downloads/info";
 
         public int CommonAddonId { get; set; } = -1;
+        public int? LocalAddonId { get; set; }
+        public int? OnlineAddonId { get; set; }
         [Reactive] public string Name { get; set; } = string.Empty;
         [Reactive] public string Title { get; set; } = string.Empty;
         [Reactive] public string Description { get; set; } = string.Empty;
@@ -33,7 +35,8 @@ namespace SpellCrafter.Models
         IList<Author> ICommonAddon.Authors => Authors;
         [Reactive] public ObservableCollection<Category> Categories { get; set; } = [];
         IList<Category> ICommonAddon.Categories => Categories;
-        [Reactive] public List<CommonAddon> Dependencies { get; set; } = [];
+        [Reactive] public RangedObservableCollection<CommonAddon> LocalDependencies { get; set; } = [];
+        [Reactive] public RangedObservableCollection<CommonAddon> OnlineDependencies { get; set; } = [];
         [Reactive] public int? UniqueId { get; set; }
         [Reactive] public string FileSize { get; set; } = "TODO archive size";
         [Reactive] public string Overview { get; set; } = "TODO";
@@ -120,11 +123,13 @@ namespace SpellCrafter.Models
                 InstallationMethod = installationMethod;
                 Version = LatestVersion;
                 DisplayedVersion = DisplayedLatestVersion;
+                LocalDependencies.Refresh(OnlineDependencies);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
                 State = oldState;
+                return;
             }
             finally
             {
@@ -136,9 +141,9 @@ namespace SpellCrafter.Models
 
             if (!recursive) return;
 
-            Debug.WriteLine($"Installing {Name} dependencies");
+            Debug.WriteLine($"Installing {Name} dependencies: {string.Join(", ", LocalDependencies.Select(addon => addon.Name))}");
 
-            foreach (var dependency in Dependencies)
+            foreach (var dependency in LocalDependencies)
             {
                 var addon = AddonDataManager.OnlineAddons.FirstOrDefault(a => a.CommonAddonId == dependency.Id);
 
@@ -156,13 +161,13 @@ namespace SpellCrafter.Models
                         continue;
                     case AddonState.NotInstalled:
                         await addon.Install(AddonInstallationMethod.Dependency);
-                        break;
+                        continue;
                     case AddonState.Outdated:
                         await addon.Update();
-                        break;
+                        continue;
                     case AddonState.InstallationError:
                         await addon.Reinstall();
-                        break;
+                        continue;
                     default:
                         continue;
                 }
@@ -229,6 +234,7 @@ namespace SpellCrafter.Models
             using var db = new EsoDataConnection();
 
             AddonDataManager.RemoveLocalAddon(db, this);
+            LocalAddonId = null;
             State = AddonState.NotInstalled;
         }
 
@@ -324,6 +330,7 @@ namespace SpellCrafter.Models
 
         public LocalAddon ToLocalAddon() => new()
         {
+            Id = LocalAddonId,
             CommonAddonId = CommonAddonId,
             Version = Version,
             DisplayedVersion = DisplayedVersion,
@@ -338,8 +345,7 @@ namespace SpellCrafter.Models
             Title = Title,
             Description = Description,
             Authors = [..Authors],
-            Categories = [..Categories],
-            Dependencies = Dependencies
+            Categories = [..Categories]
         };
     }
 }

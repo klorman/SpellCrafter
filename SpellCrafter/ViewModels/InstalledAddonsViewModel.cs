@@ -9,6 +9,13 @@ namespace SpellCrafter.ViewModels
 {
     public class InstalledAddonsViewModel : AddonsOverviewViewModel, IRoutableViewModel
     {
+        private static bool _isLoading;
+        public override bool IsLoading
+        {
+            get => _isLoading;
+            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
+        }
+
         public string? UrlPathSegment => "/installed";
 
         public IScreen HostScreen { get; }
@@ -31,11 +38,11 @@ namespace SpellCrafter.ViewModels
             }
 
             ModsSource = AddonDataManager.InstalledAddons;
-            IsLoading = false;
         }
 
         protected override void RescanMods()
         {
+            var oldIsLoading = IsLoading;
             IsLoading = true;
             base.RescanMods();
 
@@ -44,7 +51,7 @@ namespace SpellCrafter.ViewModels
                 var addons = LocalAddonsScannerService.ScanDirectory(AppSettings.Instance.AddonsDirectory);
                 using var db = new EsoDataConnection();
                 AddonDataManager.UpdateInstalledAddonsInfo(db, addons);
-                IsLoading = false;
+                IsLoading = oldIsLoading;
             });
         }
     }

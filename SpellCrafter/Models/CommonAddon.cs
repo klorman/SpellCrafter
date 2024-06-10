@@ -18,9 +18,6 @@ namespace SpellCrafter.Models
         [MaxLength(500)]
         public string Description { get; set; } = string.Empty;
 
-        [ManyToMany(typeof(AddonDependency))]
-        public List<CommonAddon> Dependencies { get; set; } = [];
-
         [OneToOne]
         public LocalAddon? LocalAddon { get; set; }
 
