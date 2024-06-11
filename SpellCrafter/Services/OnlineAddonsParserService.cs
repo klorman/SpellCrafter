@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp;
+using AngleSharp.Dom;
 using SharpCompress.Archives;
 using SpellCrafter.Models;
 
@@ -21,7 +23,8 @@ namespace SpellCrafter.Services
         private const string AddonsPath = "/addons.php";
         private const string DownloadsPath = "/downloads/getfile.php";
 
-        private readonly SemaphoreSlim _semaphore = new(20);
+        private readonly ConcurrentBag<Task<List<(int, string)>>> _tasks = [];
+        private readonly SemaphoreSlim _semaphore = new(100);
 
         public async Task<List<Addon>> ParseAddonsAsync()
         {
@@ -32,27 +35,33 @@ namespace SpellCrafter.Services
                 $"{BaseUrl}/downloads/index.php?cid=39" // Category with subcategories //TODO maybe add support for subcategories
             };
 
+#if DEBUG
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+#endif
             foreach (var url in categoryUrls)
             {
                 var categoryInfos = await ParseCategoriesAsync(url);
-                foreach (var (categoryUrl, categoryName) in categoryInfos)
-                {
-                    var categoryPaginationPages = await ParseCategoryPaginationAsync(categoryUrl); // TODO maybe parse only PageRegex
 
-                    foreach (var categoryPaginationPage in categoryPaginationPages)
-                    {
-                        var ids = await ParseCategoryPageAsync(categoryPaginationPage);
-                        foreach (var id in ids)
-                        {
-                            if (addonsMap.TryGetValue(id, out var addon))
-                                addon.Categories.Add(new Category { Name = categoryName });
-                            else
-                                addonsMap.Add(id,
-                                    new Addon { UniqueId = id, Categories = [new Category { Name = categoryName }] });
-                        }
-                    }
-                }
+                foreach (var categoryInfo in categoryInfos)
+                    _tasks.Add(ParseCategoryPageAsync(categoryInfo, true));
             }
+
+            var results = await Task.WhenAll(_tasks);
+            var addonsInfo = results.SelectMany(result => result).ToList();
+            foreach (var (id, categoryName) in addonsInfo)
+            {
+                if (addonsMap.TryGetValue(id, out var addon))
+                    addon.Categories.Add(new Category { Name = categoryName });
+                else
+                    addonsMap.Add(id,
+                        new Addon { UniqueId = id, Categories = [new Category { Name = categoryName }] });
+            }
+
+#if DEBUG
+            stopwatch.Stop();
+            Debug.WriteLine($"Site parsed in {stopwatch.Elapsed.Minutes}:{stopwatch.Elapsed.Seconds}");
+#endif
 
             var tempFolder = Path.Combine(Path.GetTempPath(), "SpellCrafterParser");
             if (Directory.Exists(tempFolder))
@@ -62,10 +71,16 @@ namespace SpellCrafter.Services
 
             try
             {
+#if DEBUG
+                stopwatch.Start();
+#endif
                 var addons = await ProcessAddonsAsync([.. addonsMap.Keys], tempFolder);
                 foreach (var addon in addons)
                     addon.Categories = addonsMap[addon.UniqueId!.Value].Categories;
-
+#if DEBUG
+                stopwatch.Stop();
+                Debug.WriteLine($"Addons parsed in {stopwatch.Elapsed.Minutes}:{stopwatch.Elapsed.Seconds}");
+#endif
                 return addons;
             }
             finally
@@ -163,13 +178,9 @@ namespace SpellCrafter.Services
         [GeneratedRegex(@"/downloads/cat(\d+).html")]
         private static partial Regex CategoryRegex();
 
-        private async Task<List<string>> ParseCategoryPaginationAsync(string url)
+        private List<string> ParseCategoryPagination(IDocument document, string url)
         {
-            var categoryPages = new List<string> { url };
-
-            var html = await _httpClient.GetStringAsync(url);
-            var context = BrowsingContext.New(Configuration.Default);
-            var document = await context.OpenAsync(req => req.Content(html));
+            var categoryPages = new List<string>();
 
             var pageControl = document.QuerySelector("td.vbmenu_control");
             if (pageControl == null) return categoryPages;
@@ -196,11 +207,24 @@ namespace SpellCrafter.Services
         [GeneratedRegex(@"info(\d+)-")]
         private static partial Regex InfoIdRegex();
 
-        private async Task<List<int>> ParseCategoryPageAsync(string url)
+        private async Task<List<(int Id, string categoryName)>> ParseCategoryPageAsync((string Url, string Name) categoryInfo, bool parsePagination)
         {
-            var html = await _httpClient.GetStringAsync(url);
+            await _semaphore.WaitAsync();
+
+            var html = await _httpClient.GetStringAsync(categoryInfo.Url);
             var context = BrowsingContext.New(Configuration.Default);
             var document = await context.OpenAsync(req => req.Content(html));
+
+            _semaphore.Release();
+
+            if (parsePagination)
+            {
+                var paginationUrls = ParseCategoryPagination(document, categoryInfo.Url);
+                foreach (var paginationUrl in paginationUrls)
+                {
+                    _tasks.Add(ParseCategoryPageAsync((paginationUrl, categoryInfo.Name), false));
+                }
+            }
 
             var files = document.QuerySelectorAll("div.file > div.title > a");
             var regex = InfoIdRegex();
@@ -209,7 +233,7 @@ namespace SpellCrafter.Services
                 select file.GetAttribute("href") into href
                 select regex.Match(href) into match
                 where match.Success
-                select int.Parse(match.Groups[1].Value)).ToList();
+                select (int.Parse(match.Groups[1].Value), categoryInfo.Name)).ToList();
         }
 
         public async Task<string?> DownloadAddonArchive(int addonId, string tempFolder)
