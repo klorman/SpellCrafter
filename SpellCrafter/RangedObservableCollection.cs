@@ -33,6 +33,16 @@ namespace SpellCrafter
             EnableOnCollectionChanged();
         }
 
+        public void RemoveRange(int start, int end)
+        {
+            DisableOnCollectionChanged();
+
+            for (var i = end; i >= start; --i)
+                RemoveAt(i);
+
+            EnableOnCollectionChanged();
+        }
+
         public void RemoveRange(IEnumerable<T> list)
         {
             if (list == null)

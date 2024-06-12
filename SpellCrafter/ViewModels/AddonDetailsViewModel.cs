@@ -10,7 +10,7 @@ namespace SpellCrafter.ViewModels
 
         public IScreen HostScreen { get; } = screen ?? Locator.Current.GetService<IScreen>()!;
 
-        public void CopyFromAddon(Addon addon)
+        public AddonDetailsViewModel(Addon addon) : this()
         {
             LocalDependencies = addon.LocalDependencies;
             OnlineDependencies = addon.OnlineDependencies;

@@ -9,6 +9,8 @@ namespace SpellCrafter.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, IScreen, IActivatableViewModel
     {
+        private readonly RangedObservableCollection<IRoutableViewModel> _navigationHistory = [];
+        private int _currentHistoryIndex = -1;
         public ViewModelActivator Activator { get; } = new();
         [Reactive] public RoutingState Router { get; set; } = new();
         [Reactive] public bool IsMyModsButtonChecked { get; set; }
@@ -18,6 +20,8 @@ namespace SpellCrafter.ViewModels
         public ICommand ShowInstalledAddonsCommand { get; }
         public ICommand ShowBrowseCommand { get; }
         public ICommand ShowSettingsCommand { get; }
+        public RelayCommand GoBackCommand { get; }
+        public RelayCommand GoForwardCommand { get; }
 
         public MainWindowViewModel()
         {
@@ -27,18 +31,17 @@ namespace SpellCrafter.ViewModels
             if (!isAddonsDirectoryValid)
                 AppSettings.Instance.AddonsDirectory = string.Empty;
 
+            if (isAddonsDirectoryValid)
+                IsMyModsButtonChecked = true;
+            else
+                IsSettingsButtonChecked = true;
+
             this.WhenActivated((CompositeDisposable _) =>
             {
                 if (isAddonsDirectoryValid)
-                {
-                    Router.Navigate.Execute(new InstalledAddonsViewModel());
-                    IsMyModsButtonChecked = true;
-                }
+                    NavigateToViewModel(new InstalledAddonsViewModel());
                 else
-                {
-                    Router.Navigate.Execute(new SettingsViewModel());
-                    IsSettingsButtonChecked = true;
-                }
+                    NavigateToViewModel(new SettingsViewModel());
             });
 
             MessageBus.Current.Listen<ViewAddonMessage>()
@@ -46,31 +49,64 @@ namespace SpellCrafter.ViewModels
                 {
                     var addon = message.Addon;
                     if (addon != null)
-                    {
-                        var addonDetailsViewModel = new AddonDetailsViewModel();
-                        addonDetailsViewModel.CopyFromAddon(addon);
-                        Router.Navigate.Execute(addonDetailsViewModel);
-                    }
+                        NavigateToViewModel(new AddonDetailsViewModel(addon));
                 });
 
             ShowInstalledAddonsCommand = new RelayCommand
             ( 
-                _ => { Router.Navigate.Execute(new InstalledAddonsViewModel()); }, 
-                _ => !(Router.GetCurrentViewModel() is InstalledAddonsViewModel)
+                _ => NavigateToViewModel(new InstalledAddonsViewModel()), 
+                _ => Router.GetCurrentViewModel() is not InstalledAddonsViewModel
             );
 
             ShowBrowseCommand = new RelayCommand
             (
-                _ => { Router.Navigate.Execute(new BrowseViewModel()); },
-                _ => !(Router.GetCurrentViewModel() is BrowseViewModel)
+                _ => NavigateToViewModel(new BrowseViewModel()),
+                _ => Router.GetCurrentViewModel() is not BrowseViewModel
             );
 
             ShowSettingsCommand = new RelayCommand
             (
-                _ => { Router.Navigate.Execute(new SettingsViewModel()); },
-                _ => !(Router.GetCurrentViewModel() is SettingsViewModel)
+                _ => NavigateToViewModel(new SettingsViewModel()),
+                _ => Router.GetCurrentViewModel() is not SettingsViewModel
+            );
+
+            GoBackCommand = new RelayCommand
+            (
+                _ =>
+                {
+                    if (_currentHistoryIndex <= 0) return;
+                    _currentHistoryIndex--;
+                    Router.Navigate.Execute(_navigationHistory[_currentHistoryIndex]);
+                    GoBackCommand?.RaiseCanExecuteChanged();
+                    GoForwardCommand?.RaiseCanExecuteChanged();
+                },
+                _ => _currentHistoryIndex > 0
+            );
+
+            GoForwardCommand = new RelayCommand
+            (
+                _ =>
+                {
+                    if (_currentHistoryIndex >= _navigationHistory.Count - 1) return;
+                    _currentHistoryIndex++;
+                    Router.Navigate.Execute(_navigationHistory[_currentHistoryIndex]);
+                    GoBackCommand?.RaiseCanExecuteChanged();
+                    GoForwardCommand?.RaiseCanExecuteChanged();
+                },
+                _ => _currentHistoryIndex < _navigationHistory.Count - 1
             );
         }
 
+        private void NavigateToViewModel(IRoutableViewModel viewModel)
+        {
+            Router.Navigate.Execute(viewModel);
+            if (_navigationHistory.Count - 1 > _currentHistoryIndex)
+                _navigationHistory.RemoveRange(_currentHistoryIndex + 1, _navigationHistory.Count - 1);
+
+            _navigationHistory.Add(viewModel);
+            _currentHistoryIndex++;
+            GoBackCommand.RaiseCanExecuteChanged();
+            GoForwardCommand.RaiseCanExecuteChanged();
+        }
     }
 }

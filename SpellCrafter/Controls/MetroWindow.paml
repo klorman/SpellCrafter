@@ -1,75 +1,50 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:local="clr-namespace:SpellCrafter.Controls"
         xmlns:cvs="clr-namespace:SpellCrafter.Converters"
-		xmlns:controls="clr-namespace:SpellCrafter.Controls"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style Selector="local|MetroWindow">
-		<Setter Property="Background" Value="{DynamicResource MaterialToolBarBackgroundBrush }" />
+		<Setter Property="Background" Value="{DynamicResource MaterialToolBarBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource AvalonBorderBrush}" />
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<VisualLayerManager>
-					<Grid ColumnDefinitions="14 * 14" RowDefinitions="14 * 14" Background="Transparent">
-						<Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
-								Margin="14" Padding="3" BoxShadow="0 2 30 -6 Black" Grid.RowSpan="3" Grid.ColumnSpan="3" ClipToBounds="True">
-							<Grid Background="{TemplateBinding Background}" RowDefinitions="36 *">
-								<Grid ColumnDefinitions="* Auto *" Name="titlebar" Margin="0" Background="Transparent">
-									<Image Grid.Column="0" Source="{TemplateBinding Icon, Converter={x:Static cvs:IconImageConverter.Converter}}" HorizontalAlignment="Right"
-										   Name="icon" Height="30" Width="30" Margin="7 0 0 0" Stretch="UniformToFill" IsVisible="{TemplateBinding ClientDecorations}" />
+					<Panel>
+						<Border x:Name="RootBorder" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
+								Margin="0" Padding="4" BoxShadow="0 2 30 -6 Black" ClipToBounds="True">
+							<Grid RowDefinitions="36 *">
+								<Grid Name="titlebar" Grid.Row="0" ColumnDefinitions="* Auto *" Background="{TemplateBinding Background}">
+									<Grid Grid.Column="0" Name="titlebarInnerLeftMenu" IsVisible="{TemplateBinding ClientDecorations}" Height="40" Margin="-4 -4 7 0">
+										<ContentPresenter x:Name="TitleBarInnerLeftContent" Content="{Binding Path=TitleBarInnerLeftContent, RelativeSource={RelativeSource AncestorType=local:MetroWindow}}"
+														  HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+									</Grid>
 
-									<TextBlock Grid.Column="1" Text="{TemplateBinding Title}" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Padding="7 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+									<Grid Name="titlebarTitle" ColumnDefinitions="Auto Auto" Grid.Column="1" Margin="0 -4 0 0"
+										  VerticalAlignment="Center" HorizontalAlignment="Center" Height="40">
+										<Image Grid.Column="0" Source="{TemplateBinding Icon, Converter={x:Static cvs:IconImageConverter.Converter}}" HorizontalAlignment="Right"
+											   Name="icon" Height="30" Width="30" Margin="0 0 7 0" Stretch="UniformToFill" IsVisible="{TemplateBinding ClientDecorations}"/>
+										<TextBlock Grid.Column="1" Text="{TemplateBinding Title}" Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" VerticalAlignment="Center"/>
+									</Grid>
 
-									<Grid Grid.Column="2" Name="titlebarMenu" Margin="7 -2 -3 0" IsVisible="{TemplateBinding ClientDecorations}"
-										  ColumnDefinitions="* Auto Auto Auto" Height="40">
+									<Grid Grid.Column="2" Name="titlebarInnerRightMenu" IsVisible="{TemplateBinding ClientDecorations}"
+										  ColumnDefinitions="* Auto Auto Auto" Height="40" Margin="7 -4 -4 0">
 										<Grid.Styles>
 											<Styles>
 												<StyleInclude Source="/Controls/MetroWindowControlsTheme.paml" />
 											</Styles>
 										</Grid.Styles>
-										<ContentPresenter Grid.Column="0" x:Name="TitleBarMenuContent" Content="{Binding Path=TitleBarMenuContent, RelativeSource={RelativeSource AncestorType=local:MetroWindow}}" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
+										<ContentPresenter Grid.Column="0" x:Name="TitleBarInnerRightContent" Content="{Binding Path=TitleBarInnerRightContent, RelativeSource={RelativeSource AncestorType=local:MetroWindow}}"
+														  HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 										<Button Classes="Flat" Grid.Column="1" Background="Transparent" BorderThickness="0" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="minimiseButton" />
 										<Button Classes="Flat" Grid.Column="2" Background="Transparent" BorderThickness="0" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="restoreButton" />
 										<Button Classes="Flat" Grid.Column="3" Background="Transparent" BorderThickness="0" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="closeButton" />
 									</Grid>
 								</Grid>
-								
-								<ContentPresenter Name="PART_ContentPresenter" Grid.Row="1" Content="{TemplateBinding Content}" Margin="-3 1 -3 -3" />
+
+								<ContentPresenter Name="PART_ContentPresenter" Grid.Row="1" Content="{TemplateBinding Content}" Margin="-4 0 -4 -4"/>
 							</Grid>
 						</Border>
-							
-						<Grid Background="Transparent" Grid.Row="0" Grid.Column="1" Name="topHorizontalGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeNorthSouth}" />
-
-						<Grid Background="Transparent" Grid.Row="2" Grid.Column="1" Name="bottomHorizontalGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeNorthSouth}" />
-
-						<Grid Background="Transparent" Grid.Row="0" Grid.Column="0" Name="topLeftGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=TopLeftCorner}" />
-					
-						<Grid Background="Transparent" Grid.Row="1" Grid.Column="0" Name="leftVerticalGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeWestEast}" />
-						
-						<Grid Background="Transparent" Grid.Row="2" Grid.Column="0" Name="bottomLeftGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=BottomLeftCorner}" />
-
-						<Grid Background="Transparent" Grid.Row="0" Grid.Column="2" Name="topRightGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=TopRightCorner}" />
-						
-						<Grid Background="Transparent" Grid.Row="1" Grid.Column="2" Name="rightVerticalGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=SizeWestEast}" />
-						
-						<Grid Background="Transparent" Grid.Row="2" Grid.Column="2" Name="bottomRightGrip"
-							  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Classes="grip"
-							  Cursor="{TemplateBinding CanResize, Converter={x:Static cvs:ResizeCursorConverter.Converter}, ConverterParameter=BottomRightCorner}" />
-					</Grid>
+					</Panel>
 				</VisualLayerManager>
 			</ControlTemplate>
 		</Setter>
@@ -122,20 +97,16 @@
 	<Style Selector="local|MetroWindow">
 		<Setter Property="BorderThickness" Value="3" />
 		<Setter Property="Focusable" Value="True" />
-		<Setter Property="BorderBrush" Value="{DynamicResource MaterialDividerBrush}" />
+		<Setter Property="BorderBrush" Value="#383838" />
 	</Style>
 
-	<Style Selector="local|MetroWindow:maximised /template/ Border">
-		<Setter Property="Margin" Value="0" />
+	<Style Selector="local|MetroWindow:maximised /template/ Border#RootBorder">
+		<Setter Property="Margin" Value="7" />
 		<Setter Property="CornerRadius" Value="0" />
 	</Style>
-	<Style Selector="local|MetroWindow /template/ Border">
-		<Setter Property="Margin" Value="7" />
+	<Style Selector="local|MetroWindow /template/ Border#RootBorder">
+		<Setter Property="Margin" Value="0" />
 		<Setter Property="CornerRadius" Value="5" />
-	</Style>
-
-	<Style Selector="local|MetroWindow:maximised /template/ Grid.grip">
-		<Setter Property="IsVisible" Value="False"/>
 	</Style>
 
 	<Style Selector="local|MetroWindow:focus">

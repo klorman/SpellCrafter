@@ -5,7 +5,7 @@ namespace SpellCrafter.Views
 {
     public partial class MainWindowView : ReactiveMetroWindow<MainWindowViewModel>
     {
-        public MainWindowView() : base()
+        public MainWindowView()
         {
             InitializeComponent();
 

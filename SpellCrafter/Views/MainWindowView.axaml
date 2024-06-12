@@ -11,7 +11,7 @@
 					  mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
 					  x:Class="SpellCrafter.Views.MainWindowView"
 					  WindowStartupLocation="CenterScreen"
-					  Title="Spell Crafter" MinWidth="900" MinHeight="600"
+					  Title="Spell Crafter" MinWidth="916" MinHeight="600"
 					  x:DataType="vm:MainWindowViewModel">
 	<Design.DataContext>
 		<vm:MainWindowViewModel/>
@@ -69,14 +69,29 @@
 		</ResourceDictionary>
 	</Window.Resources>
 
-	<controls:MetroWindow.TitleBarMenuContent>
-		<Grid ColumnDefinitions="* Auto">
+    <controls:MetroWindow.TitleBarInnerLeftContent>
+		<Grid ColumnDefinitions="Auto *">
+			<Button Grid.Column="0" HorizontalAlignment="Left" Classes="Flat"
+                    CornerRadius="0" Width="{Binding $self.Bounds.Height}"
+                    Command="{Binding Path=GoBackCommand}">
+                <PathIcon Data="{StaticResource ArrowBackIcon}" Height="14" Width="14"/>
+            </Button>
+			<Button Grid.Column="1" HorizontalAlignment="Left" Classes="Flat"
+					CornerRadius="0" Width="{Binding $self.Bounds.Height}"
+					Command="{Binding Path=GoForwardCommand}">
+				<PathIcon Data="{StaticResource ArrowForwardIcon}" Height="14" Width="14"/>
+            </Button>
+		</Grid>
+    </controls:MetroWindow.TitleBarInnerLeftContent>
+
+	<controls:MetroWindow.TitleBarInnerRightContent>
+		<Grid ColumnDefinitions="*">
 			<Button Grid.Column="0" HorizontalAlignment="Right" Classes="Flat"
 					CornerRadius="0" Width="{Binding $self.Bounds.Height}" IsEnabled="False">
 				<PathIcon Data="{StaticResource PaletteSwatchIcon}" Height="20" Width="20"/>
 			</Button>
 		</Grid>
-	</controls:MetroWindow.TitleBarMenuContent>
+	</controls:MetroWindow.TitleBarInnerRightContent>
 
 	<SplitView x:Name="MainSplitView"
 			   IsPaneOpen="True"
@@ -126,7 +141,7 @@
 			</DockPanel>
 		</SplitView.Pane>
 		<SplitView.Content>
-			<Border Background="{DynamicResource MaterialTextFieldBoxBackgroundBrush}" CornerRadius="16 0 0 0">
+			<Border Background="#383838" CornerRadius="16 0 0 0">
 				<rxui:RoutedViewHost Router="{Binding Path=Router}" Margin="28 14 28 28">
 					<rxui:RoutedViewHost.DefaultContent>
                         <ProgressBar IsIndeterminate="True" Classes="circular"

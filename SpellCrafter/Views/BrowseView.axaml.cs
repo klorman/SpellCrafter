@@ -8,9 +8,6 @@ namespace SpellCrafter.Views
         public BrowseView()
         {
             InitializeComponent();
-
-            var vm = new BrowseViewModel();
-            DataContext = vm;
         }
     }
 }

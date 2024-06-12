@@ -66,19 +66,19 @@
 				</StackPanel>
 			</Button>
 
-			<materialcontrols:Card Padding="7 0 0 0" Grid.Column="4"
-								   HorizontalAlignment="Right" Width="250">
-				<TextBox Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Filter by text"
-						 Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Text="{Binding Path=ModsFilter}">
+			<materialcontrols:Card Grid.Column="4" HorizontalAlignment="Right" Width="250" Padding="0">
+                <TextBox Classes="solo" Theme="{StaticResource SoloTextBox}" Watermark="Filter by text"
+                         Foreground="{DynamicResource MaterialPrimaryForegroundBrush}" Text="{Binding Path=ModsFilter}">
 					<TextBox.KeyBindings>
 						<KeyBinding Command="{Binding Path=FilterModsCommand}" Gesture="Enter"/>
 					</TextBox.KeyBindings>
 					<TextBox.InnerRightContent>
-						<Button Classes="Flat" Padding="7" Width="{Binding $self.Bounds.Height}" ToolTip.Tip="Search"
+						<Button Classes="Flat" Padding="7" Width="{Binding $self.Bounds.Height}"
 								Command="{Binding Path=FilterModsCommand}">
 							<PathIcon Data="{StaticResource SearchIcon}"/>
 						</Button>
 					</TextBox.InnerRightContent>
+					<TextBox.InnerLeftContent><TextBlock Margin="0 0 7 0"/></TextBox.InnerLeftContent>
 				</TextBox>
 			</materialcontrols:Card>
 
@@ -142,7 +142,7 @@
 									<ItemsControl.ItemsSource>
 										<MultiBinding Converter="{StaticResource DependencyTypeMultiConverter}">
 											<Binding Path="."/>
-											<Binding Path="$parent[view:AddonsOverviewView].ViewModel"/>
+											<Binding Path="$parent[view:AddonsOverviewView].DataContext"/>
                                         </MultiBinding>
                                     </ItemsControl.ItemsSource>
 									<ItemsControl.ItemsPanel>

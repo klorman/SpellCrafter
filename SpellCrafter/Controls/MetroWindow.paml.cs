@@ -3,19 +3,26 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using Avalonia.Controls.Presenters;
+using Avalonia.Platform;
+using Avalonia.Threading;
 using ReactiveUI;
 
 namespace SpellCrafter.Controls
 {
     public class MetroWindow : Window
     {
-        public MetroWindow() : base()
+        public MetroWindow()
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 // do this in code or we get a delay in osx.
-                SystemDecorations = SystemDecorations.None;
+                //SystemDecorations = SystemDecorations.None;
+                ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
+                ExtendClientAreaTitleBarHeightHint = 40;
+                ExtendClientAreaToDecorationsHint = true;
                 ClientDecorations = true;
             }
             else
@@ -35,8 +42,11 @@ namespace SpellCrafter.Controls
         public static readonly StyledProperty<bool> ClientDecorationsProperty =
             AvaloniaProperty.Register<MetroWindow, bool>(nameof(ClientDecorations));
 
-        public static readonly StyledProperty<Control> TitleBarMenuContentProperty =
-            AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarMenuContent));
+        public static readonly StyledProperty<Control> TitleBarInnerLeftContentProperty =
+            AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarInnerLeftContent));
+
+        public static readonly StyledProperty<Control> TitleBarInnerRightContentProperty =
+            AvaloniaProperty.Register<MetroWindow, Control>(nameof(TitleBarInnerRightContent));
 
         private Grid? _bottomHorizontalGrip;
         private Grid? _bottomLeftGrip;
@@ -50,7 +60,8 @@ namespace SpellCrafter.Controls
         private Grid? _rightVerticalGrip;
 
         private Grid? _titleBar;
-        private Grid? _titleBarMenu;
+        private Grid? _titleBarInnerLeftMenu;
+        private Grid? _titleBarInnerRightMenu;
         private Grid? _topHorizontalGrip;
         private Grid? _topLeftGrip;
         private Grid? _topRightGrip;
@@ -63,14 +74,20 @@ namespace SpellCrafter.Controls
 
         public Control TitleBarContent
         {
-            get { return GetValue(TitleBarContentProperty); }
-            set { SetValue(TitleBarContentProperty, value); }
+            get => GetValue(TitleBarContentProperty);
+            set => SetValue(TitleBarContentProperty, value);
         }
 
-        public Control TitleBarMenuContent
+        public Control TitleBarInnerLeftContent
         {
-            get => GetValue(TitleBarMenuContentProperty);
-            set => SetValue(TitleBarMenuContentProperty, value);
+            get => GetValue(TitleBarInnerLeftContentProperty);
+            set => SetValue(TitleBarInnerLeftContentProperty, value);
+        }
+
+        public Control TitleBarInnerRightContent
+        {
+            get => GetValue(TitleBarInnerRightContentProperty);
+            set => SetValue(TitleBarInnerRightContentProperty, value);
         }
 
         protected override Type StyleKeyOverride => typeof(MetroWindow);
@@ -85,14 +102,21 @@ namespace SpellCrafter.Controls
                     {
                         BeginMoveDrag(e);
                     }
-
+            
                     base.OnPointerPressed(e);
                 }
-
+            
                 return;
             }
-
-            if (_topHorizontalGrip?.IsPointerOver ?? false)
+            
+            if (_titleBar?.IsPointerOver ?? false)
+            {
+                //if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                {
+                    BeginMoveDrag(e);
+                }
+            }
+            else if (_topHorizontalGrip?.IsPointerOver ?? false)
             {
                 BeginResizeDrag(WindowEdge.North, e);
             }
@@ -123,13 +147,6 @@ namespace SpellCrafter.Controls
             else if (_bottomRightGrip?.IsPointerOver ?? false)
             {
                 BeginResizeDrag(WindowEdge.SouthEast, e);
-            }
-            else if (_titleBar?.IsPointerOver ?? false)
-            {
-                if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-                {
-                    BeginMoveDrag(e);
-                }
             }
 
             base.OnPointerPressed(e);
@@ -169,7 +186,8 @@ namespace SpellCrafter.Controls
 			base.OnApplyTemplate(e);
 
             _titleBar = e.NameScope.Find<Grid>("titlebar");
-            _titleBarMenu = e.NameScope.Find<Grid>("titlebarMenu");
+            _titleBarInnerLeftMenu = e.NameScope.Find<Grid>("titlebarInnerLeftMenu");
+            _titleBarInnerRightMenu = e.NameScope.Find<Grid>("titlebarInnerRightMenu");
             _minimiseButton = e.NameScope.Find<Button>("minimiseButton");
             _restoreButton = e.NameScope.Find<Button>("restoreButton");
             _closeButton = e.NameScope.Find<Button>("closeButton");
@@ -200,10 +218,20 @@ namespace SpellCrafter.Controls
             }
 
             if (_closeButton != null) _closeButton.Command = ReactiveCommand.Create(Close);
+            
+            if (_titleBar != null)
+            {
+                //_titleBar.PointerPressed += (sender, ee) => { BeginMoveDrag(ee); };
+                _titleBar.DoubleTapped += (sender, ee) =>
+                {
+                    if (ee.Source is Grid { Name: "titlebar" } or Grid { Name: "titlebarTitle" } or TextBlock)
+                        ToggleWindowState();
+                };
+            }
 
-            if (_titleBar != null) _titleBar.DoubleTapped += (sender, ee) => { if (!(ee.Source is Button) && !(ee.Source is PathIcon)) ToggleWindowState(); };
 
-            if (_titleBarMenu != null) _titleBarMenu.DoubleTapped += (sender, ee) => { e.Handled = true; };
+            if (_titleBarInnerLeftMenu != null) _titleBarInnerLeftMenu.DoubleTapped += (sender, ee) => { e.Handled = true; };
+            if (_titleBarInnerRightMenu != null) _titleBarInnerRightMenu.DoubleTapped += (sender, ee) => { e.Handled = true; };
 
             if (_icon != null) _icon.DoubleTapped += (sender, ee) => { Close(); };
 

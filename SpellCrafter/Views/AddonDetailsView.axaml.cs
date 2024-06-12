@@ -15,7 +15,12 @@ namespace SpellCrafter.Views
         private void OpenContextMenu_Click(object? sender, RoutedEventArgs e)
         {
             var button = sender as Control;
-            button?.ContextMenu?.Open(button);
+            if (button?.ContextMenu == null) return;
+
+            var oldPlacement = button.ContextMenu.Placement;
+            button.ContextMenu.Placement = PlacementMode.LeftEdgeAlignedTop;
+            button.ContextMenu.Open(button);
+            button.ContextMenu.Placement = oldPlacement;
         }
     }
 }

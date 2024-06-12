@@ -9,9 +9,6 @@ namespace SpellCrafter.Views
         public InstalledAddonsView()
         {
             InitializeComponent();
-
-            var vm = new InstalledAddonsViewModel();
-            DataContext = vm;
         }
     }
 }

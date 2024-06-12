@@ -26,6 +26,8 @@
 			<StreamGeometry x:Key="WindowMaximizeIcon">M4,4H20V20H4V4M6,8V18H18V8H6Z</StreamGeometry>
 			<StreamGeometry x:Key="WindowMinimizeIcon">M20,14H4V10H20</StreamGeometry>
 			<StreamGeometry x:Key="WindowRestoreIcon">M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z</StreamGeometry>
+			<StreamGeometry x:Key="ArrowBackIcon">m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z</StreamGeometry>
+			<StreamGeometry x:Key="ArrowForwardIcon">M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z</StreamGeometry>
 		</Style.Resources>
 	</Style>
 </Styles>
