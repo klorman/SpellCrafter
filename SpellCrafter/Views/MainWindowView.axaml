@@ -11,6 +11,9 @@
 					  mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
 					  x:Class="SpellCrafter.Views.MainWindowView"
 					  WindowStartupLocation="CenterScreen"
+					  Focusable="True"
+					  IsTabStop="True"
+					  TabIndex="0"
 					  Title="Spell Crafter" MinWidth="916" MinHeight="600"
 					  x:DataType="vm:MainWindowViewModel">
 	<Design.DataContext>

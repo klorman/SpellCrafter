@@ -9,7 +9,6 @@
 			 xmlns:view="clr-namespace:SpellCrafter.Views"
 			 xmlns:models="clr-namespace:SpellCrafter.Models"
 			 mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="450"
-			 Focusable="True"
              x:Class="SpellCrafter.Views.AddonsOverviewView"
 			 x:DataType="vm:AddonsOverviewViewModel">
 	<UserControl.Resources>
@@ -95,8 +94,14 @@
 
 		<DataGrid Classes="MiniScrollBar DisableHoveringScrollBar" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True"
 				  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowHeight="85"
-				  AutoGenerateColumns="False" SelectionMode="Single" Grid.Row="1" IsEnabled="{Binding Path=!IsLoading}"
+				  AutoGenerateColumns="False" SelectionMode="Single" Grid.Row="1"
 				  Margin="0 14 0 0" ItemsSource="{Binding Path=DisplayedMods}" SelectedItem="{Binding Path=DataGridModsSelectedItem}">
+			<DataGrid.IsEnabled>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="!IsScanning"/>
+                    <Binding Path="!IsFiltering"/>
+                </MultiBinding>
+            </DataGrid.IsEnabled>
             <DataGrid.KeyBindings>
 				<KeyBinding Command="{Binding Path=RefreshModsCommand}" Gesture="F5"/>
 			</DataGrid.KeyBindings>
@@ -211,15 +216,22 @@
                        FontSize="30" HorizontalAlignment="Center">
 				<TextBlock.IsVisible>
 					<MultiBinding Converter="{x:Static BoolConverters.And}">
-						<Binding Path="!IsAddonsDisplayed"></Binding>
-						<Binding Path="!IsLoading"></Binding>
+						<Binding Path="!IsAddonsDisplayed"/>
+						<Binding Path="!IsScanning"/>
+						<Binding Path="!IsFiltering"/>
 					</MultiBinding>
                 </TextBlock.IsVisible>
             </TextBlock>
-            <ProgressBar IsIndeterminate="True" Classes="circular"
+			<ProgressBar IsIndeterminate="True" Classes="circular"
                          Height="100" Width="100"
-						 Margin="50"
-                         IsVisible="{Binding Path=IsLoading}"/>
+						 Margin="50">
+				<ProgressBar.IsVisible>
+					<MultiBinding Converter="{x:Static BoolConverters.Or}">
+						<Binding Path="IsScanning"/>
+						<Binding Path="IsFiltering"/>
+					</MultiBinding>
+				</ProgressBar.IsVisible>
+            </ProgressBar>
         </StackPanel>
     </Grid>
 </UserControl>

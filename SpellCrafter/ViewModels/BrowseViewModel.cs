@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ReactiveUI;
 using SpellCrafter.Data;
 using SpellCrafter.Services;
@@ -8,12 +9,7 @@ namespace SpellCrafter.ViewModels
 {
     public class BrowseViewModel : AddonsOverviewViewModel, IRoutableViewModel
     {
-        private static bool _isLoading;
-        public override bool IsLoading
-        {
-            get => _isLoading;
-            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
-        }
+        public override bool IsScanning => OnlineAddonsParserService.IsScanning;
 
         public string? UrlPathSegment => "/browse";
 
@@ -24,6 +20,13 @@ namespace SpellCrafter.ViewModels
             HostScreen = screen ?? Locator.Current.GetService<IScreen>()!;
 
             LoadAddons();
+
+            OnlineAddonsParserService.ScanningChanged += OnScanningChanged;
+        }
+
+        ~BrowseViewModel()
+        {
+            OnlineAddonsParserService.ScanningChanged -= OnScanningChanged;
         }
 
         private void LoadAddons()
@@ -33,18 +36,22 @@ namespace SpellCrafter.ViewModels
 
         protected override void RescanMods()
         {
-            var oldIsLoading = IsLoading;
-            IsLoading = true;
             base.RescanMods();
 
             Task.Run(async () =>
             {
+                IsFiltering = true;
                 var parser = new OnlineAddonsParserService();
                 var addons = await parser.ParseAddonsAsync();
-                using var db = new EsoDataConnection();
-                AddonDataManager.UpdateOnlineAddonsInfo(db, addons);
-                IsLoading = oldIsLoading;
+                if (addons != null)
+                {
+                    using var db = new EsoDataConnection();
+                    AddonDataManager.UpdateOnlineAddonsInfo(db, addons);
+                }
             });
         }
+
+        private void OnScanningChanged(object? sender, EventArgs e) =>
+            this.RaisePropertyChanged(nameof(IsScanning));
     }
 }

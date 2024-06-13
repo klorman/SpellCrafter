@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using System;
+using ReactiveUI;
 using SpellCrafter.Data;
 using SpellCrafter.Services;
 using Splat;
@@ -9,12 +10,7 @@ namespace SpellCrafter.ViewModels
 {
     public class InstalledAddonsViewModel : AddonsOverviewViewModel, IRoutableViewModel
     {
-        private static bool _isLoading;
-        public override bool IsLoading
-        {
-            get => _isLoading;
-            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
-        }
+        public override bool IsScanning => LocalAddonsScannerService.IsScanning;
 
         public string? UrlPathSegment => "/installed";
 
@@ -25,6 +21,13 @@ namespace SpellCrafter.ViewModels
             HostScreen = screen ?? Locator.Current.GetService<IScreen>()!;
 
             LoadLocalAddons();
+
+            LocalAddonsScannerService.ScanningChanged += OnScanningChanged;
+        }
+
+        ~InstalledAddonsViewModel()
+        {
+            LocalAddonsScannerService.ScanningChanged -= OnScanningChanged;
         }
 
         private void LoadLocalAddons()
@@ -42,17 +45,21 @@ namespace SpellCrafter.ViewModels
 
         protected override void RescanMods()
         {
-            var oldIsLoading = IsLoading;
-            IsLoading = true;
             base.RescanMods();
 
             Task.Run(() =>
             {
+                IsFiltering = true;
                 var addons = LocalAddonsScannerService.ScanDirectory(AppSettings.Instance.AddonsDirectory);
-                using var db = new EsoDataConnection();
-                AddonDataManager.UpdateInstalledAddonsInfo(db, addons);
-                IsLoading = oldIsLoading;
+                if (addons != null)
+                {
+                    using var db = new EsoDataConnection();
+                    AddonDataManager.UpdateInstalledAddonsInfo(db, addons);
+                }
             });
         }
+
+        private void OnScanningChanged(object? sender, EventArgs e) =>
+            this.RaisePropertyChanged(nameof(IsScanning));
     }
 }

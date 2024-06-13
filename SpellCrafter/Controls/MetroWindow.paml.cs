@@ -3,11 +3,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using System;
-using System.IO;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Avalonia.Controls.Presenters;
+using Avalonia.Media;
 using Avalonia.Platform;
-using Avalonia.Threading;
 using ReactiveUI;
 
 namespace SpellCrafter.Controls
@@ -16,10 +15,12 @@ namespace SpellCrafter.Controls
     {
         public MetroWindow()
         {
+            Activated += OnActivated;
+            Deactivated += OnDeactivated;
+
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 // do this in code or we get a delay in osx.
-                //SystemDecorations = SystemDecorations.None;
                 ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
                 ExtendClientAreaTitleBarHeightHint = 40;
                 ExtendClientAreaToDecorationsHint = true;
@@ -34,6 +35,17 @@ namespace SpellCrafter.Controls
  				//var color = (ColorTheme.CurrentTheme.Background as SolidColorBrush).Color;
  				//(PlatformImpl as Avalonia.Native.WindowImpl).SetTitleBarColor(color);
  			}
+        }
+
+        private void OnActivated(object? sender, EventArgs e)
+        {
+            const string primaryMidBrushKey = "MaterialPrimaryMidBrush";
+            Bind(BorderBrushProperty, Resources.GetResourceObservable(primaryMidBrushKey));
+        }
+
+        private void OnDeactivated(object? sender, EventArgs e)
+        {
+            BorderBrush = new SolidColorBrush(Color.Parse("#383838"));
         }
 
         public static readonly StyledProperty<Control> TitleBarContentProperty =

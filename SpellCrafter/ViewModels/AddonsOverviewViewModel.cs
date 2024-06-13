@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using ReactiveUI;
 using SpellCrafter.Enums;
+using System.Reactive.Concurrency;
+using System.Threading;
 
 namespace SpellCrafter.ViewModels
 {
@@ -26,14 +29,16 @@ namespace SpellCrafter.ViewModels
             }
         }
 
-        [Reactive] public virtual bool IsLoading { get; set; }
+        private bool _isFiltered;
+        [Reactive] public bool IsFiltering { get; set; }
+        public virtual bool IsScanning => false;
 
         [Reactive] public RangedObservableCollection<Addon> DisplayedMods { get; set; } = [];
         [Reactive] public string ModsFilter { get; set; } = string.Empty;
         [Reactive] public bool BrowseMode { get; set; }
         [Reactive] public Addon? DataGridModsSelectedItem { get; set; }
-        public bool IsAddonsDisplayed => DisplayedMods.Count > 0;
-       
+        public bool IsAddonsDisplayed => !_isFiltered || DisplayedMods.Count > 0;
+
         public RelayCommand UpdateAllCommand { get; }
         public RelayCommand FilterModsCommand { get; }
         public RelayCommand RefreshModsCommand { get; }
@@ -44,20 +49,17 @@ namespace SpellCrafter.ViewModels
 
             UpdateAllCommand = new RelayCommand
             (
-                _ => UpdateAll(),
-                _ => !IsLoading
+                _ => UpdateAll()
             );
             FilterModsCommand = new RelayCommand
             (
-                _ => FilterMods(),
-                _ => !IsLoading
+                _ => FilterMods()
             );
             RefreshModsCommand = new RelayCommand
             (
-                _ => RescanMods(),
-                _ => !IsLoading
+                _ => RescanMods()
             );
-            
+
             this.WhenAnyValue(x => x.DisplayedMods.Count)
                 .Subscribe(_ => this.RaisePropertyChanged(nameof(IsAddonsDisplayed)));
         }
@@ -66,42 +68,50 @@ namespace SpellCrafter.ViewModels
         {
             Debug.WriteLine("Updating all outdated addons");
 
-            var oldIsLoading = IsLoading;
-            IsLoading = true;
+            var oldIsFiltering = IsFiltering;
+            IsFiltering = true;
             foreach (var addon in ModsSource)
             {
                 if (addon.State is AddonState.Outdated or AddonState.InstallationError)
                     await addon.Update(false);
             }
 
-            IsLoading = oldIsLoading;
+            IsFiltering = oldIsFiltering;
         }
 
-        protected void FilterMods()
+        protected async void FilterMods()
         {
             Debug.WriteLine("Filtering displayed addons");
 
-            var oldIsLoading = IsLoading;
-            IsLoading = true;
+            //if (IsFiltering) return;
 
-            var filter = ModsFilter.Replace(" ", "");
-            List<Addon> filteredAddons;
-            if (!string.IsNullOrEmpty(filter))
+            IsFiltering = true;
+
+            await Task.Run(() =>
             {
-                filteredAddons = ModsSource.Where(addon =>
+                var filter = ModsFilter.Replace(" ", "");
+                List<Addon> filteredAddons;
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    filteredAddons = ModsSource.Where(addon =>
                         addon.Name.Replace(" ", "").Contains(filter, StringComparison.OrdinalIgnoreCase) ||
                         addon.Categories.Any(category => category.Name.Replace(" ", "").Contains(filter, StringComparison.OrdinalIgnoreCase)) || // TODO move categories and authors to filters
                         addon.Authors.Any(author => author.Name.Replace(" ", "").Contains(filter, StringComparison.OrdinalIgnoreCase))
-                ).ToList();
-            }
-            else
-            {
-                filteredAddons = [..ModsSource];
-            }
-            
-            DisplayedMods.Refresh(filteredAddons, false);
+                    ).ToList();
+                }
+                else
+                {
+                    filteredAddons = [.. ModsSource];
+                }
 
-            IsLoading = oldIsLoading;
+                RxApp.MainThreadScheduler.Schedule(() =>
+                {
+                    DisplayedMods.Refresh(filteredAddons, false);
+                    IsFiltering = false;
+                });
+            });
+
+            _isFiltered = true;
         }
 
         protected virtual void RescanMods()

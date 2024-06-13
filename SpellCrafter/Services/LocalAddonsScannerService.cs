@@ -2,17 +2,41 @@
 using SpellCrafter.Models;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System;
 
 namespace SpellCrafter.Services
 {
     public static class LocalAddonsScannerService
     {
-        public static List<Addon> ScanDirectory(string path)
+        public static event EventHandler? ScanningChanged;
+
+        private static bool _isScanning;
+        public static bool IsScanning
         {
+            get => _isScanning;
+            set
+            {
+                if (_isScanning != value)
+                {
+                    _isScanning = value;
+                    ScanningChanged?.Invoke(null, EventArgs.Empty);
+                }
+            }
+        }
+
+        public static List<Addon>? ScanDirectory(string path)
+        {
+            if (IsScanning) return null;
+            IsScanning = true;
+
             var addons = new List<Addon>();
 
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+            {
+                IsScanning = false;
                 return addons;
+            }
 
             foreach (var addonDir in Directory.GetDirectories(path))
             {
@@ -28,6 +52,7 @@ namespace SpellCrafter.Services
                 addons.Add(addon);
             }
 
+            IsScanning = false;
             return addons;
         }
     }

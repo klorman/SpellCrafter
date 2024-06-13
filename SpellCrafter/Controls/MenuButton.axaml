@@ -1,33 +1,45 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:SpellCrafter.Controls">
+        xmlns:controls="using:SpellCrafter.Controls"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple">
 	<Design.PreviewWith>
 		<controls:MenuButton Text="Test" />
 	</Design.PreviewWith>
 
 	<Style Selector="controls|MenuButton">
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="Padding" Value="0"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<RadioButton Height="{TemplateBinding Height}"
-								 Command="{TemplateBinding Command}"
-								 IsChecked="{TemplateBinding IsChecked}"
-								 GroupName="{TemplateBinding GroupName}"
-								 Cursor="Hand"
-								 Theme="{StaticResource MaterialButtonlikeRadioButton}"
-								 Padding="0" 
-								 HorizontalAlignment="Stretch">
-						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="12 0">
-							<PathIcon Data="{TemplateBinding Icon}"/>
-							<TextBlock Text="{TemplateBinding Text}"
-									   IsVisible="{TemplateBinding IsTextVisible}"
-									   Margin="12 0 0 0" VerticalAlignment="Center"
-									   FontWeight="Light"
-									   Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"/>
-						</StackPanel>
-					</RadioButton>
+					<Border Name="PART_RootBorder" 
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Cursor="{TemplateBinding Cursor}">
+						<Panel Name="PART_RootPanel">
+							<ripple:RippleEffect Name="PART_Ripple">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="12 0" VerticalAlignment="Stretch">
+                                    <PathIcon Data="{TemplateBinding Icon}"/>
+                                    <TextBlock Text="{TemplateBinding Text}"
+                                               IsVisible="{TemplateBinding IsTextVisible}"
+                                               Margin="12 0 0 0" VerticalAlignment="Center"
+                                               FontWeight="Light"
+                                               Foreground="{DynamicResource MaterialPrimaryForegroundBrush}"/>
+                                </StackPanel>
+							</ripple:RippleEffect>
+						</Panel>
+					</Border>
 				</ControlTemplate>
-			</Setter.Value>
+            </Setter.Value>
 		</Setter>
+		<Style Selector="^ /template/ ripple|RippleEffect#PART_Ripple">
+			<Setter Property="RippleFill" Value="{DynamicResource MaterialFlatButtonRippleBrush}"/>
+        </Style>
+		<Style Selector="^:pointerover /template/ Border#PART_RootBorder">
+			<Setter Property="Background" Value="#303030"/>
+        </Style>
+        <Style Selector="^:checked /template/ Border#PART_RootBorder">
+            <Setter Property="Background" Value="#434343"/>
+        </Style>
 	</Style>
 </Styles>

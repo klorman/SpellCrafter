@@ -1,10 +1,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Material.Styles.Themes;
 using ReactiveUI;
-using SpellCrafter.Data;
 using SpellCrafter.Services;
 using SpellCrafter.ViewModels;
 using SpellCrafter.Views;
@@ -14,10 +12,10 @@ namespace SpellCrafter
 {
     public class App : Application
     {
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        //public override void Initialize()
+        //{
+        //    AvaloniaXamlLoader.Load(this);
+        //}
 
         public override void OnFrameworkInitializationCompleted()
         {

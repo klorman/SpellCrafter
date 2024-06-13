@@ -10,16 +10,6 @@
 		<StyleInclude Source="avares://SpellCrafter/Styles/ContextMenu.axaml"/>
 		<StyleInclude Source="avares://SpellCrafter/Styles/TabControl.axaml"/>
 		<StyleInclude Source="avares://SpellCrafter/Assets/Icons.axaml"/>
-		
-		<Style Selector=":is(Control)">
-			<Setter Property="FocusAdorner">
-				<Setter.Value>
-					<FocusAdornerTemplate>
-						<Border BorderThickness="0"/>
-					</FocusAdornerTemplate>
-				</Setter.Value>
-			</Setter>
-			<Setter Property="TextElement.FontSize" Value="14"/>
-		</Style>
+
     </Application.Styles>
 </Application>

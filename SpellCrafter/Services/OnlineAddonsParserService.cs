@@ -26,8 +26,27 @@ namespace SpellCrafter.Services
         private readonly ConcurrentBag<Task<List<(int, string)>>> _tasks = [];
         private readonly SemaphoreSlim _semaphore = new(100);
 
-        public async Task<List<Addon>> ParseAddonsAsync()
+        public static event EventHandler? ScanningChanged;
+
+        private static bool _isScanning;
+        public static bool IsScanning
         {
+            get => _isScanning;
+            set
+            {
+                if (_isScanning != value)
+                {
+                    _isScanning = value;
+                    ScanningChanged?.Invoke(null, EventArgs.Empty);
+                }
+            }
+        }
+
+        public async Task<List<Addon>?> ParseAddonsAsync()
+        {
+            if (IsScanning) return null;
+            IsScanning = true;
+
             var addonsMap = new Dictionary<int, Addon>();
             var categoryUrls = new List<string>
             {
@@ -87,6 +106,8 @@ namespace SpellCrafter.Services
             {
                 if (Directory.Exists(tempFolder))
                     Directory.Delete(tempFolder, true);
+
+                IsScanning = false;
             }
         }
 

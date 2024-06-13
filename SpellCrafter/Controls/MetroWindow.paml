@@ -96,8 +96,6 @@
 	</Style>
 	<Style Selector="local|MetroWindow">
 		<Setter Property="BorderThickness" Value="3" />
-		<Setter Property="Focusable" Value="True" />
-		<Setter Property="BorderBrush" Value="#383838" />
 	</Style>
 
 	<Style Selector="local|MetroWindow:maximised /template/ Border#RootBorder">
@@ -108,12 +106,4 @@
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="CornerRadius" Value="5" />
 	</Style>
-
-	<Style Selector="local|MetroWindow:focus">
-		<Setter Property="BorderBrush" Value="{DynamicResource MaterialPrimaryMidBrush}" />
-	</Style>
-
-	<Style Selector="local|MetroWindow:focus-within">
-		<Setter Property="BorderBrush" Value="{DynamicResource MaterialPrimaryMidBrush}" />
-	</Style>	
 </Styles>
