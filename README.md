@@ -17,8 +17,10 @@ Before you begin, ensure you have the following installed:
 ### Cloning the Repository
 To get started with SpellCrafter, clone the repository to your local machine:
 
-```git clone https://github.com/yourusername/SpellCrafter.git```
-```cd SpellCrafter```
+```
+git clone https://github.com/yourusername/SpellCrafter.git
+cd SpellCrafter
+```
 
 ## Building the Application
 SpellCrafter uses Native AOT (Ahead-of-Time) compilation to improve performance. To build the application, use the following command:
