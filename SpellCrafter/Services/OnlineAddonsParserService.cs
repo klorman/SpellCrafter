@@ -24,7 +24,7 @@ namespace SpellCrafter.Services
         private const string DownloadsPath = "/downloads/getfile.php";
 
         private readonly ConcurrentBag<Task<List<(int, string)>>> _tasks = [];
-        private readonly SemaphoreSlim _semaphore = new(100);
+        private readonly SemaphoreSlim _semaphore = new(20);
 
         public static event EventHandler? ScanningChanged;
 

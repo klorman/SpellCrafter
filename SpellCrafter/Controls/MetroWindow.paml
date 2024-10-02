@@ -14,7 +14,13 @@
 								Margin="0" Padding="4" BoxShadow="0 2 30 -6 Black" ClipToBounds="True">
 							<Grid RowDefinitions="36 *">
 								<Grid Name="titlebar" Grid.Row="0" ColumnDefinitions="* Auto *" Background="{TemplateBinding Background}">
-									<Grid Grid.Column="0" Name="titlebarInnerLeftMenu" IsVisible="{TemplateBinding ClientDecorations}" Height="40" Margin="-4 -4 7 0">
+                                    <Grid.Styles>
+                                        <Styles>
+                                            <StyleInclude Source="/Controls/MetroWindowControlsTheme.paml" />
+                                        </Styles>
+                                    </Grid.Styles>
+
+                                    <Grid Grid.Column="0" Name="titlebarInnerLeftMenu" IsVisible="{TemplateBinding ClientDecorations}" Height="40" Margin="-4 -4 7 0">
 										<ContentPresenter x:Name="TitleBarInnerLeftContent" Content="{Binding Path=TitleBarInnerLeftContent, RelativeSource={RelativeSource AncestorType=local:MetroWindow}}"
 														  HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
 									</Grid>
@@ -28,11 +34,6 @@
 
 									<Grid Grid.Column="2" Name="titlebarInnerRightMenu" IsVisible="{TemplateBinding ClientDecorations}"
 										  ColumnDefinitions="* Auto Auto Auto" Height="40" Margin="7 -4 -4 0">
-										<Grid.Styles>
-											<Styles>
-												<StyleInclude Source="/Controls/MetroWindowControlsTheme.paml" />
-											</Styles>
-										</Grid.Styles>
 										<ContentPresenter Grid.Column="0" x:Name="TitleBarInnerRightContent" Content="{Binding Path=TitleBarInnerRightContent, RelativeSource={RelativeSource AncestorType=local:MetroWindow}}"
 														  HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 										<Button Classes="Flat" Grid.Column="1" Background="Transparent" BorderThickness="0" Width="{Binding $self.Bounds.Height}" CornerRadius="0" Name="minimiseButton" />
@@ -99,7 +100,7 @@
 	</Style>
 
 	<Style Selector="local|MetroWindow:maximised /template/ Border#RootBorder">
-		<Setter Property="Margin" Value="7" />
+		<Setter Property="Margin" Value="8" />
 		<Setter Property="CornerRadius" Value="0" />
 	</Style>
 	<Style Selector="local|MetroWindow /template/ Border#RootBorder">
